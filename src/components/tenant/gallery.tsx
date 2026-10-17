@@ -1,0 +1,62 @@
+"use client";
+
+import { useState } from "react";
+import { Icon } from "@/components/ui/icon";
+
+// Swipe is optional; visible previous/next buttons and a position count always work.
+export function Gallery({
+  photos,
+  title,
+}: {
+  photos: Array<{ url: string; label: string; alt: string | null }>;
+  title: string;
+}) {
+  const [i, setI] = useState(0);
+  const [touchX, setTouchX] = useState<number | null>(null);
+  if (photos.length === 0) {
+    return (
+      <div className="grid aspect-[4/3] place-items-center bg-cool text-muted md:rounded-[20px]">
+        <span className="flex flex-col items-center gap-2 text-[14px]">
+          <Icon name="image" size={28} /> No photos yet
+        </span>
+      </div>
+    );
+  }
+  const p = photos[i];
+  const go = (d: number) => setI((x) => (x + d + photos.length) % photos.length);
+  const labelText = p.label === "sample" ? "Sample photo, not this unit" : p.label === "building" ? "Building" : "Actual unit";
+
+  return (
+    <div
+      className="relative aspect-[4/3] overflow-hidden bg-cool md:rounded-[20px]"
+      aria-roledescription="carousel"
+      aria-label={`Photos of ${title}`}
+      onTouchStart={(e) => setTouchX(e.touches[0].clientX)}
+      onTouchEnd={(e) => {
+        if (touchX === null) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+        setTouchX(null);
+      }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={p.url} alt={p.alt ?? `${labelText}, photo ${i + 1} of ${photos.length}`} className="size-full object-cover" />
+      <span
+        className={`absolute bottom-3 left-3 rounded-[8px] px-2.5 py-1 text-[12.5px] font-semibold ${p.label === "sample" ? "bg-waiting-tint text-waiting-strong" : "bg-ink/85 text-white"}`}
+        aria-live="polite"
+      >
+        {labelText} · photo {i + 1} of {photos.length}
+      </span>
+      {photos.length > 1 ? (
+        <div className="absolute right-3 bottom-3 flex gap-2">
+          <button type="button" onClick={() => go(-1)} aria-label="Previous photo" className="grid size-11 place-items-center rounded-full bg-surface text-ink">
+            <Icon name="chevronLeft" />
+          </button>
+          <button type="button" onClick={() => go(1)} aria-label="Next photo" className="grid size-11 place-items-center rounded-full bg-surface text-ink">
+            <Icon name="chevronRight" />
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
