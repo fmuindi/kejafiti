@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+/* Design tokens from the nyumbani UI/UX handoff (2026-10-16). Light theme first; dark mode
+   is deliberately deferred per the UI specification. */
+@theme {
+  --color-primary: #dd0031;
+  --color-primary-hover: #a30025;
+  --color-ink: #1d252c;
+  --color-muted: #67737c;
+  --color-success: #00796b;
+  --color-success-tint: #e2f4f1;
+  --color-waiting: #a15c00;
+  --color-waiting-strong: #7a4900;
+  --color-waiting-dot: #e8a33d;
+  --color-waiting-tint: #fbf0dc;
+  --color-error: #a3001f;
+  --color-error-tint: #fbe0db;
+  --color-deep: #004f71;
+  --color-pink: #fbe0db;
+  --color-cream: #fcf9f4;
+  --color-cool: #f4f8f9;
+  --color-surface: #ffffff;
+  --color-line: #cccccc;
+  --color-divider: #e5e5e5;
+  --color-input: #8c959b;
+
+  --font-display: var(--font-bricolage), system-ui, sans-serif;
+  --font-sans: var(--font-instrument), system-ui, sans-serif;
+  --font-mono: var(--font-dm-mono), ui-monospace, monospace;
+
+  --radius-control: 12px;
+  --radius-card: 16px;
+  --radius-feature: 22px;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+@media (min-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+/* Visible focus everywhere; sticky bars add scroll padding so focus is never hidden. */
+:focus-visible {
+  outline: 3px solid var(--color-deep);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+html {
+  scroll-padding-bottom: 96px;
+  scroll-padding-top: 72px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Numeric inputs: no spinners; the currency label sits outside the value. */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.safe-bottom {
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+@keyframes skeleton {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #efebe4 0, #f7f4ef 60px, #efebe4 120px) no-repeat;
+  background-size: 200px 100%;
+  background-color: #efebe4;
+  animation: skeleton 1.4s ease-in-out infinite;
+  border-radius: 12px;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+}

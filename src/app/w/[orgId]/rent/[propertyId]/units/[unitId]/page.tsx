@@ -1,0 +1,208 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { EntryStatusBadge } from "@/components/rent/badges";
+import { TenancyActions, TenancySetup } from "@/components/rent/tenancy-forms";
+import { ChargeAdjust } from "@/components/rent/charge-adjust";
+import { Icon } from "@/components/ui/icon";
+import { ButtonLink, Card, EmptyState, Eyebrow, Notice } from "@/components/ui/primitives";
+import { requireWorkspace } from "@/lib/auth";
+import { currentPeriod, formatDate, formatPeriod, periodParam, todayEAT } from "@/lib/dates";
+import { formatAmount, formatMoney } from "@/lib/money";
+import { getOpenCharges, getProperty } from "@/lib/rent/queries";
+import { OCCUPANCY, type Occupancy } from "@/lib/rent/status";
+import { createClient } from "@/lib/supabase/server";
+
+type Statement = { line_date: string; kind: string; description: string; charge: number; payment: number; balance: number; ref: string | null };
+
+export default async function UnitPage({ params }: PageProps<"/w/[orgId]/rent/[propertyId]/units/[unitId]">) {
+  const { orgId, propertyId, unitId } = await params;
+  const base = `/w/${orgId}/rent/${propertyId}`;
+  const ws = await requireWorkspace(orgId, base);
+  const supabase = await createClient();
+  const property = await getProperty(supabase, ws, propertyId);
+  const { data: unit } = await supabase.from("units").select("id, label, layout, bedrooms, occupancy, occupancy_date, default_rent").eq("id", unitId).eq("property_id", propertyId).maybeSingle();
+  if (!unit) notFound();
+
+  const { data: tenancies } = await supabase
+    .from("tenancies")
+    .select("id, status, start_date, end_date, due_day, deposit_held, ended_reason, tenants(full_name, phone, email), tenancy_rent_rates(effective_from, amount)")
+    .eq("unit_id", unitId)
+    .order("start_date", { ascending: false });
+  const current = (tenancies ?? []).find((t) => t.status === "active");
+  const former = (tenancies ?? []).filter((t) => t.status === "ended");
+
+  const [statement, charges, entries, formerBalances] = await Promise.all([
+    current ? supabase.rpc("tenancy_statement", { p_tenancy: current.id }).then((r) => (r.data ?? []) as unknown as Statement[]) : Promise.resolve([] as Statement[]),
+    current ? getOpenCharges(supabase, current.id) : Promise.resolve([]),
+    current
+      ? supabase.from("payment_entries").select("id, ref, amount, paid_on, status").eq("tenancy_id", current.id).order("created_at", { ascending: false }).limit(20).then((r) => r.data ?? [])
+      : Promise.resolve([]),
+    Promise.all(
+      former.map((t) => supabase.rpc("tenancy_statement", { p_tenancy: t.id }).then((r) => {
+        const rows = (r.data ?? []) as unknown as Statement[];
+        return rows.length ? Number(rows[rows.length - 1].balance) : 0;
+      })),
+    ),
+  ]);
+
+  const rate = current
+    ? [...((current.tenancy_rent_rates as unknown as Array<{ effective_from: string; amount: number }>) ?? [])]
+        .filter((r) => r.effective_from <= todayEAT())
+        .sort((a, b) => b.effective_from.localeCompare(a.effective_from))[0]
+    : null;
+  const tenant = current?.tenants as unknown as { full_name: string; phone: string | null; email: string | null } | null;
+  const balance = statement.length ? Number(statement[statement.length - 1].balance) : 0;
+  const today = todayEAT();
+
+  return (
+    <div className="mx-auto flex max-w-[860px] flex-col gap-5">
+      <Link href={base} className="inline-flex min-h-11 items-center gap-1 self-start font-semibold">
+        <Icon name="chevronLeft" /> {property.name}
+      </Link>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <Eyebrow>{property.name}</Eyebrow>
+          <h1 className="mt-1 font-display text-[30px] font-bold">Unit {unit.label}</h1>
+          <p className="text-[14.5px] text-muted">
+            {OCCUPANCY[unit.occupancy as Occupancy]}
+            {unit.occupancy_date ? ` · since ${formatDate(unit.occupancy_date)}` : ""}
+          </p>
+        </div>
+        {current && ws.can_enter_payments ? (
+          <ButtonLink href={`${base}/record?tenancy=${current.id}&period=${periodParam(currentPeriod())}`} icon="plus">
+            Record payment
+          </ButtonLink>
+        ) : null}
+      </div>
+
+      {current ? (
+        <>
+          <Card className="p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="font-display text-[20px] font-bold">{tenant?.full_name}</p>
+                <p className="text-[14px] text-muted">
+                  Tenancy since {formatDate(current.start_date)} · {rate ? `${formatMoney(Number(rate.amount))} / month` : "rent not set"} · due day {current.due_day}
+                </p>
+                {tenant?.phone || tenant?.email ? <p className="text-[13.5px] text-muted">{[tenant.phone, tenant.email].filter(Boolean).join(" · ")}</p> : null}
+                {current.deposit_held ? <p className="text-[13.5px] text-muted">Deposit held: {formatMoney(Number(current.deposit_held))} (tracked separately from rent)</p> : null}
+              </div>
+              <div className="text-right">
+                <p className="text-[12.5px] text-muted">{balance < 0 ? "Tenant credit" : "Balance owed"}</p>
+                <p className={`font-display text-[26px] font-extrabold ${balance > 0 ? "text-error" : "text-success"}`}>{formatMoney(Math.abs(balance))}</p>
+                <p className="text-[12px] text-muted">Confirmed records only</p>
+              </div>
+            </div>
+            {ws.can_manage_tenancies ? <TenancyActions orgId={orgId} propertyId={propertyId} tenancyId={current.id} currentRent={rate ? Number(rate.amount) : null} /> : null}
+          </Card>
+
+          <section aria-labelledby="stmt">
+            <div className="flex items-baseline justify-between">
+              <h2 id="stmt" className="font-display text-[18px] font-bold">Tenant statement</h2>
+              <a href={`/api/export/statement?tenancy=${current.id}`} className="text-[14px] font-semibold text-primary underline">
+                Download CSV
+              </a>
+            </div>
+            {statement.length === 0 ? (
+              <p className="mt-2 rounded-[14px] border border-dashed border-line bg-surface p-4 text-[14px] text-muted">
+                No charges or payments yet. Create this period&apos;s rent charges from the Charges page.
+              </p>
+            ) : (
+              <div className="mt-2 overflow-x-auto rounded-[16px] border border-line bg-surface">
+                <table className="w-full min-w-[560px] text-[14px]">
+                  <caption className="sr-only">Statement lines with running balance</caption>
+                  <thead>
+                    <tr className="border-b border-line text-left font-mono text-[12px] text-muted">
+                      <th scope="col" className="px-3 py-2 font-medium">Date</th>
+                      <th scope="col" className="px-3 py-2 font-medium">Description</th>
+                      <th scope="col" className="px-3 py-2 text-right font-medium">Charge</th>
+                      <th scope="col" className="px-3 py-2 text-right font-medium">Payment</th>
+                      <th scope="col" className="px-3 py-2 text-right font-medium">Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {statement.map((l, i) => (
+                      <tr key={i} className="border-b border-divider last:border-0">
+                        <td className="px-3 py-2 whitespace-nowrap">{formatDate(l.line_date)}</td>
+                        <td className="px-3 py-2">{l.description}{l.ref ? <span className="font-mono text-[12px] text-muted"> · {l.ref}</span> : null}</td>
+                        <td className="px-3 py-2 text-right font-mono">{Number(l.charge) ? formatAmount(Number(l.charge)) : ""}</td>
+                        <td className="px-3 py-2 text-right font-mono">{Number(l.payment) ? formatAmount(Number(l.payment)) : ""}</td>
+                        <td className="px-3 py-2 text-right font-mono font-medium">{formatAmount(Number(l.balance))}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+
+          {ws.can_correct && charges.length ? (
+            <section aria-labelledby="charges">
+              <h2 id="charges" className="font-display text-[18px] font-bold">Charges</h2>
+              <ul className="mt-2 flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+                {charges.map((c) => (
+                  <li key={c.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                    <span>
+                      <span className="font-semibold">{c.category === "rent" ? `${formatPeriod(c.periodStart)} rent` : c.description ?? "Charge"}</span>
+                      <span className="block text-[13px] text-muted">
+                        {formatMoney(c.net)} · confirmed {formatAmount(c.confirmed)} · due {formatDate(c.dueDate)}
+                        {c.dueDate < today && c.net - c.confirmed > 0 ? " · overdue" : ""}
+                      </span>
+                    </span>
+                    {c.net - c.confirmed > 0 ? <ChargeAdjust orgId={orgId} propertyId={propertyId} chargeId={c.id} max={Math.round((c.net - c.confirmed) * 100) / 100} /> : null}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {entries.length ? (
+            <section aria-labelledby="entries">
+              <h2 id="entries" className="font-display text-[18px] font-bold">Payment entries</h2>
+              <ul className="mt-2 flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+                {entries.map((e) => (
+                  <li key={e.id}>
+                    <Link href={`${base}/entries/${e.id}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-cool">
+                      <span>
+                        <span className="font-mono text-[13px]">{e.ref}</span> · {formatMoney(Number(e.amount))}
+                        <span className="block text-[13px] text-muted">Paid {formatDate(e.paid_on)}</span>
+                      </span>
+                      <EntryStatusBadge status={e.status} />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+        </>
+      ) : ws.can_manage_tenancies ? (
+        <TenancySetup orgId={orgId} propertyId={propertyId} unitId={unitId} defaultRent={unit.default_rent ? Number(unit.default_rent) : null} dueDay={property.rent_due_day} occupancy={unit.occupancy} />
+      ) : (
+        <EmptyState title="No current tenancy" icon="user">
+          {unit.occupancy === "vacant" ? "This unit is vacant, so no rent is due." : "Ask a manager with tenancy permission to set up the tenancy."}
+        </EmptyState>
+      )}
+
+      {former.length ? (
+        <section aria-labelledby="former">
+          <h2 id="former" className="font-display text-[18px] font-bold">Former tenancies</h2>
+          <p className="text-[13.5px] text-muted">Arrears stay with the tenancy they belong to; they never move to the next tenant.</p>
+          <ul className="mt-2 flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+            {former.map((t, i) => (
+              <li key={t.id} className="flex justify-between gap-3 px-4 py-3 text-[14px]">
+                <span>
+                  <span className="font-semibold">{(t.tenants as unknown as { full_name: string } | null)?.full_name}</span>
+                  <span className="block text-muted">{formatDate(t.start_date)} – {formatDate(t.end_date)}{t.ended_reason ? ` · ${t.ended_reason}` : ""}</span>
+                </span>
+                <span className={formerBalances[i] > 0 ? "font-semibold text-error" : "text-muted"}>
+                  {formerBalances[i] > 0 ? `Owes ${formatMoney(formerBalances[i])}` : formerBalances[i] < 0 ? `Credit ${formatMoney(-formerBalances[i])}` : "Settled"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+      {!current && unit.occupancy === "vacant" ? <Notice tone="info">Vacant units never show as arrears.</Notice> : null}
+    </div>
+  );
+}
