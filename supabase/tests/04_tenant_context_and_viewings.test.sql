@@ -42,6 +42,10 @@ insert into ctx values ('ref', (select ref from public.listings where id = (sele
 select set_config('request.jwt.claims', '{"sub":"b2222222-0000-0000-0000-0000000000bb","role":"authenticated"}', true);
 set local role authenticated;
 insert into ctx values ('conv', public.start_conversation((select v from ctx where k = 'ref'), 'Is water included?', gen_random_uuid()));
+-- now() is fixed inside one transaction; date the enquiry a minute earlier so "latest" is defined.
+reset role;
+update public.messages set created_at = created_at - interval '1 minute' where conversation_id = (select v::uuid from ctx where k = 'conv');
+set local role authenticated;
 insert into public.saved_listings (user_id, listing_id) values ('b2222222-0000-0000-0000-0000000000bb', (select v::uuid from ctx where k = 'listing'));
 insert into ctx values ('viewing', public.request_viewing((select v from ctx where k = 'ref'), now() + interval '2 days', null, gen_random_uuid()));
 

@@ -40,6 +40,10 @@ export default async function AccountPage() {
         <span className="flex items-center gap-2 font-semibold"><Icon name="bell" size={18} /> Updates</span>
         <span className="text-[14px] text-muted">{unread ? `${unread} unread` : "All caught up"}</span>
       </Link>
+      <Link href="/help" className="flex min-h-[56px] items-center justify-between gap-3 rounded-[16px] border border-line bg-surface px-4 hover:border-ink">
+        <span className="flex items-center gap-2 font-semibold"><Icon name="info" size={18} /> Help and support</span>
+        <Icon name="chevronRight" size={16} />
+      </Link>
       <UpdateChannels />
       <section aria-labelledby="device" className="flex flex-col gap-2">
         <h2 id="device" className="font-display text-[18px] font-bold">This device</h2>

@@ -893,6 +893,84 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"support_files": {
+                  Row: {
+                    "created_at": string,"file_name": string,"id": string,"mime_type": string,"size_bytes": number,"storage_path": string,"ticket_id": string,"uploaded_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"file_name": string,"id"?: string,"mime_type": string,"size_bytes": number,"storage_path": string,"ticket_id": string,"uploaded_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"file_name"?: string,"id"?: string,"mime_type"?: string,"size_bytes"?: number,"storage_path"?: string,"ticket_id"?: string,"uploaded_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "support_files_ticket_id_fkey"
+      columns: ["ticket_id"]
+isOneToOne: false
+      referencedRelation: "support_tickets"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "support_files_uploaded_by_fkey"
+      columns: ["uploaded_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"support_messages": {
+                  Row: {
+                    "author_id": string,"body": string,"created_at": string,"id": string,"side": string,"ticket_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "author_id": string,"body": string,"created_at"?: string,"id"?: string,"side": string,"ticket_id": string
+                  }
+                  Update: {
+                    "author_id"?: string,"body"?: string,"created_at"?: string,"id"?: string,"side"?: string,"ticket_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "support_messages_author_id_fkey"
+      columns: ["author_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "support_messages_ticket_id_fkey"
+      columns: ["ticket_id"]
+isOneToOne: false
+      referencedRelation: "support_tickets"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"support_tickets": {
+                  Row: {
+                    "assignee_id": string | null,"category": string,"client_ref": string | null,"context_link": string | null,"created_at": string,"description": string,"id": string,"priority": string,"ref": string,"resolved_at": string | null,"status": string,"subject": string,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "assignee_id"?: string | null,"category": string,"client_ref"?: string | null,"context_link"?: string | null,"created_at"?: string,"description": string,"id"?: string,"priority"?: string,"ref"?: string,"resolved_at"?: string | null,"status"?: string,"subject": string,"updated_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "assignee_id"?: string | null,"category"?: string,"client_ref"?: string | null,"context_link"?: string | null,"created_at"?: string,"description"?: string,"id"?: string,"priority"?: string,"ref"?: string,"resolved_at"?: string | null,"status"?: string,"subject"?: string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "support_tickets_assignee_id_fkey"
+      columns: ["assignee_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "support_tickets_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"tenancies": {
                   Row: {
                     "billing_cycle": string,"created_at": string,"created_by": string | null,"deposit_held": number | null,"due_day": number,"end_date": string | null,"ended_reason": string | null,"id": string,"org_id": string,"property_id": string,"start_date": string,"status": string,"tenant_id": string,"unit_id": string,"updated_at": string
@@ -1177,6 +1255,9 @@ isOneToOne: false
 "admin_update_onboarding":
 { Args: { "p_assign_to_me"?: boolean,"p_authority_checked"?: string,"p_identity_checked"?: string,"p_note"?: string,"p_org": string,"p_status"?: string }; Returns: undefined
                            },
+"admin_update_ticket":
+{ Args: { "p": Json,"p_ticket": string }; Returns: undefined
+                           },
 "apply_credit":
 { Args: { "p_allocations": Json,"p_entry": string }; Returns: Json
                            },
@@ -1227,6 +1308,9 @@ isOneToOne: false
                            },
 "correct_entry":
 { Args: { "p": Json,"p_entry": string,"p_reason": string }; Returns: Json
+                           },
+"create_support_ticket":
+{ Args: { "p": Json }; Returns: Json
                            },
 "create_tenancy":
 { Args: { "p": Json }; Returns: string
@@ -1319,6 +1403,9 @@ isOneToOne: false
 "register_attachment":
 { Args: { "p": Json }; Returns: string
                            },
+"register_support_file":
+{ Args: { "p_mime": string,"p_name": string,"p_path": string,"p_size": number,"p_ticket": string }; Returns: string
+                           },
 "remove_attachment":
 { Args: { "p_attachment": string }; Returns: undefined
                            },
@@ -1336,6 +1423,9 @@ isOneToOne: false
 { Args: { "p_last_period": string,"p_months"?: number,"p_org": string,"p_property": string }; Returns: {
               "billed": number,"collection_rate": number,"period_start": string,"settled": number
             }[]
+                           },
+"reply_support_ticket":
+{ Args: { "p_body": string,"p_ticket": string }; Returns: undefined
                            },
 "report_listing":
 { Args: { "p_details": string,"p_reason": string,"p_ref": string }; Returns: string

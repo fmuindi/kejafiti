@@ -49,7 +49,8 @@ export default async function SignInPage({ searchParams }: PageProps<"/sign-in">
         Keep browsing without an account
       </Link>
       <p className="mt-auto pt-10 text-[12.5px] text-muted">
-        By continuing you agree to the Terms and Privacy notice. On a shared phone, sign out when you&apos;re done.
+        By continuing you agree to the <Link href="/legal/terms" className="underline">Terms</Link> and{" "}
+        <Link href="/legal/privacy" className="underline">Privacy notice</Link>. On a shared phone, sign out when you&apos;re done.
       </p>
     </main>
   );

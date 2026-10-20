@@ -85,8 +85,8 @@ export function PhotoStep({ orgId, listingId, unitLabel, initial, onBack, onNext
         <Button type="button" variant="secondary" size="lg" icon="camera" onClick={() => cameraRef.current?.click()}>Take photo</Button>
         <Button type="button" variant="secondary" size="lg" icon="image" onClick={() => fileRef.current?.click()}>Choose photos</Button>
       </div>
-      <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="sr-only" tabIndex={-1} aria-hidden="true" onChange={(e) => { add(e.target.files); e.target.value = ""; }} />
-      <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic" multiple className="sr-only" tabIndex={-1} aria-hidden="true" onChange={(e) => { add(e.target.files); e.target.value = ""; }} />
+      <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="sr-only" tabIndex={-1} aria-hidden="true" aria-label="Take photo" onChange={(e) => { add(e.target.files); e.target.value = ""; }} />
+      <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic" multiple className="sr-only" tabIndex={-1} aria-hidden="true" aria-label="Choose photos" onChange={(e) => { add(e.target.files); e.target.value = ""; }} />
       <p className="text-[12.5px] text-muted">JPG, PNG, WEBP or HEIC · up to 15 MB each · at least 4 photos. We resize photos on your phone before uploading to save data.</p>
       <p className="sr-only" aria-live="polite">{announce}</p>
 

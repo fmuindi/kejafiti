@@ -34,6 +34,7 @@ export default async function TenantLayout({ children }: LayoutProps<"/">) {
             <HeaderLink href="/viewings">Viewings</HeaderLink>
             <HeaderLink href={listHref}>{workspaces.length ? "My workspace" : "List your home"}</HeaderLink>
             {isAdmin ? <HeaderLink href="/admin">Admin centre</HeaderLink> : null}
+            <HeaderLink href="/help">Help</HeaderLink>
             {user ? <UpdatesBell count={unread} /> : null}
             {user ? (
               <Link href="/account" className={buttonClass("secondary", "sm", "ml-2")}>

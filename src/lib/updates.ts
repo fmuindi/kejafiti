@@ -13,6 +13,7 @@ export const CATEGORIES = [
   { key: "team", label: "Team" },
   { key: "listings", label: "Listings" },
   { key: "reports", label: "Reports" },
+  { key: "support", label: "Support" },
   { key: "admin", label: "Platform admin" },
   { key: "other", label: "Other" },
 ] as const;
@@ -24,6 +25,7 @@ export function categoryOf(kind: string): CategoryKey {
   if (/^(invite|access|membership|staff)/.test(kind)) return "team";
   if (/^listing/.test(kind)) return "listings";
   if (/^report/.test(kind)) return "reports";
+  if (/^support/.test(kind)) return "support";
   if (/^(registration|onboarding)/.test(kind)) return "admin";
   return "other";
 }
