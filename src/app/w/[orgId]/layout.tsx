@@ -22,14 +22,17 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
   const admin = isOrgAdmin(ws);
   const listings = ws.can_manage_listings;
 
-  const [{ count: pending }, { data: convs }] = await Promise.all([
+  const enterOnly = ws.can_enter_payments && !ws.can_confirm && !admin;
+  const [{ count: pending }, { data: convs }, { data: work }] = await Promise.all([
     ws.can_confirm
       ? supabase.from("payment_entries").select("id", { count: "exact", head: true }).eq("org_id", orgId).eq("status", "awaiting_confirmation")
       : Promise.resolve({ count: 0 }),
     listings
       ? supabase.from("conversations").select("id, last_tenant_message_at, last_advertiser_message_at, follow_up").eq("org_id", orgId).neq("follow_up", "closed").limit(200)
       : Promise.resolve({ data: [] }),
+    enterOnly ? supabase.rpc("my_rent_work", { p_org: orgId }) : Promise.resolve({ data: [] }),
   ]);
+  const myOpenWork = ((work ?? []) as Array<{ grp: string }>).filter((w) => w.grp !== "submitted").length;
   const unanswered = (convs ?? []).filter(
     (c) => c.last_tenant_message_at && (!c.last_advertiser_message_at || c.last_advertiser_message_at < c.last_tenant_message_at),
   ).length;
@@ -38,6 +41,7 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
     { href: base, label: "Overview", icon: "home", exact: true },
     ...(listings || admin ? [{ href: `${base}/properties`, label: "Properties & units", icon: "building" as const }] : []),
     { href: `${base}/rent`, label: "Rent records", icon: "wallet", badge: pending ?? 0 },
+    ...(enterOnly ? [{ href: `${base}/rent/mine`, label: "My entries", icon: "inbox" as const, badge: myOpenWork }] : []),
     // IMP-07: the financial dashboard, one click from anywhere.
     { href: `${base}/dashboard`, label: "Performance", icon: "chart" },
     ...(listings ? [{ href: `${base}/enquiries`, label: "Enquiries & viewings", icon: "message" as const, badge: unanswered }] : []),
@@ -57,6 +61,7 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
   const staffTabs: NavItem[] = [
     { href: `${base}/rent`, label: "Rent", icon: "wallet" },
     ...(ws.can_confirm ? [{ href: `${base}/rent/inbox`, label: "Inbox", icon: "inbox" as const, badge: pending ?? 0 }] : []),
+    ...(enterOnly ? [{ href: `${base}/rent/mine`, label: "My entries", icon: "inbox" as const, badge: myOpenWork }] : []),
     ...(listings ? [{ href: `${base}/enquiries`, label: "Enquiries", icon: "message" as const, badge: unanswered }] : []),
     { href: `${base}/dashboard`, label: "Performance", icon: "chart" },
     { href: `${base}/account`, label: "Account", icon: "user" },

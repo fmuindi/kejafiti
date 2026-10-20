@@ -39,6 +39,8 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
     propertyId ? getRegister(supabase, propertyId, period) : Promise.resolve({ rows: [] }),
     propertyId ? supabase.from("report_versions").select("id, version, finalized_at").eq("property_id", propertyId).eq("period_start", period).order("version", { ascending: false }) : Promise.resolve({ data: [] }),
   ]);
+  // IMP-15: when the confirmed figures last changed, never the time this page was drawn.
+  const { data: changedAt } = await supabase.rpc("records_changed_at", { p_org: orgId, p_property: propertyId ?? undefined });
   const { data: corrections } = await supabase
     .from("entry_events")
     .select("id, reason, created_at, actor_id, entry_id, payment_entries(ref, units(label))")
@@ -100,7 +102,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
       {s ? (
         <p className="inline-flex items-center gap-1.5 text-[13px] text-muted">
           <Icon name="check" size={15} className="text-success" />
-          Confirmed by property staff · Updated {formatDateTime(s.computed_at)} · Pending entries are not counted
+          Confirmed by property staff · Records last changed {changedAt ? formatDateTime(changedAt) : "never"} · Pending entries are not counted
         </p>
       ) : null}
 

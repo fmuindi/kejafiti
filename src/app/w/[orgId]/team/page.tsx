@@ -16,7 +16,7 @@ type Member = {
   invite_expires_at: string | null; all_properties: boolean; property_names: string[]; property_ids: string[];
   can_manage_tenancies: boolean; can_enter_payments: boolean; can_confirm: boolean; can_correct: boolean; can_export: boolean;
   can_view_attachments: boolean; can_manage_listings: boolean; last_active_at: string | null; submitted_pending: number;
-  open_work: number; status_changed_at: string | null;
+  open_work: number; status_changed_at: string | null; last_sign_in_at: string | null;
 };
 
 export default async function TeamPage({ params, searchParams }: PageProps<"/w/[orgId]/team">) {
@@ -97,8 +97,13 @@ export default async function TeamPage({ params, searchParams }: PageProps<"/w/[
                     <p className="font-semibold">{m.display_name}</p>
                     <p className="text-[13.5px] text-muted">
                       {ROLE_LABEL[m.role]} · {m.email}
-                      {m.status === "active" ? ` · active ${timeAgo(m.last_active_at)}` : ""}
                     </p>
+                    {/* IMP-15: sign-in and record changes are different events. */}
+                    {m.status === "active" ? (
+                      <p className="text-[13px] text-muted">
+                        Signed in {m.last_sign_in_at ? timeAgo(m.last_sign_in_at) : "never"} · Last change to rent records {m.last_active_at ? timeAgo(m.last_active_at) : "never"}
+                      </p>
+                    ) : null}
                     <p className="mt-1 text-[13.5px]">{m.role === "owner" || m.all_properties ? "All properties" : m.property_names.join(", ") || "No properties"}</p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 lg:w-[310px] lg:justify-end">

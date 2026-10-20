@@ -47,6 +47,8 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
   const filter = typeof sp.filter === "string" && FILTERS.some((f) => f.key === sp.filter) ? sp.filter : "all";
   const q = typeof sp.q === "string" ? sp.q.trim().toLowerCase() : "";
 
+  // IMP-15: when the confirmed figures last changed, never the time this page was drawn.
+  const { data: changedAt } = await supabase.rpc("records_changed_at", { p_org: orgId, p_property: propertyId });
   const [{ rows, error }, { summary }, properties, me] = await Promise.all([
     getRegister(supabase, propertyId, period),
     getSummary(supabase, orgId, propertyId, period),
@@ -117,7 +119,7 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
             {formatRate(summary.collection_rate)} collected · {formatMoney(summary.outstanding)} outstanding
             {summary.overdue ? ` · ${formatMoney(summary.overdue)} overdue` : ""}
           </p>
-          <p className="mt-1 text-[12px] text-muted">Confirmed by property staff · Updated {formatDateTime(summary.computed_at)} · Pending entries are not counted</p>
+          <p className="mt-1 text-[12px] text-muted">Confirmed by property staff · Records last changed {changedAt ? formatDateTime(changedAt) : "never"} · Pending entries are not counted</p>
         </section>
       ) : null}
 
