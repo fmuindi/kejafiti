@@ -562,8 +562,8 @@ export function RecordPaymentForm(props: Props) {
             Choose file
           </Button>
         </div>
-        <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="sr-only" tabIndex={-1} aria-hidden="true" onChange={(e) => { void addFiles(e.target.files); e.target.value = ""; }} />
-        <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" multiple className="sr-only" tabIndex={-1} aria-hidden="true" onChange={(e) => { void addFiles(e.target.files); e.target.value = ""; }} />
+        <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="sr-only" tabIndex={-1} aria-hidden="true" aria-label="Take a photo of the receipt" onChange={(e) => { void addFiles(e.target.files); e.target.value = ""; }} />
+        <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" multiple className="sr-only" tabIndex={-1} aria-hidden="true" aria-label="Choose receipt files" onChange={(e) => { void addFiles(e.target.files); e.target.value = ""; }} />
         <p className="text-[12.5px] text-muted">JPG, PNG, HEIC or PDF, up to 15 MB. Files stay private. A photo is evidence supplied by staff; it is not proof of payment.</p>
         {errors.evidence ? <p className="text-[13.5px] font-semibold text-error">{errors.evidence}</p> : null}
       </section>

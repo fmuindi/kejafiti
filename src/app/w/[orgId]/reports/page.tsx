@@ -1,15 +1,30 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FinalizeReport } from "@/components/rent/finalize-report";
+import { FinalizeReport, type PreFinalize } from "@/components/rent/finalize-report";
+import { PrintButton } from "@/components/rent/print-button";
 import { ReportView, type ReportSnapshot } from "@/components/rent/report-view";
 import { Icon } from "@/components/ui/icon";
 import { EmptyState, Notice, PageTitle } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
 import { addMonths, currentPeriod, formatDateTime, formatPeriod, parsePeriodParam, periodParam } from "@/lib/dates";
 import { getVisibleProperties } from "@/lib/rent/queries";
+import { formatAmount } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Reports" };
+
+type Summary = { billed: number; settled: number; outstanding: number; pending_count: number };
+
+/** Totals that moved between two versions, e.g. "confirmed +5,000". */
+function summaryDiff(a: Summary | null | undefined, b: Summary | null | undefined): string[] {
+  if (!a || !b) return [];
+  const out: string[] = [];
+  for (const [k, label] of [["billed", "billed"], ["settled", "confirmed"], ["outstanding", "outstanding"]] as const) {
+    const d = Number(b[k]) - Number(a[k]);
+    if (d) out.push(`${label} ${d > 0 ? "+" : "−"}${formatAmount(Math.abs(d))}`);
+  }
+  return out;
+}
 
 export default async function ReportsPage({ params, searchParams }: PageProps<"/w/[orgId]/reports">) {
   const { orgId } = await params;
@@ -21,9 +36,10 @@ export default async function ReportsPage({ params, searchParams }: PageProps<"/
   const period = parsePeriodParam(sp.period);
   if (!propertyId) return <EmptyState title="No properties yet" icon="chart">Reports appear once a property has rent records.</EmptyState>;
 
-  const [{ data: draft, error }, { data: versions }] = await Promise.all([
+  const [{ data: draft, error }, { data: versions }, { data: pre }] = await Promise.all([
     supabase.rpc("build_report", { p_property: propertyId, p_period: period }),
-    supabase.from("report_versions").select("id, version, finalized_at, prepared_by, change_note").eq("property_id", propertyId).eq("period_start", period).order("version", { ascending: false }),
+    supabase.from("report_versions").select("id, version, finalized_at, prepared_by, change_note, snapshot->summary").eq("property_id", propertyId).eq("period_start", period).order("version", { ascending: false }),
+    supabase.rpc("report_prefinalize", { p_property: propertyId, p_period: period }),
   ]);
   const ids = [...new Set((versions ?? []).map((v) => v.prepared_by))];
   const { data: people } = ids.length ? await supabase.from("profiles").select("id, full_name").in("id", ids) : { data: [] };
@@ -58,10 +74,16 @@ export default async function ReportsPage({ params, searchParams }: PageProps<"/
               <li key={v.id} className="flex flex-wrap items-center justify-between gap-3 py-2.5 text-[14px]">
                 <span>
                   <strong>v{v.version}</strong> · {formatDateTime(v.finalized_at)} · {people?.find((p) => p.id === v.prepared_by)?.full_name ?? "staff"}
-                  {v.change_note ? <span className="block text-[13px] text-muted">&quot;{v.change_note}&quot;</span> : null}
+                  {v.change_note ? <span className="block text-[13px] text-muted">Reason: &quot;{v.change_note}&quot;</span> : null}
+                  {(() => {
+                    // Concise change summary against the version before it (IMP-18).
+                    const prev = (versions ?? []).find((x) => x.version === v.version - 1);
+                    const d = summaryDiff(prev?.summary as Summary | null, v.summary as Summary | null);
+                    return prev ? <span className="block text-[13px] text-muted">{d.length ? `Since v${prev.version}: ${d.join(" · ")}` : `Same totals as v${prev.version}`}</span> : null;
+                  })()}
                 </span>
                 <span className="flex gap-3 font-semibold">
-                  <Link href={`/w/${orgId}/reports/${v.id}`} className="text-primary underline">View / PDF</Link>
+                  <Link href={`/w/${orgId}/reports/${v.id}`} className="text-primary underline">View final / PDF</Link>
                   {ws.can_export ? <a href={`/api/export/report?version=${v.id}`} className="text-primary underline">CSV</a> : null}
                 </span>
               </li>
@@ -76,9 +98,14 @@ export default async function ReportsPage({ params, searchParams }: PageProps<"/
       ) : (
         <>
           {pending ? <Notice tone="waiting" title={`${pending} entr${pending === 1 ? "y is" : "ies are"} still awaiting confirmation`}>Resolve them before finalizing, so the report reflects every checked payment.</Notice> : null}
-          {canFinalize ? <FinalizeReport orgId={orgId} propertyId={propertyId} period={period} nextVersion={(versions?.[0]?.version ?? 0) + 1} /> : null}
-          <div className="flex items-center gap-2 text-[14px] font-semibold">
-            <Icon name="eye" size={16} /> Draft preview (live from confirmed records, not saved)
+          {canFinalize && pre ? (
+            <FinalizeReport orgId={orgId} propertyId={propertyId} propertyName={snapshot.property.name} period={period} nextVersion={(versions?.[0]?.version ?? 0) + 1} review={pre as unknown as PreFinalize} />
+          ) : null}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="flex items-center gap-2 text-[14px] font-semibold">
+              <Icon name="eye" size={16} /> DRAFT preview: live from confirmed records, not saved and may change
+            </p>
+            <PrintButton label="Print draft" />
           </div>
           <ReportView r={snapshot} meta={{ status: "Draft" }} />
         </>

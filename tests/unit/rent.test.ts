@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { historyState, niceTicks } from "@/components/rent/trend-chart";
 import { formatMoney, parseAmount, sumAmounts, subtract } from "@/lib/money";
 import { previewAllocation, suggestAllocation, type OpenCharge } from "@/lib/rent/allocation";
 import { collectionRate, formatRate } from "@/lib/rent/status";
@@ -58,5 +59,16 @@ describe("dashboard metrics", () => {
   });
   it("shows N/A when nothing was billed", () => {
     expect(formatRate(collectionRate(0, 0))).toBe("N/A");
+  });
+});
+
+describe("trend chart (IMP-17)", () => {
+  it("uses round ticks that cover the largest bar", () => {
+    expect(niceTicks(135000)).toEqual([0, 50000, 100000, 150000]);
+    expect(niceTicks(0)).toEqual([0]);
+  });
+  it("tells months with no history apart from months with nothing billed", () => {
+    const p = (billed: number, settled = 0) => ({ period_start: "2026-01-01", billed, settled, collection_rate: null });
+    expect(historyState([p(0), p(0), p(135000, 120000), p(0), p(135000)])).toEqual(["none", "none", "data", "zero", "data"]);
   });
 });

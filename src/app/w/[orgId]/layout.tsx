@@ -1,6 +1,7 @@
 import { SignOutForm } from "@/components/auth/sign-out-form";
 import Link from "next/link";
 import { BottomTabs, SidebarLinks, type NavItem } from "@/components/shell/nav-link";
+import { HelpLink } from "@/components/shell/help-link";
 import { UpdatesBell } from "@/components/shell/updates-bell";
 import { Icon, Logo } from "@/components/ui/icon";
 import { getProfile, getWorkspaces, isOrgAdmin, requireUser, requireWorkspace } from "@/lib/auth";
@@ -96,6 +97,9 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
               </ul>
             </details>
           ) : null}
+          <HelpLink className="flex min-h-11 items-center gap-2 rounded-[12px] px-3 hover:bg-surface">
+            <Icon name="info" size={18} /> Help and support
+          </HelpLink>
           <Link href="/" className="flex min-h-11 flex-col justify-center rounded-[12px] px-3 py-1.5 hover:bg-surface">
             <span className="flex items-center gap-2"><Icon name="search" size={18} /> Browse homes</span>
             <span className="pl-[26px] text-[12px] text-muted">Same account. Your access doesn&apos;t change.</span>
