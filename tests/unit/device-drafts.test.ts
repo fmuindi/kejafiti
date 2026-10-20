@@ -41,7 +41,7 @@ describe("device drafts", () => {
     writeDraft("userA", "message", { conversation: "c1" }, "hello");
     removeDraft("userA", "rentEntry", scope);
     expect(readDraft("userA", "rentEntry", scope)).toBeNull();
-    expect(readDraft("userA", "rentEntry", { ...scope, tenancy: "t2" })?.data.amount).toBe("500");
+    expect(readDraft<typeof draft>("userA", "rentEntry", { ...scope, tenancy: "t2" })?.data.amount).toBe("500");
     expect(readDraft("userA", "message", { conversation: "c1" })?.data).toBe("hello");
   });
 
@@ -61,7 +61,7 @@ describe("device drafts", () => {
     store.setItem("nyumbani.recentSearches", "[]");
     clearDeviceDataFor("userA");
     expect(readDraft("userA", "rentEntry", scope)).toBeNull();
-    expect(readDraft("userB", "rentEntry", scope)?.data.amount).toBe("7000");
+    expect(readDraft<typeof draft>("userB", "rentEntry", scope)?.data.amount).toBe("7000");
     expect(store.getItem("nyumbani.recentSearches")).toBeNull();
   });
 
