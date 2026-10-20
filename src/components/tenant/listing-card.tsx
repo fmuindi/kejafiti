@@ -30,6 +30,8 @@ export type SearchRow = {
   cover_path: string | null;
   photo_count: number;
   unconfirmed_match: boolean;
+  /** Set on a place search: km from the picked place to the home's approximate position. */
+  distance_km: number | null;
 };
 
 const CARD_FACTS: Array<[string, string]> = [
@@ -55,6 +57,11 @@ function factChips(row: SearchRow): Array<{ label: string; unknown?: boolean }> 
     chips.push({ label: `Floor ${row.floor_level}${row.facts?.lift === "yes" ? ", lift" : ", stairs"}` });
   }
   return chips.slice(0, 4);
+}
+
+// Positions are approximate (about 1 km), so whole kilometres past 3 km.
+function formatDistance(km: number) {
+  return km < 3 ? km.toFixed(1) : String(Math.round(km));
 }
 
 export function ListingCard({
@@ -110,7 +117,11 @@ export function ListingCard({
           <Link href={`/homes/${row.ref}`} className="after:absolute after:inset-0 hover:underline">
             {title}
           </Link>
-          <span className="font-normal text-muted"> · {[row.area, row.road].filter(Boolean).join(", ")}</span>
+          <span className="font-normal text-muted">
+            {" "}
+            · {[row.area, row.road].filter(Boolean).join(", ")}
+            {row.distance_km != null ? ` · about ${row.distance_km < 1 ? "1" : formatDistance(row.distance_km)} km away` : ""}
+          </span>
         </h3>
         {chips.length ? (
           <ul className="flex flex-wrap gap-1.5">

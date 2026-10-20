@@ -104,6 +104,7 @@ insert into public.app_settings (key, value) values ('admin_alert_email', 'you@e
 | `SUPABASE_SECRET_KEY` (or `SUPABASE_SERVICE_ROLE_KEY`) | **server only** | Used only by the delivery worker (`src/lib/delivery.ts`). Never expose it. |
 | `CRON_SECRET` | server | Bearer token required by `/api/jobs/deliver` |
 | `RESEND_API_KEY`, `EMAIL_FROM` | server | Optional outbound email. Without them, tasks stay queued and invitations show a copyable link. |
+| `GOOGLE_MAPS_API_KEY` | **server only** | Optional. Google Places API (New) suggestions in the Explore search box and the listing wizard's location step, proxied through `/api/places/*`. Without it, those fields are plain text. |
 | `NEXT_PUBLIC_PHONE_AUTH_ENABLED` | browser | `true` only after an SMS provider is configured in Supabase Auth |
 
 ### Scripts

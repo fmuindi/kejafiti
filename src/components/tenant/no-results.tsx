@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
-import { factLabel, toQuery, toRpcParams, type SearchParams } from "@/lib/listing/search";
+import { RADII, factLabel, toQuery, toRpcParams, type SearchParams } from "@/lib/listing/search";
 import { formatAmount } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
 
@@ -53,9 +53,20 @@ export async function NoResults({ params: p }: { params: SearchParams }) {
     const { count } = await countFor({ ...p, types: [] });
     if (count) alts.push({ label: "Any layout", detail: "Same area and budget", count, href: `/search?${toQuery({ ...p, types: [], page: 1 })}` });
   }
-  if (p.q) {
-    const { count } = await countFor({ ...p, q: undefined });
-    if (count) alts.push({ label: "Search everywhere", detail: `Not only ${p.q}`, count, href: `/search?${toQuery({ ...p, q: undefined, page: 1 })}` });
+  const wider = RADII.filter((r) => r > p.r);
+  if (p.lat !== undefined && wider.length) {
+    // Offer the smallest wider radius that finds something.
+    for (const r of wider) {
+      const { count } = await countFor({ ...p, r });
+      if (count) {
+        alts.push({ label: `Widen to ${r} km`, detail: `Around ${p.q ?? "the picked place"}, same filters`, count, href: `/search?${toQuery({ ...p, r, page: 1 })}` });
+        break;
+      }
+    }
+  }
+  if (p.q || p.lat !== undefined) {
+    const { count } = await countFor({ ...p, q: undefined, lat: undefined, lng: undefined });
+    if (count) alts.push({ label: "Search everywhere", detail: `Not only ${p.q ?? "near the picked place"}`, count, href: `/search?${toQuery({ ...p, q: undefined, lat: undefined, lng: undefined, page: 1 })}` });
   }
 
   return (

@@ -3,7 +3,7 @@
 
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(24);
+select plan(28);
 
 insert into auth.users (id, email, raw_user_meta_data, aud, role, instance_id) values
   ('a1111111-0000-0000-0000-0000000000aa', 'grace@example.test', '{"full_name":"Grace W"}', 'authenticated', 'authenticated', '00000000-0000-0000-0000-000000000000'),
@@ -77,6 +77,19 @@ select is((select count(*)::int from public.search_listings('{"q":"Pgtapville","
   'Unknown answers are included only when the tenant asks');
 select is((select count(*)::int from public.search_listings('{"q":"Pgtapville","max_rent":14500,"budget_basis":"fixed"}'::jsonb)), 0,
   'Budget on "rent + fixed charges" uses the fixed monthly total');
+
+-- Distance search around a picked place ------------------------------------------------
+select is((select count(*)::int from public.search_listings('{"q":"Pgtapville","near_lat":-1.5,"near_lng":37.5,"radius_km":5}'::jsonb)), 1,
+  'A home without a map position still matches a place search by name');
+reset role;
+update public.properties set latitude = -1.234567, longitude = 36.987654 where area = 'Pgtapville';
+set local role anon;
+select is((select count(*)::int from public.search_listings('{"q":"Pgtapville","near_lat":-1.5,"near_lng":37.5,"radius_km":5}'::jsonb)), 0,
+  'A positioned home outside the radius is excluded');
+select is((select distance_km from public.search_listings('{"near_lat":-1.25,"near_lng":36.99,"radius_km":3}'::jsonb) where ref = (select v from ctx where k = 'ref')), 2.2,
+  'Homes within the radius come back with their distance');
+select is((select distance_km from public.search_listings('{"near_lat":-1.23,"near_lng":36.99,"radius_km":1}'::jsonb) where ref = (select v from ctx where k = 'ref')), 0.0,
+  'Distance is measured from the rounded public position, never the exact one');
 select is(((public.get_listing((select v from ctx where k = 'ref'))) ->> 'viewing_address'), null, 'The viewing address stays private before a confirmed viewing');
 select throws_like($$ select public.start_conversation((select v from ctx where k = 'ref'), 'Hi', gen_random_uuid()) $$, '%permission denied%',
   'Signed-out visitors cannot message (sign-in required)');

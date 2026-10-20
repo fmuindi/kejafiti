@@ -39,6 +39,7 @@ export default async function SavedPage() {
         cover_path: l.photos[0]?.thumb ?? l.photos[0]?.path ?? null,
         photo_count: l.photos.length,
         unconfirmed_match: false,
+        distance_km: null,
       });
     }
   }

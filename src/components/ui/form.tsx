@@ -61,13 +61,11 @@ export function TextInput({
   className,
   ...props
 }: ComponentProps<"input"> & { error?: string }) {
-  return (
-    <input
-      {...props}
-      aria-invalid={error ? true : undefined}
-      className={cx(inputBase, error ? "border-error border-[1.5px]" : "border-input", className)}
-    />
-  );
+  return <input {...props} aria-invalid={error ? true : undefined} className={textInputClass(error, className)} />;
+}
+
+export function textInputClass(error?: string, className?: string) {
+  return cx(inputBase, error ? "border-error border-[1.5px]" : "border-input", className);
 }
 
 export function TextArea({ error, className, ...props }: ComponentProps<"textarea"> & { error?: string }) {

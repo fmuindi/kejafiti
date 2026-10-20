@@ -7,6 +7,7 @@ import { Icon } from "@/components/ui/icon";
 import { Notice } from "@/components/ui/primitives";
 import { isOrgAdmin, requireWorkspace } from "@/lib/auth";
 import type { ListingCharge } from "@/lib/listing/costs";
+import { PLACES_ENABLED } from "@/lib/places";
 import { signListingPhotos } from "@/lib/storage";
 import { createClient } from "@/lib/supabase/server";
 
@@ -43,6 +44,7 @@ export default async function ListingWizardPage({ params, searchParams }: PagePr
     status: l.status,
     reviewNote: l.review_note,
     canEditBuilding: isOrgAdmin(ws),
+    placesEnabled: PLACES_ENABLED,
     location: {
       area: String(property.area ?? ""),
       town: String(property.town ?? ""),
@@ -52,6 +54,8 @@ export default async function ListingWizardPage({ params, searchParams }: PagePr
       viewing_address: String(property.viewing_address ?? ""),
       unit_label: String(unit.label ?? ""),
       property_name: String(property.name ?? ""),
+      latitude: property.latitude === null || property.latitude === undefined ? null : Number(property.latitude),
+      longitude: property.longitude === null || property.longitude === undefined ? null : Number(property.longitude),
     },
     home: {
       rental_scope: unit.rental_scope as WizardData["home"]["rental_scope"],

@@ -6,6 +6,10 @@ import { formatAmount, parseAmount } from "@/lib/money";
 
 export type SearchParams = {
   q?: string;
+  /** Picked place. With these set, q is the place's name and results are within r km of it. */
+  lat?: number;
+  lng?: number;
+  r: number;
   max?: number;
   min?: number;
   basis: "rent" | "fixed";
@@ -16,11 +20,13 @@ export type SearchParams = {
   by?: "landlord" | "agent";
   movein?: string;
   category?: string;
-  sort: "relevant" | "lowest_total" | "recent" | "newest";
+  sort: "relevant" | "lowest_total" | "recent" | "newest" | "nearest";
   page: number;
 };
 
 export const PAGE_SIZE = 24;
+export const RADII = [1, 3, 5, 10, 20] as const;
+export const DEFAULT_RADIUS = 5;
 
 type Raw = Record<string, string | string[] | undefined>;
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
@@ -40,8 +46,19 @@ export function parseSearch(raw: Raw): SearchParams {
   const by = first(raw.by);
   const movein = first(raw.movein);
   const category = first(raw.category);
+  const coord = (k: string, min: number, max: number) => {
+    const n = Number(first(raw[k]));
+    return first(raw[k]) && Number.isFinite(n) && n >= min && n <= max ? Math.round(n * 1e5) / 1e5 : undefined;
+  };
+  const lat = coord("lat", -90, 90);
+  const lng = coord("lng", -180, 180);
+  const near = lat !== undefined && lng !== undefined;
+  const r = Number(first(raw.r));
   return {
     q: first(raw.q)?.trim().slice(0, 80) || undefined,
+    lat: near ? lat : undefined,
+    lng: near ? lng : undefined,
+    r: (RADII as readonly number[]).includes(r) ? r : DEFAULT_RADIUS,
     max: num("max"),
     min: num("min"),
     basis: first(raw.basis) === "fixed" ? "fixed" : "rent",
@@ -52,7 +69,7 @@ export function parseSearch(raw: Raw): SearchParams {
     by: by === "landlord" || by === "agent" ? by : undefined,
     movein: movein && /^\d{4}-\d{2}-\d{2}$/.test(movein) ? movein : undefined,
     category: category && CAT_VALUES.has(category) ? category : undefined,
-    sort: sort === "lowest_total" || sort === "recent" || sort === "newest" ? sort : "relevant",
+    sort: sort === "lowest_total" || sort === "recent" || sort === "newest" || (sort === "nearest" && near) ? sort : "relevant",
     page: Math.max(1, Math.min(50, Number(first(raw.page)) || 1)),
   };
 }
@@ -60,6 +77,11 @@ export function parseSearch(raw: Raw): SearchParams {
 export function toQuery(p: Partial<SearchParams>): string {
   const u = new URLSearchParams();
   if (p.q) u.set("q", p.q);
+  if (p.lat !== undefined && p.lng !== undefined) {
+    u.set("lat", String(p.lat));
+    u.set("lng", String(p.lng));
+    if (p.r && p.r !== DEFAULT_RADIUS) u.set("r", String(p.r));
+  }
   if (p.max) u.set("max", String(p.max));
   if (p.min) u.set("min", String(p.min));
   if (p.basis === "fixed") u.set("basis", "fixed");
@@ -79,6 +101,9 @@ export function toQuery(p: Partial<SearchParams>): string {
 export function toRpcParams(p: SearchParams, opts: { includeUnconfirmed?: boolean; limit?: number; offset?: number } = {}) {
   return {
     q: p.q ?? null,
+    near_lat: p.lat ?? null,
+    near_lng: p.lng ?? null,
+    radius_km: p.r,
     max_rent: p.max ?? null,
     min_rent: p.min ?? null,
     budget_basis: p.basis,
@@ -99,8 +124,9 @@ export function describeSearch(p: SearchParams): { title: string; subtitle: stri
   const cat = CATEGORIES.find((c) => c.value === p.category)?.label;
   const type = p.types.length === 1 ? HOME_TYPES.find((t) => t.value === p.types[0])?.label : undefined;
   const what = cat ?? (type ? `${type} homes` : "Homes");
-  const title = p.q ? `${what} in ${p.q}` : what;
-  const parts = [type && !cat ? type : null, p.max ? `Up to KES ${formatAmount(p.max)} / month` : null].filter(Boolean);
+  const near = p.lat !== undefined;
+  const title = p.q ? `${what} ${near ? "near" : "in"} ${p.q}` : near ? `${what} near the picked place` : what;
+  const parts = [near ? `Within ${p.r} km` : null, type && !cat ? type : null, p.max ? `Up to KES ${formatAmount(p.max)} / month` : null].filter(Boolean);
   return { title, subtitle: parts.join(" · ") || "Any budget" };
 }
 

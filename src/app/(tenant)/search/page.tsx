@@ -5,7 +5,7 @@ import { ListingCard, type SearchRow } from "@/components/tenant/listing-card";
 import { NoResults } from "@/components/tenant/no-results";
 import { RememberSearch } from "@/components/tenant/remember-search";
 import { SaveSearchButton } from "@/components/tenant/save-search";
-import { SortSelect } from "@/components/tenant/sort-select";
+import { RadiusSelect, SortSelect } from "@/components/tenant/sort-select";
 import { Icon } from "@/components/ui/icon";
 import { Notice, cx } from "@/components/ui/primitives";
 import { getSessionUser } from "@/lib/auth";
@@ -92,6 +92,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <FiltersSheet params={p} count={filterCount} />
+          {p.lat !== undefined ? <RadiusSelect query={p} /> : null}
           <SortSelect value={p.sort} query={p} />
         </div>
         {chips.length ? (
@@ -109,7 +110,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
               </li>
             ))}
             <li>
-              <Link href={`/search?${toQuery({ q: p.q, max: p.max, category: p.category })}`} className="inline-flex min-h-9 items-center px-2 text-[13.5px] font-semibold text-ink underline">
+              <Link href={`/search?${toQuery({ q: p.q, lat: p.lat, lng: p.lng, r: p.r, max: p.max, category: p.category })}`} className="inline-flex min-h-9 items-center px-2 text-[13.5px] font-semibold text-ink underline">
                 Clear all
               </Link>
             </li>

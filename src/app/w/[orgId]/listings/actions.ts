@@ -52,6 +52,9 @@ const locationSchema = z.object({
   landmark: z.string().trim().max(160).optional(),
   viewing_address: z.string().trim().max(300).optional(),
   unit_label: z.string().trim().min(1, "Give this unit a reference, for example B4.").max(40),
+  // Filled from a picked place suggestion; cleared when the area is typed by hand.
+  latitude: z.number().min(-90).max(90).nullable().optional(),
+  longitude: z.number().min(-180).max(180).nullable().optional(),
 });
 
 export async function saveLocation(orgId: string, listingId: string, input: z.input<typeof locationSchema>): Promise<ActionResult> {
