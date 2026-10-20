@@ -45,7 +45,7 @@ export default async function SignInPage({ searchParams }: PageProps<"/sign-in">
       <h1 className="mt-8 font-display text-[32px] leading-[1.05] font-bold tracking-[-1px]">{copy.title}</h1>
       <p className="mt-2 text-[15px] text-muted">{copy.body}</p>
       <SignInForm next={next} phoneEnabled={PHONE_AUTH_ENABLED} />
-      <Link href={next === "/" || next === "/auth/continue" ? "/" : "/search"} className="mt-6 text-center text-[15px] font-semibold underline">
+      <Link href={next === "/" || next === "/auth/continue" ? "/" : "/search"} className="mt-4 inline-flex min-h-11 items-center justify-center text-center text-[15px] font-semibold underline">
         Keep browsing without an account
       </Link>
       <p className="mt-auto pt-10 text-[12.5px] text-muted">

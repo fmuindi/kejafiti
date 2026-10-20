@@ -58,7 +58,7 @@ export function TrendChart({ points, onOpen }: { points: Point[]; onOpen?: strin
         <div className="flex items-center gap-4 text-[13px] text-muted">
           <span className="inline-flex items-center gap-1.5"><span className="inline-block size-3 rounded-[3px] border border-line bg-divider" aria-hidden="true" />Rent billed</span>
           <span className="inline-flex items-center gap-1.5"><span className="inline-block size-3 rounded-[3px] bg-success" aria-hidden="true" />Confirmed</span>
-          <button type="button" className="font-semibold text-primary underline" onClick={() => setTable(!table)} aria-pressed={table}>
+          <button type="button" className="inline-flex min-h-11 items-center font-semibold text-primary underline" onClick={() => setTable(!table)} aria-pressed={table}>
             {table ? "View as chart" : "View as table"}
           </button>
         </div>

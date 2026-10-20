@@ -110,7 +110,7 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
                 No charges or payments yet. Create this period&apos;s rent charges from the Charges page.
               </p>
             ) : (
-              <div className="mt-2 overflow-x-auto rounded-[16px] border border-line bg-surface">
+              <div className="mt-2 overflow-x-auto rounded-[16px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Tenancy statement (scrolls sideways)">
                 <table className="w-full min-w-[560px] text-[14px]">
                   <caption className="sr-only">Statement lines with running balance</caption>
                   <thead>

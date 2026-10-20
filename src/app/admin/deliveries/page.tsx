@@ -78,7 +78,7 @@ export default async function DeliveriesPage() {
         {channels.includes("email") ? <ProcessNowButton /> : null}
       </section>
 
-      <div className="overflow-x-auto rounded-[18px] border border-line bg-surface">
+      <div className="overflow-x-auto rounded-[18px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Delivery tasks (scrolls sideways)">
         <table className="w-full min-w-[820px] text-[14px]">
           <caption className="sr-only">Delivery tasks, newest first{attention ? `. ${attention} need attention.` : ""}</caption>
           <thead>

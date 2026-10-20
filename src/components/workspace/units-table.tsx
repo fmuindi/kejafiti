@@ -67,7 +67,7 @@ export function UnitsTable({ orgId, propertyId, rows, canListings, canTenancies 
       {rows.length === 0 ? (
         <p className="rounded-[16px] border border-dashed border-line bg-surface p-6 text-center text-[14px] text-muted">No units yet. Add them below.</p>
       ) : (
-        <div className="overflow-x-auto rounded-[16px] border border-line bg-surface">
+        <div className="overflow-x-auto rounded-[16px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Units (scrolls sideways)">
           <table className="w-full min-w-[720px] text-[14.5px]">
             <caption className="sr-only">Units, occupancy and listing status</caption>
             <thead>

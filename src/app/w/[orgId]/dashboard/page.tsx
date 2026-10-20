@@ -113,7 +113,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
             This view counts payments by the date the tenant paid, whatever period they settle. It is a different question from rent-period collection
             and the two are never mixed. Total: <strong className="text-ink">{formatMoney(sumAmounts(payRows.map((r) => Number(r.amount))))}</strong> across {payRows.length} payment{payRows.length === 1 ? "" : "s"}.
           </p>
-          <div className="overflow-x-auto rounded-[16px] border border-line bg-surface">
+          <div className="overflow-x-auto rounded-[16px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Confirmed payments by date (scrolls sideways)">
             <table className="w-full min-w-[640px] text-[14px]">
               <thead>
                 <tr className="border-b border-line text-left font-mono text-[12px] text-muted">
@@ -163,7 +163,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
               <section aria-labelledby="grid" className="rounded-[18px] border border-line bg-surface p-4">
                 <div className="flex items-baseline justify-between">
                   <h2 id="grid" className="font-display text-[18px] font-bold">Units this period</h2>
-                  <Link href={`/w/${orgId}/rent/${propertyId}?period=${periodParam(period)}`} className="text-[14px] font-semibold text-primary">Open register</Link>
+                  <Link href={`/w/${orgId}/rent/${propertyId}?period=${periodParam(period)}`} className="inline-flex min-h-11 items-center text-[14px] font-semibold text-primary">Open register</Link>
                 </div>
                 <ul className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5">
                   {register.rows.filter((r) => r.tenancy_status !== "ended").map((r) => {
@@ -223,7 +223,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
                     {formatPeriod(period)} · {finalVersions.length ? `final v${finalVersions[0].version}` : "draft"}
                   </p>
                   <p className="text-[13px] text-muted">Built from confirmed records. A manager finalizes it once pending entries are resolved; earlier versions are kept.</p>
-                  <Link href={`/w/${orgId}/reports?property=${propertyId}&period=${periodParam(period)}`} className="font-semibold text-primary underline">
+                  <Link href={`/w/${orgId}/reports?property=${propertyId}&period=${periodParam(period)}`} className="inline-flex min-h-11 items-center font-semibold text-primary underline">
                     {finalVersions.length ? "Open report versions" : "Preview draft"}
                   </Link>
                 </>

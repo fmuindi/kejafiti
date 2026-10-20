@@ -58,7 +58,7 @@ export function ReportView({ r, meta }: { r: ReportSnapshot; meta: { status: str
       ) : null}
       <section>
         <h3 className="font-semibold">Unit rent register (KSh)</h3>
-        <div className="mt-2 overflow-x-auto">
+        <div className="mt-2 overflow-x-auto" tabIndex={0} role="region" aria-label="Unit rent register (scrolls sideways)">
           <table className="w-full min-w-[560px] text-[13.5px]">
             <thead>
               <tr className="border-b border-line text-left font-mono text-[12px] text-muted">
@@ -97,7 +97,7 @@ export function ReportView({ r, meta }: { r: ReportSnapshot; meta: { status: str
       </div>
       <section>
         <h3 className="font-semibold">Payment entries dated this month</h3>
-        <div className="mt-2 overflow-x-auto">
+        <div className="mt-2 overflow-x-auto" tabIndex={0} role="region" aria-label="Payment entries (scrolls sideways)">
           <table className="w-full min-w-[640px] text-[13px]">
             <thead>
               <tr className="border-b border-line text-left font-mono text-[12px] text-muted">
