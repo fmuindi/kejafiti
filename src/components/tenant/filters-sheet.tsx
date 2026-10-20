@@ -207,7 +207,7 @@ export function FiltersSheet({ params, count }: { params: SearchParams; count: n
                   type="date"
                   value={draft.movein ?? ""}
                   onChange={(e) => setDraft((d) => ({ ...d, movein: e.target.value || undefined }))}
-                  className="min-h-[50px] rounded-[12px] border border-input bg-surface px-3 text-[16px]"
+                  className="min-h-[50px] rounded-[12px] border border-input bg-surface px-3 text-[16px] focus:outline-none focus:ring-2 focus:ring-deep/40 focus-within:ring-2 focus-within:ring-deep/40"
                 />
               </label>
             </div>

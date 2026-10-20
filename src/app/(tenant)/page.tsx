@@ -100,7 +100,7 @@ export default function ExplorePage() {
               List a vacancy for free and keep simple rent records your team confirms. Tenants keep paying the way they
               already do.
             </p>
-            <Link href="/start" className="mt-3 inline-flex items-center gap-1 font-semibold text-primary hover:text-primary-hover">
+            <Link href="/start" className="mt-1 inline-flex min-h-11 items-center gap-1 font-semibold text-primary hover:text-primary-hover">
               Get started <Icon name="arrowRight" size={16} />
             </Link>
           </section>

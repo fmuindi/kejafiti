@@ -50,7 +50,7 @@ export default async function AdminReviewPage() {
         {(queue ?? []).length === 0 ? (
           <div className="mt-5"><EmptyState title="Nothing waiting for review" icon="check">Submitted listings appear here, oldest first.</EmptyState></div>
         ) : (
-          <div className="mt-5 overflow-x-auto rounded-[18px] border border-line bg-surface">
+          <div className="mt-5 overflow-x-auto rounded-[18px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Listings waiting for review (scrolls sideways)">
             <table className="w-full min-w-[720px] text-[14px]">
               <thead>
                 <tr className="border-b border-line text-left font-mono text-[12px] text-muted uppercase">
@@ -109,7 +109,7 @@ export default async function AdminReviewPage() {
             <div role="alert" className="mb-2 rounded-[16px] border-[1.5px] border-error bg-surface p-4 text-[14px]">
               <p className="font-semibold text-error">Messages need attention</p>
               <ul className="mt-1 list-disc pl-5">{deliveryIssues.map((i) => <li key={i}>{i}</li>)}</ul>
-              <Link href="/admin/deliveries" className="mt-2 inline-block font-semibold underline">Open deliveries</Link>
+              <Link href="/admin/deliveries" className="mt-1 inline-flex min-h-11 items-center font-semibold underline">Open deliveries</Link>
             </div>
           ) : null}
           {(fails ?? []).length === 0 ? (

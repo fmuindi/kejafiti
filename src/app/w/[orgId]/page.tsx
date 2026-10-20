@@ -221,7 +221,7 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
             <section aria-labelledby="today" className="flex flex-col gap-2">
               <div className="flex items-baseline justify-between">
                 <h2 id="today" className="font-display text-[18px] font-bold">Today&apos;s viewings</h2>
-                <Link href={`/w/${orgId}/viewings`} className="text-[14px] font-semibold text-primary">Agenda</Link>
+                <Link href={`/w/${orgId}/viewings`} className="inline-flex min-h-11 items-center text-[14px] font-semibold text-primary">Agenda</Link>
               </div>
               {todays.length ? (
                 <ul className="flex flex-col divide-y divide-divider rounded-[18px] border border-line bg-surface">

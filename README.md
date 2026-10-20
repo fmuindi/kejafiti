@@ -126,7 +126,7 @@ insert into public.app_settings (key, value) values ('admin_alert_email', 'you@e
 
 ## 3. Tests: what is proven
 
-Run `npm run test:db && npm test && npm run test:integration`. Last run: **122 + 15 + 6 passing**.
+Run `npm run test:db && npm test && npm run test:integration`. Last run: **210 + 36 + 6 passing**. The 20-improvement implementation and its verification are recorded in [docs/IMPLEMENTATION_HANDOFF.md](docs/IMPLEMENTATION_HANDOFF.md).
 
 From the blueprint's acceptance tests:
 

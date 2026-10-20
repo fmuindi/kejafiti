@@ -266,11 +266,13 @@ export function RecordPaymentForm(props: Props) {
     return save("draft");
   }
 
-  async function addFiles(list: FileList | null) {
-    if (!list?.length) return;
+  // Takes a copy: the input is cleared right after, which empties its live FileList, and
+  // this function awaits before uploading (IMP-20: receipts were silently dropped).
+  async function addFiles(files: File[]) {
+    if (!files.length) return;
     const target = await ensureEntry();
     if (!target) return;
-    for (const file of Array.from(list)) void uploadOne(file, target.id);
+    for (const file of files) void uploadOne(file, target.id);
   }
 
   async function uploadOne(file: File, entryId: string, key = newId()) {
@@ -562,8 +564,8 @@ export function RecordPaymentForm(props: Props) {
             Choose file
           </Button>
         </div>
-        <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="sr-only" tabIndex={-1} aria-hidden="true" aria-label="Take a photo of the receipt" onChange={(e) => { void addFiles(e.target.files); e.target.value = ""; }} />
-        <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" multiple className="sr-only" tabIndex={-1} aria-hidden="true" aria-label="Choose receipt files" onChange={(e) => { void addFiles(e.target.files); e.target.value = ""; }} />
+        <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="sr-only" tabIndex={-1} aria-hidden="true" aria-label="Take a photo of the receipt" onChange={(e) => { const files = Array.from(e.target.files ?? []); e.target.value = ""; void addFiles(files); }} />
+        <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" multiple className="sr-only" tabIndex={-1} aria-hidden="true" aria-label="Choose receipt files" onChange={(e) => { const files = Array.from(e.target.files ?? []); e.target.value = ""; void addFiles(files); }} />
         <p className="text-[12.5px] text-muted">JPG, PNG, HEIC or PDF, up to 15 MB. Files stay private. A photo is evidence supplied by staff; it is not proof of payment.</p>
         {errors.evidence ? <p className="text-[13.5px] font-semibold text-error">{errors.evidence}</p> : null}
       </section>

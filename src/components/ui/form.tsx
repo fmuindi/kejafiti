@@ -53,8 +53,9 @@ export function describedBy(id: string, opts: { error?: string; hint?: ReactNode
   return ids.length ? ids.join(" ") : undefined;
 }
 
+// focus-within: date and time inputs focus an inner segment, so :focus alone shows no ring.
 const inputBase =
-  "w-full min-h-[50px] rounded-[12px] border bg-surface px-3.5 text-[16px] text-ink placeholder:text-[#8c959b] focus:outline-none focus:ring-2 focus:ring-deep/40";
+  "w-full min-h-[50px] rounded-[12px] border bg-surface px-3.5 text-[16px] text-ink placeholder:text-[#8c959b] focus:outline-none focus:ring-2 focus:ring-deep/40 focus-within:ring-2 focus-within:ring-deep/40";
 
 export function TextInput({
   error,

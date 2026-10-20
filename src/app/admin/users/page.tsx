@@ -14,7 +14,7 @@ export default async function UsersPage() {
     <div className="flex flex-col gap-5">
       <h1 className="font-display text-[34px] font-bold tracking-[-1px]">Users & advertisers</h1>
       <p className="text-[14px] text-muted">Every account is listed. Admins can see workspaces and listings, but not tenants&apos; rent records or private conversations.</p>
-      <div className="overflow-x-auto rounded-[18px] border border-line bg-surface">
+      <div className="overflow-x-auto rounded-[18px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Users and advertisers (scrolls sideways)">
         <table className="w-full min-w-[620px] text-[14px]">
           <thead>
             <tr className="border-b border-line text-left font-mono text-[12px] text-muted uppercase">

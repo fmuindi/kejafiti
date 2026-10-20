@@ -22,7 +22,7 @@ export function ReportListing({ refId, signedIn }: { refId: string; signedIn: bo
 
   if (!signedIn) {
     return (
-      <Link href={`/sign-in?next=${encodeURIComponent(`/homes/${refId}`)}&reason=report`} className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink underline">
+      <Link href={`/sign-in?next=${encodeURIComponent(`/homes/${refId}`)}&reason=report`} className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-ink underline">
         <Icon name="flag" size={16} /> Report a problem with this listing
       </Link>
     );
