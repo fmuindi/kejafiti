@@ -1,3 +1,4 @@
+import { SignOutForm } from "@/components/auth/sign-out-form";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ActivityList } from "@/components/workspace/activity-list";
@@ -13,6 +14,7 @@ export const metadata: Metadata = { title: "Account" };
 
 export default async function AccountPage() {
   const user = await requireUser("/account");
+  const signedInUserId = user.id;
   const [profile, workspaces, isAdmin] = await Promise.all([getProfile(), getWorkspaces(), getIsPlatformAdmin()]);
   const supabase = await createClient();
   const { data: notes } = await supabase.from("notifications").select("id, title, body, link, read_at, created_at").eq("user_id", user.id).is("org_id", null).order("created_at", { ascending: false }).limit(20);
@@ -42,12 +44,12 @@ export default async function AccountPage() {
       </section>
       <section aria-labelledby="device" className="flex flex-col gap-2">
         <h2 id="device" className="font-display text-[18px] font-bold">This device</h2>
-        <ClearDeviceData />
-        <form action="/auth/sign-out" method="post">
+        <ClearDeviceData userId={user.id} />
+        <SignOutForm userId={signedInUserId}>
           <button type="submit" className="inline-flex min-h-11 items-center gap-2 rounded-[12px] border-[1.5px] border-ink px-4 font-semibold">
             <Icon name="logout" size={18} /> Sign out
           </button>
-        </form>
+        </SignOutForm>
       </section>
     </div>
   );

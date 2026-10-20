@@ -6,6 +6,7 @@ import { EmptyState, PageTitle, StatusBadge } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
 import { formatDayDate, formatTime, isoHoursAgo } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
+import { STAFF_LABEL, viewingRows } from "@/lib/viewings";
 
 export const metadata: Metadata = { title: "Viewings" };
 
@@ -16,15 +17,16 @@ export default async function AgendaPage({ params }: PageProps<"/w/[orgId]/viewi
   if (!ws.can_manage_listings) notFound();
   const supabase = await createClient();
   const { data } = await supabase
-    .from("viewings")
-    .select("id, status, requested_start, confirmed_start, conversation_id, listings(title, units(label)), properties(name)")
+    .from("viewing_states")
+    .select("id, status, state, requested_start, confirmed_start, conversation_id, listings(title, units(label)), properties(name)")
     .eq("org_id", orgId)
     .in("status", ["requested", "confirmed", "new_time_proposed"])
     .gte("requested_start", isoHoursAgo(24))
     .order("requested_start")
     .limit(100);
-  const days = new Map<string, NonNullable<typeof data>>();
-  for (const v of data ?? []) {
+  const rows = viewingRows(data);
+  const days = new Map<string, typeof rows>();
+  for (const v of rows) {
     const when = v.confirmed_start ?? v.requested_start;
     const key = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Nairobi" }).format(new Date(when));
     days.set(key, [...(days.get(key) ?? []), v]);
@@ -49,9 +51,9 @@ export default async function AgendaPage({ params }: PageProps<"/w/[orgId]/viewi
                         <Link href={v.conversation_id ? `/w/${orgId}/enquiries/${v.conversation_id}` : "#"} className="font-semibold hover:underline">Unit {l?.units?.label} · {(v.properties as unknown as { name: string } | null)?.name}</Link>
                         <span className="block truncate text-[13px] text-muted">{l?.title}</span>
                       </span>
-                      <StatusBadge tone={v.status === "confirmed" ? "success" : "waiting"}>{v.status === "confirmed" ? "Confirmed" : v.status === "requested" ? "Requested · reply needed" : "Waiting for tenant"}</StatusBadge>
+                      <StatusBadge tone={STAFF_LABEL[v.state]?.tone ?? "neutral"}>{STAFF_LABEL[v.state]?.label ?? v.state}</StatusBadge>
                     </div>
-                    {v.status === "requested" ? <ViewingResponse viewingId={v.id} /> : null}
+                    {v.state === "requested" || v.state === "expired" ? <ViewingResponse viewingId={v.id} expired={v.state === "expired"} /> : null}
                   </li>
                 );
               })}

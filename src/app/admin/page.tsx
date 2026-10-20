@@ -7,6 +7,7 @@ import { formatAmount } from "@/lib/money";
 import { timeAgo } from "@/lib/dates";
 import { ADVERTISER_ROLE_LABEL, PRICE_BASIS_LABEL } from "@/lib/listing/catalog";
 import { requirePlatformAdmin } from "@/lib/auth";
+import { emailProvider } from "@/lib/delivery";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Listing review" };
@@ -15,13 +16,21 @@ export default async function AdminReviewPage() {
   // Layouts and pages render in parallel, so every admin page checks for itself.
   await requirePlatformAdmin("/admin");
   const supabase = await createClient();
-  const [{ data: queue }, { data: counts }, { data: regs }, { data: orgs }, { data: fails }] = await Promise.all([
+  const [{ data: queue }, { data: counts }, { data: regs }, { data: orgs }, { data: fails }, { data: healthData }] = await Promise.all([
     supabase.rpc("admin_review_queue"),
     supabase.rpc("admin_queue_counts"),
     supabase.rpc("admin_recent_registrations", { p_limit: 6 }),
     supabase.rpc("admin_onboarding_queue"),
     supabase.from("delivery_tasks").select("id, template, channel, destination, last_error, status, updated_at").in("status", ["failed"]).order("updated_at", { ascending: false }).limit(5),
+    supabase.rpc("admin_delivery_health"),
   ]);
+  const h = (healthData ?? {}) as Record<string, number | null>;
+  const deliveryIssues = [
+    Number(h.overdue) ? `${h.overdue} overdue (oldest due ${h.oldest_due_minutes} min ago)` : null,
+    Number(h.held) ? `${h.held} held because they're older than ${h.max_age_hours} h` : null,
+    Number(h.stuck) ? `${h.stuck} stuck mid-send` : null,
+  ].filter(Boolean) as string[];
+  const provider = emailProvider();
   const c = (counts ?? {}) as Record<string, number>;
   const newOrgs = (orgs ?? []).filter((o) => o.onboarding_status === "new").slice(0, 4);
 
@@ -92,9 +101,19 @@ export default async function AdminReviewPage() {
           </ul>
         </section>
         <section aria-labelledby="fail">
-          <h2 id="fail" className="mb-2 font-display text-[20px] font-bold">Delivery failures</h2>
+          <h2 id="fail" className="mb-2 font-display text-[20px] font-bold">Deliveries</h2>
+          {!provider ? (
+            <p className="mb-2 rounded-[16px] border border-line bg-surface p-4 text-[14px]"><strong>Email is switched off.</strong> Messages stay queued until a provider is configured. <Link href="/admin/deliveries" className="font-semibold underline">Details</Link></p>
+          ) : null}
+          {deliveryIssues.length ? (
+            <div role="alert" className="mb-2 rounded-[16px] border-[1.5px] border-error bg-surface p-4 text-[14px]">
+              <p className="font-semibold text-error">Messages need attention</p>
+              <ul className="mt-1 list-disc pl-5">{deliveryIssues.map((i) => <li key={i}>{i}</li>)}</ul>
+              <Link href="/admin/deliveries" className="mt-2 inline-block font-semibold underline">Open deliveries</Link>
+            </div>
+          ) : null}
           {(fails ?? []).length === 0 ? (
-            <p className="rounded-[16px] border border-dashed border-line bg-surface p-4 text-[14px] text-muted">No failed deliveries. {c.delivery_queued ? `${c.delivery_queued} queued.` : ""}</p>
+            <p className="rounded-[16px] border border-dashed border-line bg-surface p-4 text-[14px] text-muted">No failed deliveries.{deliveryIssues.length ? "" : ` ${Number(h.due ?? 0) + Number(h.scheduled ?? 0)} waiting to send, none overdue.`}</p>
           ) : (
             <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
               {(fails ?? []).map((f) => (

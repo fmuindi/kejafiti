@@ -293,14 +293,14 @@ isOneToOne: false
                   ]
                 },"delivery_tasks": {
                   Row: {
-                    "attempts": number,"channel": string,"created_at": string,"destination": string,"event_key": string,"id": string,"last_error": string | null,"next_attempt_at": string,"org_id": string | null,"payload": NonNullable<Json>,"provider_ref": string | null,"status": string,"template": string,"updated_at": string
+                    "attempts": number,"channel": string,"created_at": string,"destination": string,"event_key": string,"id": string,"last_error": string | null,"next_attempt_at": string,"org_id": string | null,"payload": NonNullable<Json>,"provider_ref": string | null,"released_at": string | null,"released_by": string | null,"status": string,"template": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "attempts"?: number,"channel": string,"created_at"?: string,"destination": string,"event_key": string,"id"?: string,"last_error"?: string | null,"next_attempt_at"?: string,"org_id"?: string | null,"payload"?: NonNullable<Json>,"provider_ref"?: string | null,"status"?: string,"template": string,"updated_at"?: string
+                    "attempts"?: number,"channel": string,"created_at"?: string,"destination": string,"event_key": string,"id"?: string,"last_error"?: string | null,"next_attempt_at"?: string,"org_id"?: string | null,"payload"?: NonNullable<Json>,"provider_ref"?: string | null,"released_at"?: string | null,"released_by"?: string | null,"status"?: string,"template": string,"updated_at"?: string
                   }
                   Update: {
-                    "attempts"?: number,"channel"?: string,"created_at"?: string,"destination"?: string,"event_key"?: string,"id"?: string,"last_error"?: string | null,"next_attempt_at"?: string,"org_id"?: string | null,"payload"?: NonNullable<Json>,"provider_ref"?: string | null,"status"?: string,"template"?: string,"updated_at"?: string
+                    "attempts"?: number,"channel"?: string,"created_at"?: string,"destination"?: string,"event_key"?: string,"id"?: string,"last_error"?: string | null,"next_attempt_at"?: string,"org_id"?: string | null,"payload"?: NonNullable<Json>,"provider_ref"?: string | null,"released_at"?: string | null,"released_by"?: string | null,"status"?: string,"template"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -308,6 +308,12 @@ isOneToOne: false
       columns: ["org_id"]
 isOneToOne: false
       referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "delivery_tasks_released_by_fkey"
+      columns: ["released_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
       referencedColumns: ["id"]
     }
                   ]
@@ -1068,7 +1074,57 @@ isOneToOne: false
                 }
           }
           Views: {
-            [_ in never]: never
+            "viewing_states": {
+                  Row: {
+                    "cancel_reason": string | null,"cancelled_by_side": string | null,"client_ref": string | null,"confirmed_start": string | null,"conversation_id": string | null,"created_at": string | null,"decline_reason": string | null,"id": string | null,"listing_id": string | null,"meeting_instructions": string | null,"org_id": string | null,"property_id": string | null,"proposed_start": string | null,"requested_start": string | null,"state": string | null,"status": string | null,"tenant_id": string | null,"tenant_note": string | null,"updated_at": string | null,"updated_by": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "cancel_reason"?: string | null,"cancelled_by_side"?: string | null,"client_ref"?: string | null,"confirmed_start"?: string | null,"conversation_id"?: string | null,"created_at"?: string | null,"decline_reason"?: string | null,"id"?: string | null,"listing_id"?: string | null,"meeting_instructions"?: string | null,"org_id"?: string | null,"property_id"?: string | null,"proposed_start"?: string | null,"requested_start"?: string | null,"state"?: never,"status"?: string | null,"tenant_id"?: string | null,"tenant_note"?: string | null,"updated_at"?: string | null,"updated_by"?: string | null
+                         }
+                        Update: {
+                           "cancel_reason"?: string | null,"cancelled_by_side"?: string | null,"client_ref"?: string | null,"confirmed_start"?: string | null,"conversation_id"?: string | null,"created_at"?: string | null,"decline_reason"?: string | null,"id"?: string | null,"listing_id"?: string | null,"meeting_instructions"?: string | null,"org_id"?: string | null,"property_id"?: string | null,"proposed_start"?: string | null,"requested_start"?: string | null,"state"?: never,"status"?: string | null,"tenant_id"?: string | null,"tenant_note"?: string | null,"updated_at"?: string | null,"updated_by"?: string | null
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "viewings_conversation_id_fkey"
+      columns: ["conversation_id"]
+isOneToOne: false
+      referencedRelation: "conversations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "viewings_listing_id_fkey"
+      columns: ["listing_id"]
+isOneToOne: false
+      referencedRelation: "listings"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "viewings_org_id_fkey"
+      columns: ["org_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "viewings_property_id_fkey"
+      columns: ["property_id"]
+isOneToOne: false
+      referencedRelation: "properties"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "viewings_tenant_id_fkey"
+      columns: ["tenant_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "viewings_updated_by_fkey"
+      columns: ["updated_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                }
           }
           Functions: {
             "accept_invitation":
@@ -1076,6 +1132,17 @@ isOneToOne: false
                            },
 "adjust_charge":
 { Args: { "p_charge": string,"p_reason": string,"p_reduce_by": number }; Returns: undefined
+                           },
+"admin_cancel_delivery":
+{ Args: { "p_task": string }; Returns: undefined
+                           },
+"admin_delivery_health":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"admin_delivery_tasks":
+{ Args: { "p_limit"?: number }; Returns: {
+              "attempts": number,"channel": string,"created_at": string,"destination_masked": string,"id": string,"last_error": string,"next_attempt_at": string,"released_at": string,"state": string,"status": string,"template": string,"updated_at": string
+            }[]
                            },
 "admin_onboarding_queue":
 { Args: Record<PropertyKey, never>; Returns: {
@@ -1140,6 +1207,8 @@ isOneToOne: false
 "org_id": string | null,
 "payload": NonNullable<Json>,
 "provider_ref": string | null,
+"released_at": string | null,
+"released_by": string | null,
 "status": string,
 "template": string,
 "updated_at": string
@@ -1203,7 +1272,17 @@ isOneToOne: false
                            },
 "my_conversations":
 { Args: { "p_org"?: string }; Returns: {
-              "area": string,"assigned_membership_id": string,"follow_up": string,"id": string,"last_message": string,"last_message_at": string,"last_side": string,"listing_ref": string,"listing_status": string,"listing_title": string,"needs_reply": boolean,"org_name": string,"property_id": string,"tenant_name": string,"unit_label": string,"unread": number
+              "advertiser_role": string,"area": string,"assigned_membership_id": string,"follow_up": string,"id": string,"last_message": string,"last_message_at": string,"last_side": string,"listing_ref": string,"listing_status": string,"listing_title": string,"needs_reply": boolean,"org_name": string,"property_id": string,"tenant_name": string,"unit_label": string,"unread": number
+            }[]
+                           },
+"my_saved_listings":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "area": string,"let_on": string,"listing_id": string,"ref": string,"saved_at": string,"status": string,"title": string
+            }[]
+                           },
+"my_viewings":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "area": string,"cancel_reason": string,"confirmed_start": string,"conversation_id": string,"decline_reason": string,"id": string,"let_on": string,"listing_ref": string,"listing_status": string,"listing_title": string,"meeting_instructions": string,"org_name": string,"proposed_start": string,"requested_start": string,"state": string,"status": string
             }[]
                            },
 "my_workspaces":

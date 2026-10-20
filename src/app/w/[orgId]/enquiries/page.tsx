@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ViewingResponse } from "@/components/messaging/viewing-response";
-import { Avatar, EmptyState, PageTitle, cx } from "@/components/ui/primitives";
+import { Avatar, EmptyState, PageTitle, StatusBadge, cx } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
 import { formatAppointment, timeAgo } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
+import { STAFF_LABEL, viewingRows } from "@/lib/viewings";
 
 export const metadata: Metadata = { title: "Enquiries" };
 
@@ -18,11 +19,12 @@ export default async function EnquiriesPage({ params, searchParams }: PageProps<
   if (!ws.can_manage_listings) notFound();
   const tab = sp.tab === "viewings" ? "viewings" : sp.tab === "all" ? "all" : "reply";
   const supabase = await createClient();
-  const [{ data: convs }, { data: requests }, { data: members }] = await Promise.all([
+  const [{ data: convs }, { data: requestData }, { data: members }] = await Promise.all([
     supabase.rpc("my_conversations", { p_org: orgId }),
-    supabase.from("viewings").select("id, status, requested_start, proposed_start, tenant_note, created_at, tenant_id, listing_id, listings(ref, title, units(label))").eq("org_id", orgId).in("status", ["requested", "new_time_proposed"]).order("requested_start"),
+    supabase.from("viewing_states").select("id, status, state, requested_start, proposed_start, tenant_note, created_at, tenant_id, listing_id, listings(ref, title, units(label))").eq("org_id", orgId).in("status", ["requested", "new_time_proposed"]).order("requested_start"),
     supabase.from("memberships").select("id, display_name, user_id").eq("org_id", orgId).eq("status", "active"),
   ]);
+  const requests = viewingRows(requestData);
   const rows = (convs ?? []).filter((c) => (tab === "reply" ? c.needs_reply && c.follow_up !== "closed" : tab === "all" ? true : false));
   const grouped = new Map<string, typeof rows>();
   for (const r of rows) grouped.set(`${r.area} · ${r.listing_title ?? ""}`, [...(grouped.get(`${r.area} · ${r.listing_title ?? ""}`) ?? []), r]);
@@ -55,10 +57,10 @@ export default async function EnquiriesPage({ params, searchParams }: PageProps<
                   </p>
                   <p className="font-semibold">{l?.title}</p>
                   <p className="text-[15px]">
-                    {v.status === "new_time_proposed" ? <>You proposed <strong>{formatAppointment(v.proposed_start as string)}</strong>; waiting for the tenant.</> : <>Wants to view on <strong>{formatAppointment(v.requested_start)}</strong> EAT</>}
+                    {v.state === "expired" ? <><StatusBadge tone="error">{STAFF_LABEL.expired.label}</StatusBadge>{" "}{v.status === "new_time_proposed" ? "Your suggested time" : "The requested time"} <strong>{formatAppointment((v.proposed_start ?? v.requested_start) as string)}</strong> passed without confirmation.</> : v.status === "new_time_proposed" ? <>You proposed <strong>{formatAppointment(v.proposed_start as string)}</strong>; waiting for the tenant.</> : <>Wants to view on <strong>{formatAppointment(v.requested_start)}</strong> EAT</>}
                   </p>
                   {v.tenant_note ? <p className="text-[14px] text-muted">&quot;{v.tenant_note}&quot;</p> : null}
-                  {v.status === "requested" ? <ViewingResponse viewingId={v.id} /> : null}
+                  {v.state === "requested" || v.state === "expired" ? <ViewingResponse viewingId={v.id} expired={v.state === "expired"} /> : null}
                 </li>
               );
             })}

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePlatformAdmin } from "@/lib/auth";
-import { kickDelivery } from "@/lib/delivery";
+import { kickDelivery, processDeliveries } from "@/lib/delivery";
 import { fail, type ActionResult } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/server";
 
@@ -49,4 +49,25 @@ export async function retryDelivery(taskId: string): Promise<ActionResult> {
   await kickDelivery();
   revalidatePath("/admin", "layout");
   return { ok: true };
+}
+
+export async function cancelDelivery(taskId: string): Promise<ActionResult> {
+  await requirePlatformAdmin("/admin/deliveries");
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("admin_cancel_delivery", { p_task: taskId });
+  if (error) return fail(error);
+  revalidatePath("/admin", "layout");
+  return { ok: true };
+}
+
+/** Runs one worker pass now: due tasks only. Held (old) tasks need an explicit Send. */
+export async function processDueDeliveries(): Promise<ActionResult<{ summary: string }>> {
+  await requirePlatformAdmin("/admin/deliveries");
+  try {
+    const r = await processDeliveries(25);
+    revalidatePath("/admin", "layout");
+    return { ok: true, data: { summary: r.skipped ?? `${r.claimed} picked up · ${r.sent} handed to the provider · ${r.failed} not sent` } };
+  } catch {
+    return { ok: false, message: "The delivery worker couldn't run. Check the server logs." };
+  }
 }

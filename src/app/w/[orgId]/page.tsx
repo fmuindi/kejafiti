@@ -9,6 +9,7 @@ import { formatMoney } from "@/lib/money";
 import { getSummary } from "@/lib/rent/queries";
 import { formatRate } from "@/lib/rent/status";
 import { createClient } from "@/lib/supabase/server";
+import { STAFF_ACTION_STATES, viewingRows } from "@/lib/viewings";
 
 export const metadata: Metadata = { title: "Overview" };
 
@@ -31,7 +32,7 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
       ? supabase.from("conversations").select("id, last_tenant_message_at, last_advertiser_message_at, follow_up, property_id, properties(name)").eq("org_id", orgId).neq("follow_up", "closed").order("last_tenant_message_at", { ascending: true }).limit(100)
       : Promise.resolve({ data: [] }),
     ws.can_manage_listings
-      ? supabase.from("viewings").select("id, status, requested_start, confirmed_start, listing_id, listings(ref, units(label)), properties(name)").eq("org_id", orgId).in("status", ["requested", "confirmed"]).order("requested_start").limit(50)
+      ? supabase.from("viewing_states").select("id, status, state, requested_start, confirmed_start, listing_id, listings(ref, units(label)), properties(name)").eq("org_id", orgId).in("status", ["requested", "new_time_proposed", "confirmed"]).order("requested_start").limit(50)
       : Promise.resolve({ data: [] }),
     ws.can_manage_listings
       ? supabase.from("listings").select("id, ref, status, availability_confirmed_at, units(label, layout), properties(name)").eq("org_id", orgId).in("status", ["published", "draft", "needs_correction", "under_review"]).limit(100)
@@ -44,8 +45,10 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
 
   const unanswered = (convs.data ?? []).filter((c) => c.last_tenant_message_at && (!c.last_advertiser_message_at || c.last_advertiser_message_at < c.last_tenant_message_at));
   const oldest = unanswered[0];
-  const requests = (viewings.data ?? []).filter((v) => v.status === "requested");
-  const todays = (viewings.data ?? []).filter((v) => v.status === "confirmed" && v.confirmed_start && new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Nairobi" }).format(new Date(v.confirmed_start)) === today);
+  // Includes requests whose time passed unanswered: they still need a new time or a decline.
+  const viewingList = viewingRows(viewings.data as Exclude<typeof viewings.data, never[]>);
+  const requests = viewingList.filter((v) => STAFF_ACTION_STATES.includes(v.state));
+  const todays = viewingList.filter((v) => v.status === "confirmed" && v.confirmed_start && new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Nairobi" }).format(new Date(v.confirmed_start)) === today);
   const stale = (listings.data ?? []).filter((l) => l.status === "published" && (daysSince(l.availability_confirmed_at) ?? 99) > 10);
   const drafts = (listings.data ?? []).filter((l) => l.status === "draft" || l.status === "needs_correction");
   const pendingTotal = (pending.data ?? []).reduce((s, e) => s + Number(e.amount), 0);

@@ -10,6 +10,7 @@ import { getSessionUser, requireWorkspace } from "@/lib/auth";
 import { formatAppointment } from "@/lib/dates";
 import { formatAmount } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
+import { STAFF_LABEL, viewingRow } from "@/lib/viewings";
 
 export const metadata: Metadata = { title: "Enquiry" };
 
@@ -26,12 +27,13 @@ export default async function EnquiryPage({ params }: PageProps<"/w/[orgId]/enqu
   const supabase = await createClient();
   const { data: c } = await supabase.from("conversations").select("id, org_id, follow_up, assigned_membership_id, tenant_id, listing_id, listings(ref, title, rent_amount, status, units(label))").eq("id", conversationId).eq("org_id", orgId).maybeSingle();
   if (!c) notFound();
-  const [{ data: msgs }, { data: tenant }, { data: viewing }, { data: members }] = await Promise.all([
+  const [{ data: msgs }, { data: tenant }, { data: viewingData }, { data: members }] = await Promise.all([
     supabase.from("messages").select("id, body, sender_side, sender_id, created_at").eq("conversation_id", conversationId).order("created_at"),
     supabase.from("profiles").select("full_name").eq("id", c.tenant_id).maybeSingle(),
-    supabase.from("viewings").select("id, status, requested_start, proposed_start, confirmed_start").eq("conversation_id", conversationId).in("status", ["requested", "new_time_proposed", "confirmed"]).maybeSingle(),
+    supabase.from("viewing_states").select("id, status, state, requested_start, proposed_start, confirmed_start").eq("conversation_id", conversationId).in("status", ["requested", "new_time_proposed", "confirmed"]).maybeSingle(),
     ws.role === "owner" || ws.role === "agency_admin" ? supabase.from("memberships").select("id, display_name").eq("org_id", orgId).eq("status", "active") : Promise.resolve({ data: [] }),
   ]);
+  const viewing = viewingRow(viewingData);
   const l = c.listings as unknown as { ref: string; title: string | null; rent_amount: number | null; status: string; units: { label: string } | null };
   // Messages from any team member show on the advertiser side of the thread.
   const messages: ThreadMessage[] = (msgs ?? []).map((m) => ({ id: m.id, body: m.body, side: m.sender_side as ThreadMessage["side"], created_at: m.created_at, mine: m.sender_side === "advertiser" || m.sender_id === user?.id }));
@@ -50,14 +52,14 @@ export default async function EnquiryPage({ params }: PageProps<"/w/[orgId]/enqu
         <div className="flex flex-col gap-3 rounded-[16px] border border-line bg-surface p-4">
           <div className="flex items-center justify-between gap-3">
             <span className="font-semibold">Viewing · {formatAppointment(viewing.confirmed_start ?? viewing.proposed_start ?? viewing.requested_start)} EAT</span>
-            <StatusBadge tone={viewing.status === "confirmed" ? "success" : "waiting"}>{viewing.status === "confirmed" ? "Confirmed" : viewing.status === "new_time_proposed" ? "Waiting for tenant" : "Requested · reply needed"}</StatusBadge>
+            <StatusBadge tone={STAFF_LABEL[viewing.state]?.tone ?? "neutral"}>{STAFF_LABEL[viewing.state]?.label ?? viewing.state}</StatusBadge>
           </div>
-          {viewing.status === "requested" ? <ViewingResponse viewingId={viewing.id} /> : null}
+          {viewing.state === "requested" || viewing.state === "expired" ? <ViewingResponse viewingId={viewing.id} expired={viewing.state === "expired"} /> : null}
           {viewing.status === "confirmed" ? <ViewingResponse viewingId={viewing.id} confirmed /> : null}
         </div>
       ) : null}
       <p className="text-[12.5px] text-muted">You&apos;re replying as {ws.org_name}. Calls or WhatsApp chats outside nyumbani won&apos;t appear here.</p>
-      <Thread conversationId={conversationId} messages={messages} quickReplies={QUICK} />
+      <Thread userId={user?.id ?? ""} conversationId={conversationId} messages={messages} quickReplies={QUICK} />
     </div>
   );
 }

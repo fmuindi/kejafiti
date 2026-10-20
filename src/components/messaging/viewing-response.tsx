@@ -6,7 +6,8 @@ import { respondViewing } from "@/lib/messaging-actions";
 import { TextInput } from "@/components/ui/form";
 import { Button, Notice } from "@/components/ui/primitives";
 
-export function ViewingResponse({ viewingId, confirmed = false }: { viewingId: string; confirmed?: boolean }) {
+/** `expired`: the requested time has passed, so the advertiser can only suggest another time or decline. */
+export function ViewingResponse({ viewingId, confirmed = false, expired = false }: { viewingId: string; confirmed?: boolean; expired?: boolean }) {
   const router = useRouter();
   const [mode, setMode] = useState<null | "propose" | "decline" | "cancel">(null);
   const [time, setTime] = useState("");
@@ -48,9 +49,10 @@ export function ViewingResponse({ viewingId, confirmed = false }: { viewingId: s
       {conflict ? (
         <Notice tone="waiting" role="alert" title="Possible clash" action={<Button size="sm" variant="dark" pending={pending} onClick={() => run("accept", true)}>Accept anyway</Button>}>{conflict}</Notice>
       ) : null}
-      <div className="grid grid-cols-3 gap-2">
-        <Button pending={pending && !mode} onClick={() => run("accept")}>Accept</Button>
-        <Button variant="secondary" onClick={() => setMode(mode === "propose" ? null : "propose")}>Other time</Button>
+      {expired ? <p className="text-[14px] text-muted">The requested time has passed, so it can&apos;t be accepted.</p> : null}
+      <div className={expired ? "grid grid-cols-2 gap-2" : "grid grid-cols-3 gap-2"}>
+        {expired ? null : <Button pending={pending && !mode} onClick={() => run("accept")}>Accept</Button>}
+        <Button variant={expired ? "primary" : "secondary"} onClick={() => setMode(mode === "propose" ? null : "propose")}>{expired ? "Suggest another time" : "Other time"}</Button>
         <Button variant="secondary" onClick={() => setMode(mode === "decline" ? null : "decline")}>Decline</Button>
       </div>
       {mode === "propose" ? (

@@ -8,7 +8,8 @@ const QUEUES = [
   { href: "/admin/onboarding", label: "Landlord onboarding", key: "onboarding" },
   { href: "/admin", label: "Listing review", key: "listing_review", exact: true },
   { href: "/admin/reports", label: "Listing reports", key: "listing_reports" },
-  { href: "/admin/deliveries", label: "Delivery failures", key: "delivery_failures" },
+  // Failed, overdue, held or stuck: needs attention even when nothing has "failed".
+  { href: "/admin/deliveries", label: "Deliveries", key: "delivery_attention" },
 ];
 const RECORDS = [
   { href: "/admin/users", label: "Users & advertisers" },

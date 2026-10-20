@@ -1,13 +1,15 @@
+import { SignOutForm } from "@/components/auth/sign-out-form";
 import Link from "next/link";
 import { BottomTabs, SidebarLinks, type NavItem } from "@/components/shell/nav-link";
 import { Icon, Logo } from "@/components/ui/icon";
-import { getWorkspaces, isOrgAdmin, requireWorkspace } from "@/lib/auth";
+import { getWorkspaces, isOrgAdmin, requireUser, requireWorkspace } from "@/lib/auth";
 import { ROLE_LABEL } from "@/lib/rent/status";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function WorkspaceLayout({ children, params }: LayoutProps<"/w/[orgId]">) {
   const { orgId } = await params;
   const ws = await requireWorkspace(orgId, `/w/${orgId}`);
+  const signedInUserId = (await requireUser(`/w/${orgId}`)).id;
   const all = await getWorkspaces();
   const supabase = await createClient();
   const base = `/w/${orgId}`;
@@ -83,11 +85,11 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
           <Link href="/" className="flex min-h-11 items-center gap-2 rounded-[12px] px-3 hover:bg-surface">
             <Icon name="swap" size={18} /> Switch to tenant
           </Link>
-          <form action="/auth/sign-out" method="post">
+          <SignOutForm userId={signedInUserId}>
             <button type="submit" className="flex min-h-11 w-full items-center gap-2 rounded-[12px] px-3 hover:bg-surface">
               <Icon name="logout" size={18} /> Sign out
             </button>
-          </form>
+          </SignOutForm>
           <p className="px-3 pt-2 text-[12px] leading-snug text-muted">
             Tenants pay through each property&apos;s own arrangements. Figures here are records your staff entered and confirmed.
           </p>
