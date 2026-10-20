@@ -293,14 +293,14 @@ isOneToOne: false
                   ]
                 },"delivery_tasks": {
                   Row: {
-                    "attempts": number,"channel": string,"created_at": string,"destination": string,"event_key": string,"id": string,"last_error": string | null,"next_attempt_at": string,"org_id": string | null,"payload": NonNullable<Json>,"provider_ref": string | null,"status": string,"template": string,"updated_at": string
+                    "attempts": number,"channel": string,"created_at": string,"destination": string,"event_key": string,"id": string,"last_error": string | null,"next_attempt_at": string,"org_id": string | null,"payload": NonNullable<Json>,"provider_ref": string | null,"released_at": string | null,"released_by": string | null,"status": string,"template": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "attempts"?: number,"channel": string,"created_at"?: string,"destination": string,"event_key": string,"id"?: string,"last_error"?: string | null,"next_attempt_at"?: string,"org_id"?: string | null,"payload"?: NonNullable<Json>,"provider_ref"?: string | null,"status"?: string,"template": string,"updated_at"?: string
+                    "attempts"?: number,"channel": string,"created_at"?: string,"destination": string,"event_key": string,"id"?: string,"last_error"?: string | null,"next_attempt_at"?: string,"org_id"?: string | null,"payload"?: NonNullable<Json>,"provider_ref"?: string | null,"released_at"?: string | null,"released_by"?: string | null,"status"?: string,"template": string,"updated_at"?: string
                   }
                   Update: {
-                    "attempts"?: number,"channel"?: string,"created_at"?: string,"destination"?: string,"event_key"?: string,"id"?: string,"last_error"?: string | null,"next_attempt_at"?: string,"org_id"?: string | null,"payload"?: NonNullable<Json>,"provider_ref"?: string | null,"status"?: string,"template"?: string,"updated_at"?: string
+                    "attempts"?: number,"channel"?: string,"created_at"?: string,"destination"?: string,"event_key"?: string,"id"?: string,"last_error"?: string | null,"next_attempt_at"?: string,"org_id"?: string | null,"payload"?: NonNullable<Json>,"provider_ref"?: string | null,"released_at"?: string | null,"released_by"?: string | null,"status"?: string,"template"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -308,6 +308,12 @@ isOneToOne: false
       columns: ["org_id"]
 isOneToOne: false
       referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "delivery_tasks_released_by_fkey"
+      columns: ["released_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
       referencedColumns: ["id"]
     }
                   ]
@@ -1127,6 +1133,17 @@ isOneToOne: false
 "adjust_charge":
 { Args: { "p_charge": string,"p_reason": string,"p_reduce_by": number }; Returns: undefined
                            },
+"admin_cancel_delivery":
+{ Args: { "p_task": string }; Returns: undefined
+                           },
+"admin_delivery_health":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"admin_delivery_tasks":
+{ Args: { "p_limit"?: number }; Returns: {
+              "attempts": number,"channel": string,"created_at": string,"destination_masked": string,"id": string,"last_error": string,"next_attempt_at": string,"released_at": string,"state": string,"status": string,"template": string,"updated_at": string
+            }[]
+                           },
 "admin_onboarding_queue":
 { Args: Record<PropertyKey, never>; Returns: {
               "advertiser_role": string,"assignee_id": string,"assignee_name": string,"authority_checked_at": string,"created_at": string,"identity_checked_at": string,"kind": string,"listing_count": number,"name": string,"onboarding_note": string,"onboarding_status": string,"org_id": string,"owner_email": string,"owner_name": string,"owner_phone": string,"property_count": number
@@ -1190,6 +1207,8 @@ isOneToOne: false
 "org_id": string | null,
 "payload": NonNullable<Json>,
 "provider_ref": string | null,
+"released_at": string | null,
+"released_by": string | null,
 "status": string,
 "template": string,
 "updated_at": string

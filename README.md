@@ -103,7 +103,8 @@ insert into public.app_settings (key, value) values ('admin_alert_email', 'you@e
 | `NEXT_PUBLIC_SITE_URL` | server | Base URL for invitation links |
 | `SUPABASE_SECRET_KEY` (or `SUPABASE_SERVICE_ROLE_KEY`) | **server only** | Used only by the delivery worker (`src/lib/delivery.ts`). Never expose it. |
 | `CRON_SECRET` | server | Bearer token required by `/api/jobs/deliver` |
-| `RESEND_API_KEY`, `EMAIL_FROM` | server | Optional outbound email. Without them, tasks stay queued and invitations show a copyable link. |
+| `MAILPIT_URL` | server | Local development only. When set, outbound email goes to the local Mailpit inbox instead of a provider, so nobody real is emailed. Leave empty in production. |
+| `RESEND_API_KEY`, `EMAIL_FROM` | server | Outbound email when `MAILPIT_URL` is empty. `EMAIL_FROM` must be on a domain verified with Resend. Without a provider, tasks stay queued (shown as "Email is switched off") and invitations show a copyable link. |
 | `GOOGLE_MAPS_API_KEY` | **server only** | Optional. Google Places API (New) suggestions in the Explore search box and the listing wizard's location step, proxied through `/api/places/*`. Without it, those fields are plain text. |
 | `NEXT_PUBLIC_PHONE_AUTH_ENABLED` | browser | `true` only after an SMS provider is configured in Supabase Auth |
 
@@ -173,6 +174,10 @@ preview), confirmation inbox, entry history and reversal, overview and dashboard
 3. **Delivery worker**: call `POST /api/jobs/deliver` with `Authorization: Bearer $CRON_SECRET` every 2–5 minutes
    (Vercel Cron, an external cron, or `pg_cron` + `pg_net`). Server actions also trigger a best-effort send right
    away when email is configured.
+   Admin → Deliveries shows queue health: due, overdue (due for longer than `delivery_expected_delay_minutes`,
+   default 15), stuck, failed and held. Messages older than `delivery_max_age_hours` (default 48) are held instead
+   of sent automatically, so enabling a provider never replays an old backlog; an admin sends or cancels each one.
+   Both settings are rows in `app_settings`.
 4. **Backups**: Supabase database backups don't include Storage files. Schedule a separate copy of the
    `private-docs` and `listing-media` buckets (S3 is a good fit) and test a restore.
 
