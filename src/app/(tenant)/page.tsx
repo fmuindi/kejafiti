@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Icon, Logo } from "@/components/ui/icon";
+import { Icon } from "@/components/ui/icon";
 import { RecentSearches } from "@/components/tenant/recent-searches";
 import { WhereInput } from "@/components/tenant/where-input";
 import { CATEGORIES, HOME_TYPES } from "@/lib/listing/catalog";
@@ -8,17 +8,6 @@ import { PLACES_ENABLED } from "@/lib/places";
 export default function ExplorePage() {
   return (
     <div className="mx-auto max-w-[1100px] px-4 pt-4 pb-10 md:px-6 md:pt-14">
-      <div className="mb-6 flex items-center justify-between md:hidden">
-        <Logo />
-        <Link
-          href="/account"
-          aria-label="Account and notifications"
-          className="grid size-11 place-items-center rounded-full border border-line bg-surface"
-        >
-          <Icon name="bell" />
-        </Link>
-      </div>
-
       <div className="md:grid md:grid-cols-[1.1fr_1fr] md:items-start md:gap-14">
         <section aria-labelledby="hero">
           <h1

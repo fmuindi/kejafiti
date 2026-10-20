@@ -93,8 +93,14 @@ export async function setFollowUp(conversationId: string, stage: "new" | "contac
   return { ok: true };
 }
 
-export async function markNotificationsRead(ids: string[]) {
+/** "Mark all as read": everything for this user, or one workspace's updates plus personal ones. */
+export async function markAllUpdatesRead(orgId?: string) {
   const supabase = await createClient();
-  await supabase.from("notifications").update({ read_at: new Date().toISOString() }).in("id", ids).is("read_at", null);
+  const { data: claims } = await supabase.auth.getClaims();
+  const uid = claims?.claims?.sub;
+  if (!uid) return;
+  let q = supabase.from("notifications").update({ read_at: new Date().toISOString() }).eq("user_id", uid).is("read_at", null);
+  if (orgId) q = q.or(`org_id.eq.${orgId},org_id.is.null`);
+  await q;
   revalidatePath("/", "layout");
 }

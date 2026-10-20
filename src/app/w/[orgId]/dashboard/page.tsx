@@ -168,7 +168,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
                     const st = RENT_STATUS[r.rent_status];
                     return (
                       <li key={`${r.unit_id}-${r.tenancy_id}`}>
-                        <Link href={`/w/${orgId}/rent/${propertyId}/units/${r.unit_id}`} className={cx("flex min-h-[64px] flex-col justify-between rounded-[12px] p-2.5", TILE[st.tone])}>
+                        <Link href={`/w/${orgId}/rent/${propertyId}/units/${r.unit_id}?period=${periodParam(period)}`} className={cx("flex min-h-[64px] flex-col justify-between rounded-[12px] p-2.5", TILE[st.tone])}>
                           <span className="font-mono text-[13px] font-medium">{r.unit_label}</span>
                           <span className="text-[12.5px] font-semibold">{st.label}{r.pending_count ? " + pending" : ""}</span>
                         </Link>
