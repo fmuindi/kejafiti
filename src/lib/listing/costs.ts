@@ -148,7 +148,11 @@ export function cardPrice(row: {
     headline: `KES ${formatAmount(row.fixed_monthly_total)}${unconfirmed.length ? "+" : ""}`,
     headlineUnit: "/ month",
     lines: [
-      extras > 0 ? `Rent ${formatAmount(row.rent_amount)} + ${formatAmount(extras)} fixed charges` : "Rent only, no fixed charges",
+      extras > 0
+        ? `Rent ${formatAmount(row.rent_amount)} + ${formatAmount(extras)} fixed charges${unconfirmed.length ? " + charges not yet confirmed" : ""}`
+        : unconfirmed.length
+          ? `Rent ${formatAmount(row.rent_amount)} + charges not yet confirmed`
+          : "Rent only, no fixed charges",
       row.move_in_total !== null ? `KES ${formatAmount(row.move_in_total)}${row.totals_complete ? "" : "+"} to move in` : "",
       ...metered,
     ].filter(Boolean),

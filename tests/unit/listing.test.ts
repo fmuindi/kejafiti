@@ -74,6 +74,7 @@ describe("card and detail use one cost definition (IMP-11)", () => {
     const p = cardPrice({ ...l4001, fixed_monthly_total: 14000, move_in_total: 28000, totals_complete: false, charges: [unknownService] });
     expect(p.headline).toBe("KES 14,000+");
     expect(p.warning).toBe("Total incomplete: service charge not confirmed");
+    expect(p.lines[0]).toBe("Rent 14,000 + charges not yet confirmed");
   });
   it("a home priced per night is never given a monthly or move-in total", () => {
     const c = computeCosts({ rent: 1500, depositAmount: 0, charges: [service], pricePeriod: "night" });
