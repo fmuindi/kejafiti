@@ -59,7 +59,7 @@ export default async function EnquiryPage({ params }: PageProps<"/w/[orgId]/enqu
         </div>
       ) : null}
       <p className="text-[12.5px] text-muted">You&apos;re replying as {ws.org_name}. Calls or WhatsApp chats outside nyumbani won&apos;t appear here.</p>
-      <Thread conversationId={conversationId} messages={messages} quickReplies={QUICK} />
+      <Thread userId={user?.id ?? ""} conversationId={conversationId} messages={messages} quickReplies={QUICK} />
     </div>
   );
 }

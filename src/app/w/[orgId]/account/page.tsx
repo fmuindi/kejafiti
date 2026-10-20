@@ -1,9 +1,10 @@
+import { SignOutForm } from "@/components/auth/sign-out-form";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProfileForm } from "@/components/auth/profile-form";
 import { Icon } from "@/components/ui/icon";
 import { PageTitle } from "@/components/ui/primitives";
-import { getProfile, getWorkspaces, requireWorkspace } from "@/lib/auth";
+import { getProfile, getWorkspaces, requireUser, requireWorkspace } from "@/lib/auth";
 import { ROLE_LABEL } from "@/lib/rent/status";
 
 export const metadata: Metadata = { title: "Account" };
@@ -11,6 +12,7 @@ export const metadata: Metadata = { title: "Account" };
 export default async function WorkspaceAccountPage({ params }: PageProps<"/w/[orgId]/account">) {
   const { orgId } = await params;
   const ws = await requireWorkspace(orgId, `/w/${orgId}/account`);
+  const signedInUserId = (await requireUser(`/w/${orgId}/account`)).id;
   const [profile, all] = await Promise.all([getProfile(), getWorkspaces()]);
   const perms = [
     [ws.can_enter_payments, "Enter payments"],
@@ -44,9 +46,9 @@ export default async function WorkspaceAccountPage({ params }: PageProps<"/w/[or
         </section>
       ) : null}
       <Link href="/" className="inline-flex min-h-11 items-center gap-2 font-semibold"><Icon name="swap" size={18} /> Switch to tenant</Link>
-      <form action="/auth/sign-out" method="post">
+      <SignOutForm userId={signedInUserId}>
         <button type="submit" className="inline-flex min-h-11 items-center gap-2 rounded-[12px] border-[1.5px] border-ink px-4 font-semibold"><Icon name="logout" size={18} /> Sign out</button>
-      </form>
+      </SignOutForm>
     </div>
   );
 }

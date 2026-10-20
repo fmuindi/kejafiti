@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { readDraft, removeDraft, writeDraft } from "@/lib/device-drafts";
 import { markRead, sendMessage } from "@/lib/messaging-actions";
 import { Icon } from "@/components/ui/icon";
 import { cx } from "@/components/ui/primitives";
@@ -14,7 +15,8 @@ type Outgoing = { ref: string; body: string; state: "sending" | "queued" | "fail
 // The platform thread is the durable record. Outgoing messages show their true state:
 // Sending -> Sent, Queued (offline, not sent yet) or Not sent (Retry). Retries reuse the
 // same client reference, so a message is never posted twice.
-export function Thread({ conversationId, messages, quickReplies }: { conversationId: string; messages: ThreadMessage[]; quickReplies?: string[] }) {
+/** `userId`: the signed-in user; the unsent reply is kept on this device for them only. */
+export function Thread({ userId, conversationId, messages, quickReplies }: { userId: string; conversationId: string; messages: ThreadMessage[]; quickReplies?: string[] }) {
   const router = useRouter();
   const [draft, setDraft] = useState("");
   const [outgoing, setOutgoing] = useState<Outgoing[]>([]);
@@ -31,14 +33,13 @@ export function Thread({ conversationId, messages, quickReplies }: { conversatio
     () => true,
   );
   const endRef = useRef<HTMLDivElement>(null);
-  const draftKey = `nyumbani.msgDraft.${conversationId}`;
 
   useEffect(() => {
     try {
-      const d = window.localStorage.getItem(draftKey);
-      // Restoring an unsent draft from this device once, on mount.
+      const d = readDraft<string>(userId, "message", { conversation: conversationId });
+      // Restoring this user's unsent reply from this device once, on mount.
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (d) setDraft(d);
+      if (d) setDraft(d.data);
     } catch {
       /* ignore */
     }
@@ -55,16 +56,16 @@ export function Thread({ conversationId, messages, quickReplies }: { conversatio
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [conversationId, draftKey, router]);
+  }, [conversationId, userId, router]);
 
   useEffect(() => {
     try {
-      if (draft) window.localStorage.setItem(draftKey, draft);
-      else window.localStorage.removeItem(draftKey);
+      if (draft) writeDraft(userId, "message", { conversation: conversationId }, draft);
+      else removeDraft(userId, "message", { conversation: conversationId });
     } catch {
       /* ignore */
     }
-  }, [draft, draftKey]);
+  }, [draft, userId, conversationId]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });

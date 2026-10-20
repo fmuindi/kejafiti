@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { RecordPaymentForm } from "@/components/rent/record-payment-form";
 import { Icon } from "@/components/ui/icon";
 import { Notice } from "@/components/ui/primitives";
-import { requireWorkspace } from "@/lib/auth";
+import { requireUser, requireWorkspace } from "@/lib/auth";
 import { currentPeriod, formatDate, formatPeriod, parsePeriodParam } from "@/lib/dates";
 import { getOpenCharges, getProperty, getSummary } from "@/lib/rent/queries";
 import { createClient } from "@/lib/supabase/server";
@@ -13,6 +13,7 @@ export default async function RecordPaymentPage({ params, searchParams }: PagePr
   const sp = await searchParams;
   const base = `/w/${orgId}/rent/${propertyId}`;
   const ws = await requireWorkspace(orgId, base);
+  const user = await requireUser(base);
   const supabase = await createClient();
   const property = await getProperty(supabase, ws, propertyId);
   const tenancyId = typeof sp.tenancy === "string" ? sp.tenancy : null;
@@ -100,6 +101,7 @@ export default async function RecordPaymentPage({ params, searchParams }: PagePr
         </Notice>
       ) : (
         <RecordPaymentForm
+          userId={user.id}
           orgId={orgId}
           propertyId={propertyId}
           propertyName={property.name}

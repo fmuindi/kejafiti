@@ -62,7 +62,7 @@ export default async function TenantThreadPage({ params }: PageProps<"/messages/
           Request a viewing
         </ButtonLink>
       ) : null}
-      <Thread conversationId={id} messages={messages} />
+      <Thread userId={user.id} conversationId={id} messages={messages} />
       {listing?.advertiser?.call && listing.advertiser.phone ? (
         <a href={`tel:${listing.advertiser.phone}`} className="text-center text-[14px] font-semibold underline">
           Call instead (outside nyumbani)

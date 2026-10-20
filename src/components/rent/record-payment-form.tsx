@@ -9,7 +9,8 @@ import { Button, ButtonLink, Notice, cx } from "@/components/ui/primitives";
 import { MAX_UPLOAD_BYTES, resizeImage, safeFileName } from "@/lib/image";
 import { formatAmount, formatMoney, parseAmount, sumAmounts, subtract } from "@/lib/money";
 import { outstandingOf, previewAllocation, suggestAllocation, type OpenCharge } from "@/lib/rent/allocation";
-import { todayEAT, formatDate } from "@/lib/dates";
+import { todayEAT, formatDate, timeAgo } from "@/lib/dates";
+import { readDraft, removeDraft, writeDraft } from "@/lib/device-drafts";
 import { getBrowserClient } from "@/lib/supabase/browser";
 
 type Charge = OpenCharge & { category: string };
@@ -17,6 +18,8 @@ type Attachment = { id: string; file_name: string; mime_type: string; size_bytes
 type Upload = { key: string; name: string; state: "uploading" | "done" | "failed"; id?: string; error?: string; file?: File };
 
 type Props = {
+  /** The signed-in user. Device drafts belong to them and nobody else on this browser. */
+  userId: string;
   orgId: string;
   propertyId: string;
   propertyName: string;
@@ -47,6 +50,7 @@ type Props = {
 };
 
 type LocalDraft = {
+  // Kept so a resumed draft retries as the same request and can't post twice.
   clientRequestId: string;
   amount: string;
   paidOn: string;
@@ -55,7 +59,6 @@ type LocalDraft = {
   method: string;
   reference: string;
   notes: string;
-  savedAt: number;
 };
 
 const METHODS = [
@@ -73,7 +76,10 @@ function newId() {
 
 export function RecordPaymentForm(props: Props) {
   const { existing, charges, tenancyId } = props;
-  const draftKey = `nyumbani.entryDraft.${existing?.id ?? tenancyId}`;
+  const draftScope = useMemo(
+    () => ({ org: props.orgId, property: props.propertyId, tenancy: tenancyId, entry: existing?.id ?? "new" }),
+    [props.orgId, props.propertyId, tenancyId, existing?.id],
+  );
 
   const [clientRequestId, setClientRequestId] = useState(existing?.clientRequestId ?? "");
   const [amount, setAmount] = useState(existing ? String(existing.amount) : "");
@@ -91,7 +97,10 @@ export function RecordPaymentForm(props: Props) {
   );
   const [attachments, setAttachments] = useState<Attachment[]>(existing?.attachments ?? []);
   const [uploads, setUploads] = useState<Upload[]>([]);
-  const [status, setStatus] = useState<"idle" | "device" | "server" | "restored">("idle");
+  const [status, setStatus] = useState<"idle" | "device" | "server" | "failed">("idle");
+  // A device draft found on load is offered, never applied silently.
+  const [offer, setOffer] = useState<{ data: LocalDraft; savedAt: number } | null>(null);
+  const finished = useRef(false);
   const [pending, setPending] = useState<null | "draft" | "submit" | "confirm" | "upload">(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
@@ -102,50 +111,52 @@ export function RecordPaymentForm(props: Props) {
   const cameraRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // Restore an unsent entry saved on this device, or start a fresh retry-safe request id.
+  // Look for an unsent entry this user left on this device for exactly this tenancy and entry.
+  // The page was authorized on the server before this runs.
   useEffect(() => {
     if (hydrated.current) return;
     hydrated.current = true;
-    let restored = false;
-    try {
-      const raw = window.localStorage.getItem(draftKey);
-      if (raw) {
-        const d = JSON.parse(raw) as LocalDraft;
-        setClientRequestId(d.clientRequestId);
-        setAmount(d.amount);
-        setPaidOn(d.paidOn);
-        setLines(d.lines);
-        setLinesEdited(d.linesEdited);
-        setMethod(d.method);
-        setReference(d.reference);
-        setNotes(d.notes);
-        setStatus("restored");
-        restored = true;
-      }
-    } catch {
-      // Storage unavailable: continue without a device draft.
+    const found = readDraft<LocalDraft>(props.userId, "rentEntry", draftScope);
+    // Offering a device draft found on mount.
+    if (found) setOffer(found);
+    if (!existing) {
+      setClientRequestId(newId());
+      setPaidOn(todayEAT());
     }
-    if (!restored) {
-      if (!existing) setClientRequestId(newId());
-      if (!existing) setPaidOn(todayEAT());
-    }
-  }, [draftKey, existing]);
+  }, [props.userId, draftScope, existing]);
 
-  // Keep a copy on this device so poor connectivity never loses work.
+  function resumeDraft() {
+    if (!offer) return;
+    const d = offer.data;
+    setClientRequestId(d.clientRequestId);
+    setAmount(d.amount);
+    setPaidOn(d.paidOn);
+    setLines(d.lines);
+    setLinesEdited(d.linesEdited);
+    setMethod(d.method);
+    setReference(d.reference);
+    setNotes(d.notes);
+    setOffer(null);
+    setStatus("device");
+  }
+
+  function discardDraft() {
+    removeDraft(props.userId, "rentEntry", draftScope);
+    setOffer(null);
+  }
+
+  // Keep a copy on this device so poor connectivity never loses work. Paused while a found
+  // draft is still being offered, so it can't be overwritten before the person decides.
   useEffect(() => {
-    if (!hydrated.current || !clientRequestId || done) return;
+    if (!hydrated.current || !clientRequestId || done || offer) return;
     if (!amount && !reference && !notes) return;
     const t = setTimeout(() => {
-      try {
-        const d: LocalDraft = { clientRequestId, amount, paidOn, lines, linesEdited, method, reference, notes, savedAt: Date.now() };
-        window.localStorage.setItem(draftKey, JSON.stringify(d));
-        setStatus((s) => (s === "server" ? s : "device"));
-      } catch {
-        // ignore
-      }
+      if (finished.current) return;
+      const d: LocalDraft = { clientRequestId, amount, paidOn, lines, linesEdited, method, reference, notes };
+      if (writeDraft(props.userId, "rentEntry", draftScope, d)) setStatus((s) => (s === "server" ? s : "device"));
     }, 400);
     return () => clearTimeout(t);
-  }, [clientRequestId, amount, paidOn, lines, linesEdited, method, reference, notes, draftKey, done]);
+  }, [clientRequestId, amount, paidOn, lines, linesEdited, method, reference, notes, props.userId, draftScope, done, offer]);
 
   const amountNum = parseAmount(amount);
   const validAmount = amountNum !== null && Number.isFinite(amountNum) && amountNum > 0 ? amountNum : null;
@@ -225,21 +236,21 @@ export function RecordPaymentForm(props: Props) {
       if (!res.ok) {
         setErrors(res.fieldErrors ?? {});
         setFormError(res.message);
+        setStatus("failed");
         return null;
       }
       setEntry({ id: res.data.id, ref: res.data.ref, version: res.data.version });
       setStatus("server");
+      // The workspace now holds it; the device copy would only resurrect an old amount.
+      removeDraft(props.userId, "rentEntry", draftScope);
       if (action !== "draft") {
-        try {
-          window.localStorage.removeItem(draftKey);
-        } catch {
-          // ignore
-        }
+        finished.current = true;
         setDone(res.data);
       }
       return res.data;
     } catch {
-      setFormError("Not sent. Your entry is saved on this device. Check your connection and try again; retrying won't create a duplicate.");
+      setStatus("failed");
+      setFormError("Not sent. Your entry is kept on this device only. Check your connection and try again; retrying won't create a duplicate.");
       return null;
     } finally {
       setPending(null);
@@ -317,9 +328,9 @@ export function RecordPaymentForm(props: Props) {
 
   const statusLabel =
     pending ? "Saving…"
-    : status === "server" ? (entry ? `Draft saved · ${entry.ref}` : "Saved")
-    : status === "device" ? "Saved on this device"
-    : status === "restored" ? "Restored from this device"
+    : status === "server" ? (entry ? `Saved to workspace · ${entry.ref}` : "Saved to workspace")
+    : status === "device" ? "Saved on this device only · not in the workspace yet"
+    : status === "failed" ? "Not saved to the workspace"
     : "";
 
   return (
@@ -335,6 +346,22 @@ export function RecordPaymentForm(props: Props) {
         {statusLabel}
       </p>
       <ErrorSummary errors={errors} message={formError ?? undefined} />
+      {offer ? (
+        <Notice
+          tone="waiting"
+          title="You have an unsent entry on this device"
+          action={
+            <span className="flex gap-2">
+              <Button type="button" size="sm" onClick={resumeDraft}>Resume</Button>
+              <Button type="button" size="sm" variant="secondary" onClick={discardDraft}>Discard</Button>
+            </span>
+          }
+        >
+          KSh {formatAmount(parseAmount(offer.data.amount) ?? 0)}
+          {offer.data.paidOn ? ` paid ${formatDate(offer.data.paidOn)}` : ""}, saved {timeAgo(new Date(offer.savedAt).toISOString())}. It is only on this device, not in the workspace.
+          Discarding removes only this draft.
+        </Notice>
+      ) : null}
 
       <section className="rounded-[16px] bg-cool p-4">
         <p className="font-mono text-[12px] tracking-[0.6px] text-muted uppercase">
