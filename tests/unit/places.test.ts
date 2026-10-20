@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseSearch, toQuery } from "@/lib/listing/search";
+import { backFromListing, listingHref, parseSearch, toQuery } from "@/lib/listing/search";
 import { parsePlace } from "@/lib/places";
 
 const c = (longText: string, ...types: string[]) => ({ longText, types });
@@ -41,5 +41,22 @@ describe("place search URL state", () => {
     expect(parseSearch({ q: "Ruaka", lat: "-1.2", r: "7", sort: "nearest" })).toMatchObject({ lat: undefined, lng: undefined, r: 5, sort: "relevant" });
     expect(toQuery(parseSearch({ lat: "-1.2", lng: "36.8" }))).toBe("lat=-1.2&lng=36.8");
     expect(parseSearch({ lat: "abc", lng: "36.8" }).lat).toBeUndefined();
+  });
+});
+
+describe("return from a listing (IMP-09)", () => {
+  it("rebuilds the same filtered search, page and position", () => {
+    const query = "q=Ruaka&lat=-1.2&lng=36.8&r=3&max=20000&type=bedsitter_studio&must=parking&must=private_bathroom&sort=nearest&page=2";
+    expect(backFromListing(query, "L-4001")).toEqual({
+      href: `/search?${toQuery(parseSearch(Object.fromEntries([["q", "Ruaka"], ["lat", "-1.2"], ["lng", "36.8"], ["r", "3"], ["max", "20000"], ["type", ["bedsitter_studio"]], ["must", ["parking", "private_bathroom"]], ["sort", "nearest"], ["page", "2"]])))}#home-L-4001`,
+      label: "Back to results",
+    });
+    expect(backFromListing(query, "L-4001").href).toContain("must=parking&must=private_bathroom");
+  });
+  it("drops anything that isn't a valid filter and falls back for direct visits", () => {
+    expect(backFromListing("q=Ruaka&evil=%3Cscript%3E&max=abc", "L-1").href).toBe("/search?q=Ruaka#home-L-1");
+    expect(backFromListing(undefined, "L-1")).toEqual({ href: "/search", label: "Search homes" });
+    expect(backFromListing("saved", "L-1").href).toBe("/saved#home-L-1");
+    expect(listingHref("L-1", "q=Ruaka")).toBe("/homes/L-1?back=q%3DRuaka");
   });
 });

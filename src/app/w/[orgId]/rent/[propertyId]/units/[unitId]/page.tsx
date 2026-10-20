@@ -6,7 +6,7 @@ import { ChargeAdjust } from "@/components/rent/charge-adjust";
 import { Icon } from "@/components/ui/icon";
 import { ButtonLink, Card, EmptyState, Eyebrow, Notice } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
-import { currentPeriod, formatDate, formatPeriod, periodParam, todayEAT } from "@/lib/dates";
+import { formatDate, formatPeriod, parsePeriodParam, periodParam, todayEAT } from "@/lib/dates";
 import { formatAmount, formatMoney } from "@/lib/money";
 import { getOpenCharges, getProperty } from "@/lib/rent/queries";
 import { OCCUPANCY, type Occupancy } from "@/lib/rent/status";
@@ -14,9 +14,11 @@ import { createClient } from "@/lib/supabase/server";
 
 type Statement = { line_date: string; kind: string; description: string; charge: number; payment: number; balance: number; ref: string | null };
 
-export default async function UnitPage({ params }: PageProps<"/w/[orgId]/rent/[propertyId]/units/[unitId]">) {
+export default async function UnitPage({ params, searchParams }: PageProps<"/w/[orgId]/rent/[propertyId]/units/[unitId]">) {
   const { orgId, propertyId, unitId } = await params;
   const base = `/w/${orgId}/rent/${propertyId}`;
+  // Keep the period the unit was opened from (IMP-07): back to the same register month.
+  const period = parsePeriodParam((await searchParams).period);
   const ws = await requireWorkspace(orgId, base);
   const supabase = await createClient();
   const property = await getProperty(supabase, ws, propertyId);
@@ -56,7 +58,7 @@ export default async function UnitPage({ params }: PageProps<"/w/[orgId]/rent/[p
 
   return (
     <div className="mx-auto flex max-w-[860px] flex-col gap-5">
-      <Link href={base} className="inline-flex min-h-11 items-center gap-1 self-start font-semibold">
+      <Link href={`${base}?period=${periodParam(period)}`} className="inline-flex min-h-11 items-center gap-1 self-start font-semibold">
         <Icon name="chevronLeft" /> {property.name}
       </Link>
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -69,7 +71,7 @@ export default async function UnitPage({ params }: PageProps<"/w/[orgId]/rent/[p
           </p>
         </div>
         {current && ws.can_enter_payments ? (
-          <ButtonLink href={`${base}/record?tenancy=${current.id}&period=${periodParam(currentPeriod())}`} icon="plus">
+          <ButtonLink href={`${base}/record?tenancy=${current.id}&period=${periodParam(period)}`} icon="plus">
             Record payment
           </ButtonLink>
         ) : null}

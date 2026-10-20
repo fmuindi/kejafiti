@@ -45,7 +45,8 @@ export default async function WorkspaceAccountPage({ params }: PageProps<"/w/[or
           ))}
         </section>
       ) : null}
-      <Link href="/" className="inline-flex min-h-11 items-center gap-2 font-semibold"><Icon name="swap" size={18} /> Switch to tenant</Link>
+      <Link href="/" className="inline-flex min-h-11 items-center gap-2 font-semibold"><Icon name="search" size={18} /> Browse homes</Link>
+      <p className="-mt-3 text-[13px] text-muted">Same account. Browsing homes doesn&apos;t change your workspace access.</p>
       <SignOutForm userId={signedInUserId}>
         <button type="submit" className="inline-flex min-h-11 items-center gap-2 rounded-[12px] border-[1.5px] border-ink px-4 font-semibold"><Icon name="logout" size={18} /> Sign out</button>
       </SignOutForm>

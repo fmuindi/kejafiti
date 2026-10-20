@@ -41,6 +41,9 @@ export default async function SavedPage() {
         photo_count: l.photos.length,
         unconfirmed_match: false,
         distance_km: null,
+        fixed_monthly_total: (l as unknown as { fixed_monthly_total: number | null }).fixed_monthly_total ?? null,
+        move_in_total: (l as unknown as { move_in_total: number | null }).move_in_total ?? null,
+        totals_complete: !!(l as unknown as { totals_complete?: boolean }).totals_complete,
       });
     }
   }
@@ -77,7 +80,7 @@ export default async function SavedPage() {
           <ul className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {cards.map((c) => (
               <li key={c.ref}>
-                <ListingCard row={c} photoUrl={c.cover_path ? photos.get(c.cover_path) : undefined} saved signedIn returnTo="/saved" />
+                <ListingCard row={c} photoUrl={c.cover_path ? photos.get(c.cover_path) : undefined} saved signedIn returnTo="/saved" back="saved" />
               </li>
             ))}
           </ul>

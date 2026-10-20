@@ -42,6 +42,11 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
       : Promise.resolve({ data: [] }),
     getSummary(supabase, orgId, null, period),
   ]);
+  // IMP-16: the signed-in person's own rent work, same definition as Team.
+  const { data: work } = ws.can_enter_payments ? await supabase.rpc("my_rent_work", { p_org: orgId }) : { data: [] };
+  const myReturned = (work ?? []).filter((w) => w.grp === "returned").length;
+  const myDrafts = (work ?? []).filter((w) => w.grp === "drafts").length;
+  const mySubmitted = (work ?? []).filter((w) => w.grp === "submitted").length;
 
   const unanswered = (convs.data ?? []).filter((c) => c.last_tenant_message_at && (!c.last_advertiser_message_at || c.last_advertiser_message_at < c.last_tenant_message_at));
   const oldest = unanswered[0];
@@ -53,7 +58,8 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
   const drafts = (listings.data ?? []).filter((l) => l.status === "draft" || l.status === "needs_correction");
   const pendingTotal = (pending.data ?? []).reduce((s, e) => s + Number(e.amount), 0);
   const s = summary.summary;
-  const tasks = unanswered.length + requests.length + (pending.data ?? []).length + stale.length + drafts.length;
+  // "Up to date" only when nothing is waiting on this person (work waiting on others isn't a task).
+  const tasks = unanswered.length + requests.length + (pending.data ?? []).length + stale.length + drafts.length + myReturned + myDrafts;
   const firstName = (profile?.full_name || "").split(" ")[0];
   const propertyCount = props.count ?? 0;
 
@@ -123,8 +129,43 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
                 </Link>
               </li>
             ) : null}
+            {ws.can_enter_payments && !ws.can_confirm ? (
+              <>
+                <li>
+                  <Link href={`/w/${orgId}/rent/mine#returned`} className="flex items-center gap-4 px-4 py-4 hover:bg-cool">
+                    <span className={`font-display text-[26px] font-bold ${myReturned ? "text-error" : "text-muted"}`}>{myReturned}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-semibold">Returned to you for correction</span>
+                      <span className="text-[13.5px] text-muted">{myReturned ? "Fix and resubmit" : "Nothing returned"}</span>
+                    </span>
+                    <Icon name="chevronRight" className="text-muted" />
+                  </Link>
+                </li>
+                <li>
+                  <Link href={`/w/${orgId}/rent/mine#drafts`} className="flex items-center gap-4 px-4 py-4 hover:bg-cool">
+                    <span className={`font-display text-[26px] font-bold ${myDrafts ? "text-waiting" : "text-muted"}`}>{myDrafts}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-semibold">Your saved drafts</span>
+                      <span className="text-[13.5px] text-muted">{myDrafts ? "Finish and submit" : "No drafts in the workspace"}</span>
+                    </span>
+                    <Icon name="chevronRight" className="text-muted" />
+                  </Link>
+                </li>
+                <li>
+                  <Link href={`/w/${orgId}/rent/mine#submitted`} className="flex items-center gap-4 px-4 py-4 hover:bg-cool">
+                    <span className="font-display text-[26px] font-bold text-muted">{mySubmitted}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-semibold">Submitted, waiting for a manager</span>
+                      <span className="text-[13.5px] text-muted">Nothing for you to do. They don&apos;t count until confirmed.</span>
+                    </span>
+                    <Icon name="chevronRight" className="text-muted" />
+                  </Link>
+                </li>
+              </>
+            ) : null}
+            {ws.can_confirm ? (
             <li>
-              <Link href={ws.can_confirm ? `/w/${orgId}/rent/inbox` : `/w/${orgId}/rent`} className="flex items-center gap-4 px-4 py-4 hover:bg-cool">
+              <Link href={`/w/${orgId}/rent/inbox`} className="flex items-center gap-4 px-4 py-4 hover:bg-cool">
                 <span className={`font-display text-[26px] font-bold ${(pending.data ?? []).length ? "text-waiting" : "text-muted"}`}>{(pending.data ?? []).length}</span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold">Rent entries awaiting confirmation</span>
@@ -136,6 +177,7 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
                 <Icon name="chevronRight" className="text-muted" />
               </Link>
             </li>
+            ) : null}
             {ws.can_manage_listings ? (
               <li className="px-4 py-4">
                 <div className="flex items-center gap-4">

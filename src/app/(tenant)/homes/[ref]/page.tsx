@@ -15,6 +15,8 @@ import { isOpenListing, type ClosedListing, type PublicListing } from "@/lib/lis
 import { daysSince, formatDate } from "@/lib/dates";
 import { formatAmount } from "@/lib/money";
 import { signListingPhotos } from "@/lib/storage";
+import { AreaMap } from "@/components/tenant/area-map";
+import { backFromListing } from "@/lib/listing/search";
 import { createClient } from "@/lib/supabase/server";
 
 async function load(ref: string) {
@@ -47,8 +49,9 @@ function FactTile({ label, value, unknown }: { label: string; value: string; unk
 
 const yn = (v: string | undefined) => (v === "yes" ? "Yes" : v === "no" ? "No" : "Unknown");
 
-export default async function ListingPage({ params }: PageProps<"/homes/[ref]">) {
+export default async function ListingPage({ params, searchParams }: PageProps<"/homes/[ref]">) {
   const { ref } = await params;
+  const back = backFromListing((await searchParams).back, ref);
   const { supabase, listing } = await load(ref);
   if (!listing) notFound();
   if (!isOpenListing(listing)) return <ListingUnavailable listing={listing} />;
@@ -81,8 +84,8 @@ export default async function ListingPage({ params }: PageProps<"/homes/[ref]">)
   return (
     <div className="mx-auto max-w-[1100px] pb-28 md:px-6 md:pt-6 md:pb-12">
       <div className="no-print flex items-center justify-between px-4 py-3 md:px-0">
-        <Link href="/search" className="inline-flex min-h-11 items-center gap-1 font-semibold">
-          <Icon name="chevronLeft" /> Back to results
+        <Link href={back.href} className="inline-flex min-h-11 items-center gap-1 font-semibold">
+          <Icon name="chevronLeft" /> {back.label}
         </Link>
         <SaveButton refId={ref} saved={!!savedRow.data} signedIn={!!user} returnTo={returnTo} />
       </div>
@@ -103,6 +106,9 @@ export default async function ListingPage({ params }: PageProps<"/homes/[ref]">)
               <Icon name="pin" size={16} />
               {[listing.location.area, listing.location.road].filter(Boolean).join(", ")} · approximate location
             </p>
+            <div className="mt-2 flex flex-col">
+              <AreaMap lat={listing.location.approx_lat} lng={listing.location.approx_lng} label={[listing.location.area, listing.location.town].filter(Boolean).join(", ")} />
+            </div>
             <p className="mt-3 md:hidden">
               <span className="font-display text-[26px] font-extrabold">KES {formatAmount(listing.rent_amount)}</span>
               <span className="text-muted"> / {listing.price_period}</span>

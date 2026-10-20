@@ -47,6 +47,8 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
   const filter = typeof sp.filter === "string" && FILTERS.some((f) => f.key === sp.filter) ? sp.filter : "all";
   const q = typeof sp.q === "string" ? sp.q.trim().toLowerCase() : "";
 
+  // IMP-15: when the confirmed figures last changed, never the time this page was drawn.
+  const { data: changedAt } = await supabase.rpc("records_changed_at", { p_org: orgId, p_property: propertyId });
   const [{ rows, error }, { summary }, properties, me] = await Promise.all([
     getRegister(supabase, propertyId, period),
     getSummary(supabase, orgId, propertyId, period),
@@ -117,7 +119,7 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
             {formatRate(summary.collection_rate)} collected · {formatMoney(summary.outstanding)} outstanding
             {summary.overdue ? ` · ${formatMoney(summary.overdue)} overdue` : ""}
           </p>
-          <p className="mt-1 text-[12px] text-muted">Confirmed by property staff · Updated {formatDateTime(summary.computed_at)} · Pending entries are not counted</p>
+          <p className="mt-1 text-[12px] text-muted">Confirmed by property staff · Records last changed {changedAt ? formatDateTime(changedAt) : "never"} · Pending entries are not counted</p>
         </section>
       ) : null}
 
@@ -189,7 +191,7 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
           {visible.map((r) => (
             <li key={`${r.unit_id}-${r.tenancy_id ?? "none"}`} className="flex flex-col gap-2 px-4 py-3.5">
               <div className="flex items-start justify-between gap-3">
-                <Link href={`${base}/units/${r.unit_id}`} className="min-w-0 hover:underline">
+                <Link href={`${base}/units/${r.unit_id}?period=${periodParam(period)}`} className="min-w-0 hover:underline">
                   <span className="font-mono text-[15px] font-medium">{r.unit_label}</span>
                   <span className="font-semibold"> · {r.tenant_name ?? "No tenant"}</span>
                   {r.tenancy_status === "ended" ? <span className="text-[13px] text-muted"> (former tenant)</span> : null}
@@ -198,7 +200,7 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
                 <RentStatusBadge status={r.rent_status} overdue={r.overdue} />
               </div>
               {r.pending_count > 0 ? (
-                <Link href={ws.can_confirm ? `/w/${orgId}/rent/inbox?property=${propertyId}` : `${base}/units/${r.unit_id}`} className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-waiting">
+                <Link href={ws.can_confirm ? `/w/${orgId}/rent/inbox?property=${propertyId}` : `${base}/units/${r.unit_id}?period=${periodParam(period)}`} className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-waiting">
                   <Icon name="clock" size={15} />
                   Pending {formatMoney(r.pending_amount)}
                   {r.pending_by ? ` from ${r.pending_by}` : ""} · {ws.can_confirm ? "Review" : "awaiting confirmation"}

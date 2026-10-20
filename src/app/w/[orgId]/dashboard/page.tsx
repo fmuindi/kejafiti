@@ -39,6 +39,8 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
     propertyId ? getRegister(supabase, propertyId, period) : Promise.resolve({ rows: [] }),
     propertyId ? supabase.from("report_versions").select("id, version, finalized_at").eq("property_id", propertyId).eq("period_start", period).order("version", { ascending: false }) : Promise.resolve({ data: [] }),
   ]);
+  // IMP-15: when the confirmed figures last changed, never the time this page was drawn.
+  const { data: changedAt } = await supabase.rpc("records_changed_at", { p_org: orgId, p_property: propertyId ?? undefined });
   const { data: corrections } = await supabase
     .from("entry_events")
     .select("id, reason, created_at, actor_id, entry_id, payment_entries(ref, units(label))")
@@ -100,7 +102,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
       {s ? (
         <p className="inline-flex items-center gap-1.5 text-[13px] text-muted">
           <Icon name="check" size={15} className="text-success" />
-          Confirmed by property staff · Updated {formatDateTime(s.computed_at)} · Pending entries are not counted
+          Confirmed by property staff · Records last changed {changedAt ? formatDateTime(changedAt) : "never"} · Pending entries are not counted
         </p>
       ) : null}
 
@@ -168,7 +170,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
                     const st = RENT_STATUS[r.rent_status];
                     return (
                       <li key={`${r.unit_id}-${r.tenancy_id}`}>
-                        <Link href={`/w/${orgId}/rent/${propertyId}/units/${r.unit_id}`} className={cx("flex min-h-[64px] flex-col justify-between rounded-[12px] p-2.5", TILE[st.tone])}>
+                        <Link href={`/w/${orgId}/rent/${propertyId}/units/${r.unit_id}?period=${periodParam(period)}`} className={cx("flex min-h-[64px] flex-col justify-between rounded-[12px] p-2.5", TILE[st.tone])}>
                           <span className="font-mono text-[13px] font-medium">{r.unit_label}</span>
                           <span className="text-[12.5px] font-semibold">{st.label}{r.pending_count ? " + pending" : ""}</span>
                         </Link>

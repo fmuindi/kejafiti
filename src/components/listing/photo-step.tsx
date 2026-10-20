@@ -12,7 +12,7 @@ type Pending = { key: string; name: string; state: "uploading" | "failed"; error
 
 // Photos: take or choose files (no dragging needed), per-file status with retry/remove,
 // move earlier/later buttons, an explicit "Make cover" and honest labels for sample media.
-export function PhotoStep({ orgId, listingId, unitLabel, initial, onBack, onNext }: { orgId: string; listingId: string; unitLabel: string; initial: WizardPhoto[]; onBack: () => void; onNext: () => void }) {
+export function PhotoStep({ orgId, listingId, unitLabel, initial, onBack, onNext, onReview }: { orgId: string; listingId: string; unitLabel: string; initial: WizardPhoto[]; onBack: () => void; onNext: () => void; onReview?: () => void }) {
   const [photos, setPhotos] = useState<WizardPhoto[]>(initial);
   const [pending, setPending] = useState<Pending[]>([]);
   const [saving, setSaving] = useState(false);
@@ -81,7 +81,7 @@ export function PhotoStep({ orgId, listingId, unitLabel, initial, onBack, onNext
     <section aria-labelledby="s4" className="flex flex-col gap-4">
       <h1 id="s4" className="font-display text-[26px] leading-[1.1] font-bold tracking-[-0.5px]">Photos of Unit {unitLabel}</h1>
       <p className="-mt-2 text-[14.5px] text-muted">Use photos of this actual unit. Remove people, documents and personal items before uploading.</p>
-      <div className="grid grid-cols-2 gap-2">
+      <div id="photos" tabIndex={-1} className="grid grid-cols-2 gap-2 rounded-[12px] focus:ring-2 focus:ring-deep/40 focus:outline-none">
         <Button type="button" variant="secondary" size="lg" icon="camera" onClick={() => cameraRef.current?.click()}>Take photo</Button>
         <Button type="button" variant="secondary" size="lg" icon="image" onClick={() => fileRef.current?.click()}>Choose photos</Button>
       </div>
@@ -154,6 +154,12 @@ export function PhotoStep({ orgId, listingId, unitLabel, initial, onBack, onNext
           Continue to availability
         </Button>
       </div>
+      {onReview ? (
+        // Waits for uploads to finish so returning to review can't drop a photo in flight.
+        <Button type="button" variant="dark" size="lg" pending={saving} disabled={uploading > 0} onClick={async () => { if (await saveOrder()) onReview(); }}>
+          {uploading ? "Waiting for uploads to finish" : "Save and back to review"}
+        </Button>
+      ) : null}
     </section>
   );
 }

@@ -106,6 +106,7 @@ insert into public.app_settings (key, value) values ('admin_alert_email', 'you@e
 | `MAILPIT_URL` | server | Local development only. When set, outbound email goes to the local Mailpit inbox instead of a provider, so nobody real is emailed. Leave empty in production. |
 | `RESEND_API_KEY`, `EMAIL_FROM` | server | Outbound email when `MAILPIT_URL` is empty. `EMAIL_FROM` must be on a domain verified with Resend. Without a provider, tasks stay queued (shown as "Email is switched off") and invitations show a copyable link. |
 | `GOOGLE_MAPS_API_KEY` | **server only** | Optional. Google Places API (New) suggestions in the Explore search box and the listing wizard's location step, proxied through `/api/places/*`. Without it, those fields are plain text. |
+| `NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY` | browser | Optional. Maps Embed API key for the on-demand "approximate area" map on listings (centred on the public position, rounded to about 1 km, no pin). Restrict it to your domains and the Maps Embed API. Empty means no map. |
 | `NEXT_PUBLIC_PHONE_AUTH_ENABLED` | browser | `true` only after an SMS provider is configured in Supabase Auth |
 
 ### Scripts

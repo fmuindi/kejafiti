@@ -1258,6 +1258,9 @@ isOneToOne: false
 "invite_member":
 { Args: { "p": Json,"p_org": string }; Returns: Json
                            },
+"listing_problem_items":
+{ Args: { "p_listing": string }; Returns: Json
+                           },
 "listing_problems":
 { Args: { "p_listing": string }; Returns: (string)[]
                            },
@@ -1273,6 +1276,11 @@ isOneToOne: false
 "my_conversations":
 { Args: { "p_org"?: string }; Returns: {
               "advertiser_role": string,"area": string,"assigned_membership_id": string,"follow_up": string,"id": string,"last_message": string,"last_message_at": string,"last_side": string,"listing_ref": string,"listing_status": string,"listing_title": string,"needs_reply": boolean,"org_name": string,"property_id": string,"tenant_name": string,"unit_label": string,"unread": number
+            }[]
+                           },
+"my_rent_work":
+{ Args: { "p_org": string }; Returns: {
+              "amount": number,"decision_reason": string,"entry_id": string,"grp": string,"paid_on": string,"property_id": string,"property_name": string,"ref": string,"status": string,"tenancy_id": string,"unit_label": string,"updated_at": string
             }[]
                            },
 "my_saved_listings":
@@ -1304,6 +1312,9 @@ isOneToOne: false
 { Args: { "p_period": string,"p_property": string }; Returns: {
               "already_exists": boolean,"amount": number,"due_date": string,"tenancy_id": string,"tenant_name": string,"unit_id": string,"unit_label": string
             }[]
+                           },
+"records_changed_at":
+{ Args: { "p_org": string,"p_property"?: string }; Returns: string
                            },
 "register_attachment":
 { Args: { "p": Json }; Returns: string
@@ -1377,7 +1388,7 @@ isOneToOne: false
                            },
 "team_overview":
 { Args: { "p_org": string }; Returns: {
-              "all_properties": boolean,"can_confirm": boolean,"can_correct": boolean,"can_enter_payments": boolean,"can_export": boolean,"can_manage_listings": boolean,"can_manage_tenancies": boolean,"can_view_attachments": boolean,"display_name": string,"email": string,"invite_expires_at": string,"last_active_at": string,"membership_id": string,"open_work": number,"property_ids": (string)[],"property_names": (string)[],"role": string,"status": string,"status_changed_at": string,"submitted_pending": number,"user_id": string
+              "all_properties": boolean,"can_confirm": boolean,"can_correct": boolean,"can_enter_payments": boolean,"can_export": boolean,"can_manage_listings": boolean,"can_manage_tenancies": boolean,"can_view_attachments": boolean,"display_name": string,"email": string,"invite_expires_at": string,"last_active_at": string,"last_sign_in_at": string,"membership_id": string,"open_work": number,"property_ids": (string)[],"property_names": (string)[],"role": string,"status": string,"status_changed_at": string,"submitted_pending": number,"user_id": string
             }[]
                            },
 "tenancy_statement":
