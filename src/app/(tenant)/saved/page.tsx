@@ -14,11 +14,12 @@ export default async function SavedPage() {
   const user = await requireUser("/saved");
   const supabase = await createClient();
   const [{ data: saved }, { data: searches }] = await Promise.all([
-    supabase.from("saved_listings").select("listing_id, created_at, listings(ref, status, let_on, title)").eq("user_id", user.id).order("created_at", { ascending: false }),
+    // Tenants can't read listings directly, so a listings(...) embed came back null (IMP-02).
+    supabase.rpc("my_saved_listings"),
     supabase.from("saved_searches").select("id, label, params, alert_frequency, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
   ]);
   // Re-read published homes through the public search function so cards show only public fields.
-  const refs = (saved ?? []).map((s) => (s.listings as unknown as { ref: string } | null)?.ref).filter(Boolean) as string[];
+  const refs = (saved ?? []).filter((s) => s.status === "published").map((s) => s.ref);
   const cards: SearchRow[] = [];
   for (const ref of refs) {
     const { data } = await supabase.rpc("get_listing", { p_ref: ref });
@@ -44,7 +45,7 @@ export default async function SavedPage() {
     }
   }
   const photos = await signListingPhotos(supabase, cards.map((c) => c.cover_path));
-  const gone = (saved ?? []).filter((s) => (s.listings as unknown as { status: string } | null)?.status !== "published");
+  const gone = (saved ?? []).filter((s) => s.status !== "published");
 
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-6 px-4 pt-5 pb-10">
@@ -83,17 +84,14 @@ export default async function SavedPage() {
         )}
         {gone.length ? (
           <ul className="mt-4 flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
-            {gone.map((s) => {
-              const l = s.listings as unknown as { ref: string; title: string | null; let_on: string | null };
-              return (
-                <li key={s.listing_id}>
-                  <Link href={`/homes/${l.ref}`} className="flex flex-col px-4 py-3 hover:bg-cool">
-                    <span className="font-semibold">{l.title}</span>
-                    <span className="text-[13px] font-semibold text-error">No longer available{l.let_on ? ` · let on ${formatDate(l.let_on, { year: false })}` : ""} · see similar homes</span>
-                  </Link>
-                </li>
-              );
-            })}
+            {gone.map((l) => (
+              <li key={l.listing_id}>
+                <Link href={`/homes/${l.ref}`} className="flex flex-col px-4 py-3 hover:bg-cool">
+                  <span className="font-semibold">{l.title ?? `Home in ${l.area}`}</span>
+                  <span className="text-[13px] font-semibold text-error">No longer available{l.let_on ? ` · let on ${formatDate(l.let_on, { year: false })}` : ""} · see similar homes</span>
+                </Link>
+              </li>
+            ))}
           </ul>
         ) : null}
       </section>

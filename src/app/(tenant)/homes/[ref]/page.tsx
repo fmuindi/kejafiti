@@ -58,7 +58,7 @@ export default async function ListingPage({ params }: PageProps<"/homes/[ref]">)
     signListingPhotos(supabase, listing.photos.map((p) => p.path)),
     user ? supabase.from("saved_listings").select("listing_id").eq("listing_id", listing.id).maybeSingle() : Promise.resolve({ data: null }),
     user
-      ? supabase.from("viewings").select("id, status, requested_start, confirmed_start, proposed_start").eq("listing_id", listing.id).eq("tenant_id", user.id).in("status", ["requested", "new_time_proposed", "confirmed"]).maybeSingle()
+      ? supabase.from("viewing_states").select("id, state, requested_start, confirmed_start, proposed_start").eq("listing_id", listing.id).eq("tenant_id", user.id).in("status", ["requested", "new_time_proposed", "confirmed"]).maybeSingle()
       : Promise.resolve({ data: null }),
   ]);
   const photos = listing.photos
@@ -72,7 +72,7 @@ export default async function ListingPage({ params }: PageProps<"/homes/[ref]">)
   const stale = age !== null && age > 10;
   const adv = listing.advertiser;
   const returnTo = `/homes/${ref}`;
-  const viewing = myViewing.data as { status: string; requested_start: string; confirmed_start: string | null } | null;
+  const viewing = myViewing.data as { state: string; requested_start: string; confirmed_start: string | null } | null;
 
   const bathroom =
     f.private_bathroom === "yes" ? "Private" : f.private_bathroom === "no" ? "Shared" : "Unknown";
@@ -206,7 +206,7 @@ export default async function ListingPage({ params }: PageProps<"/homes/[ref]">)
           />
           {viewing ? (
             <ButtonLink href="/viewings" variant="secondary" size="lg" className="flex-1 md:flex-none">
-              {viewing.status === "confirmed" ? "Viewing confirmed" : "Viewing requested · not confirmed yet"}
+              {viewing.state === "confirmed" ? "Viewing confirmed" : viewing.state === "expired" ? "Viewing time passed · ask for a new time" : "Viewing requested · not confirmed yet"}
             </ButtonLink>
           ) : listing.is_staff ? null : (
             <ButtonLink href={`/homes/${ref}/viewing`} size="lg" className="flex-1 md:flex-none">

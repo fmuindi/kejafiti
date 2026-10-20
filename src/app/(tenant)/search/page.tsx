@@ -34,16 +34,14 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
     p.must.length && !p.unconfirmed
       ? supabase.rpc("search_listings", { params: toRpcParams(p, { includeUnconfirmed: true, limit: 1, offset: 0 }) })
       : Promise.resolve({ data: null }),
-    user ? supabase.from("saved_listings").select("listing_id, listings(ref)").eq("user_id", user.id) : Promise.resolve({ data: [] }),
+    user ? supabase.rpc("my_saved_listings") : Promise.resolve({ data: [] }),
   ]);
 
   const rows = (data ?? []) as unknown as Array<SearchRow & { total_count: number }>;
   const total = rows[0]?.total_count ?? 0;
   const withUnconfirmed = ((unconfirmed.data ?? []) as Array<{ total_count: number }>)[0]?.total_count ?? total;
   const extra = Math.max(0, withUnconfirmed - total);
-  const savedRefs = new Set(
-    ((saved.data ?? []) as Array<{ listings: { ref: string } | null }>).map((s) => s.listings?.ref).filter(Boolean) as string[],
-  );
+  const savedRefs = new Set(((saved.data ?? []) as Array<{ ref: string }>).map((s) => s.ref));
   const photos = await signListingPhotos(supabase, rows.map((r) => r.cover_path));
   const { title, subtitle } = describeSearch(p);
   const query = toQuery(p);

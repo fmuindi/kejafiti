@@ -9,6 +9,7 @@ import { formatAppointment, formatDateTime } from "@/lib/dates";
 import { ADVERTISER_ROLE_LABEL } from "@/lib/listing/catalog";
 import { formatAmount } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
+import { OPEN_STATES, TENANT_LABEL, viewingRow } from "@/lib/viewings";
 
 export const metadata: Metadata = { title: "Conversation" };
 
@@ -18,11 +19,12 @@ export default async function TenantThreadPage({ params }: PageProps<"/messages/
   const supabase = await createClient();
   const { data: c } = await supabase.from("conversations").select("id, tenant_id, listing_id").eq("id", id).maybeSingle();
   if (!c || c.tenant_id !== user.id) notFound();
-  const [{ data: list }, { data: msgs }, { data: viewing }] = await Promise.all([
+  const [{ data: list }, { data: msgs }, { data: viewingData }] = await Promise.all([
     supabase.rpc("my_conversations", {}),
     supabase.from("messages").select("id, body, sender_side, sender_id, created_at").eq("conversation_id", id).order("created_at"),
-    supabase.from("viewings").select("id, status, requested_start, confirmed_start, proposed_start").eq("conversation_id", id).in("status", ["requested", "new_time_proposed", "confirmed"]).maybeSingle(),
+    supabase.from("viewing_states").select("id, state, requested_start, confirmed_start, proposed_start").eq("conversation_id", id).in("state", [...OPEN_STATES, "expired"]).maybeSingle(),
   ]);
+  const viewing = viewingRow(viewingData);
   const meta = (list ?? []).find((x) => x.id === id);
   const { data: l } = meta ? await supabase.rpc("get_listing", { p_ref: meta.listing_ref }) : { data: null };
   const listing = l as unknown as { rent_amount?: number; advertiser?: { role: string; call: boolean; phone: string | null } } | null;
@@ -35,11 +37,11 @@ export default async function TenantThreadPage({ params }: PageProps<"/messages/
           <Icon name="chevronLeft" />
         </Link>
         <div className="min-w-0">
-          <h1 className="truncate font-semibold">{meta?.org_name}</h1>
-          <p className="text-[13px] text-muted">{ADVERTISER_ROLE_LABEL[listing?.advertiser?.role ?? ""] ?? "Advertiser"}</p>
+          <h1 className="truncate font-semibold">{meta?.org_name ?? "Conversation"}</h1>
+          <p className="text-[13px] text-muted">{ADVERTISER_ROLE_LABEL[meta?.advertiser_role ?? ""] ?? "Advertiser"}</p>
         </div>
       </div>
-      {meta ? (
+      {meta?.listing_ref ? (
         <Link href={`/homes/${meta.listing_ref}`} className="rounded-[14px] border border-line bg-surface p-3 hover:border-ink">
           <span className="block font-semibold">
             {meta.listing_title ?? meta.area}
@@ -53,9 +55,7 @@ export default async function TenantThreadPage({ params }: PageProps<"/messages/
       {viewing ? (
         <div className="flex items-center justify-between gap-3 rounded-[14px] bg-cool p-3 text-[14px]">
           <span>Viewing · {formatAppointment(viewing.confirmed_start ?? viewing.proposed_start ?? viewing.requested_start)} EAT</span>
-          <StatusBadge tone={viewing.status === "confirmed" ? "success" : "waiting"}>
-            {viewing.status === "confirmed" ? "Confirmed" : viewing.status === "new_time_proposed" ? "New time proposed" : "Pending"}
-          </StatusBadge>
+          <StatusBadge tone={TENANT_LABEL[viewing.state]?.tone ?? "neutral"}>{TENANT_LABEL[viewing.state]?.label ?? "Pending"}</StatusBadge>
         </div>
       ) : meta?.listing_status === "published" ? (
         <ButtonLink href={`/homes/${meta.listing_ref}/viewing`} variant="secondary">
