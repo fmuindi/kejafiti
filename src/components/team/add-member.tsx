@@ -7,7 +7,7 @@ import { ErrorSummary, Field, Select, TextInput, describedBy } from "@/component
 import { Icon } from "@/components/ui/icon";
 import { Button, Notice } from "@/components/ui/primitives";
 import { formatDate } from "@/lib/dates";
-import { AccessFields, DEFAULT_ACCESS, type AccessState } from "./access-fields";
+import { AccessFields, AuthoritySummary, DEFAULT_ACCESS, ROLE_HELP, type AccessState } from "./access-fields";
 
 export function AddMemberPanel({ orgId, properties, isOwner }: { orgId: string; properties: Array<{ id: string; name: string }>; isOwner: boolean }) {
   const router = useRouter();
@@ -20,7 +20,9 @@ export function AddMemberPanel({ orgId, properties, isOwner }: { orgId: string; 
   const [result, setResult] = useState<{ link: string; expiresAt: string; name: string; email: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const [pending, start] = useTransition();
-  const firstName = name.trim().split(/\s+/)[0] || "They";
+  // Two steps: choose, then review the summary and send (IMP-14).
+  const [reviewing, setReviewing] = useState(false);
+  const firstName = name.trim().split(/\s+/)[0];
 
   if (result) {
     return (
@@ -72,11 +74,16 @@ export function AddMemberPanel({ orgId, properties, isOwner }: { orgId: string; 
       <form
         noValidate
         className="mt-4 flex flex-col gap-4"
-        action={() =>
+        action={() => {
+          if (!reviewing) {
+            setReviewing(true);
+            return;
+          }
           start(async () => {
             setErrors({});
             setMessage(undefined);
             const res = await inviteMember(orgId, { ...access, display_name: name, email, phone: phone || undefined });
+            setReviewing(false);
             if (!res.ok) {
               setErrors(res.fieldErrors ?? {});
               setMessage(res.message);
@@ -84,8 +91,8 @@ export function AddMemberPanel({ orgId, properties, isOwner }: { orgId: string; 
             }
             setResult({ link: res.data.link, expiresAt: res.data.expiresAt, name, email });
             router.refresh();
-          })
-        }
+          });
+        }}
       >
         <ErrorSummary errors={errors} message={message} />
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
@@ -99,6 +106,7 @@ export function AddMemberPanel({ orgId, properties, isOwner }: { orgId: string; 
               onChange={(e) => {
                 const role = e.target.value as AccessState["role"];
                 setAccess((a) => ({ ...a, ...DEFAULT_ACCESS[role] }));
+                setReviewing(false);
               }}
             >
               <option value="manager">Property manager</option>
@@ -108,20 +116,25 @@ export function AddMemberPanel({ orgId, properties, isOwner }: { orgId: string; 
             </Select>
           </Field>
         </div>
+        <p className="-mt-2 text-[13px] text-muted">{ROLE_HELP[access.role]}</p>
         <Field label="Invitation email" htmlFor="email" error={errors.email}>
           <TextInput id="email" type="email" autoComplete="off" value={email} onChange={(e) => setEmail(e.target.value)} error={errors.email} placeholder="name@example.co.ke" aria-describedby={describedBy("email", { error: errors.email })} />
         </Field>
         <Field label="Phone" htmlFor="phone" optional>
           <TextInput id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
         </Field>
-        <AccessFields value={access} onChange={setAccess} properties={properties} isOwner={isOwner} propertyError={errors.property_ids} />
+        <AccessFields value={access} onChange={(v) => { setAccess(v); setReviewing(false); }} properties={properties} isOwner={isOwner} propertyError={errors.property_ids} />
         <p className="flex items-start gap-2 text-[13px] text-muted">
           <Icon name="lock" size={16} className="mt-0.5 shrink-0" />
-          {firstName} sets their own sign-in. You never see it. The invitation expires in 7 days.
+          {firstName ? `${firstName} sets` : "They set"} their own sign-in. You never see it. The invitation expires in 7 days.
         </p>
-        <Button type="submit" size="lg" pending={pending} pendingLabel="Sending">
-          Send invitation
-        </Button>
+        {reviewing ? <AuthoritySummary value={access} properties={properties} name={firstName} /> : null}
+        <div className="flex gap-2">
+          {reviewing ? <Button type="button" variant="secondary" size="lg" onClick={() => setReviewing(false)} className="flex-1">Change</Button> : null}
+          <Button type="submit" size="lg" pending={pending} pendingLabel="Sending" className="flex-[1.6]">
+            {reviewing ? "Send invitation" : "Review access"}
+          </Button>
+        </div>
       </form>
     </aside>
   );

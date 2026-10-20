@@ -74,3 +74,63 @@ export function AccessFields({
     </>
   );
 }
+
+/** What each role preset means. The switches stay the owner's explicit choice. */
+export const ROLE_HELP: Record<AccessInput["role"], string> = {
+  manager: "Runs the assigned properties day to day: tenancies, payments and listings. Can confirm rent records unless you turn that off.",
+  caretaker: "Records payments for a manager to confirm. Cannot confirm, correct or export.",
+  viewer: "Accountant or owner's representative: reads records and exports reports. Cannot change anything.",
+  agency_admin: "Works across every property and can manage staff, like you.",
+};
+
+const POWERS: Array<[keyof AccessState, string]> = [
+  ["can_enter_payments", "Enter payments and attach receipts"],
+  ["can_confirm", "Confirm rent records (final say)"],
+  ["can_correct", "Correct confirmed records"],
+  ["can_manage_tenancies", "Manage tenancies and rent charges"],
+  ["can_manage_listings", "Manage listings, enquiries and viewings"],
+  ["can_view_attachments", "View receipts and evidence"],
+  ["can_export", "Export and finalize reports"],
+];
+
+/**
+ * Plain summary of what will be granted, shown before anything is saved (IMP-14). With
+ * `before`, changes are marked. The database checks the same grant again on save.
+ */
+export function AuthoritySummary({ value, before, properties, name }: { value: AccessState; before?: AccessState; properties: Array<{ id: string; name: string }>; name: string }) {
+  const everywhere = value.role === "agency_admin" || value.all_properties;
+  const names = properties.filter((p) => value.property_ids.includes(p.id)).map((p) => p.name);
+  const scopeChanged =
+    !!before && (before.all_properties !== value.all_properties || before.role !== value.role || [...before.property_ids].sort().join() !== [...value.property_ids].sort().join());
+  const has = (a: AccessState, k: keyof AccessState) => a.role === "agency_admin" || !!a[k];
+  return (
+    <section aria-labelledby="authority" className="flex flex-col gap-3 rounded-[16px] border-[1.5px] border-ink bg-surface p-4">
+      <h3 id="authority" className="font-display text-[18px] font-bold">{name || "They"} will be able to</h3>
+      <div>
+        <p className={`text-[14px] font-semibold ${scopeChanged ? "text-primary" : ""}`}>{scopeChanged ? "Changed · " : ""}Properties</p>
+        <p className="text-[14px]">
+          {everywhere ? <>Every property, <strong>including ones you add later</strong></> : names.length ? names.join(", ") : "No properties yet"}
+        </p>
+      </div>
+      <ul className="flex flex-col gap-1 text-[14px]">
+        {POWERS.map(([k, label]) => {
+          const on = has(value, k);
+          const was = before ? has(before, k) : on;
+          return (
+            <li key={k} className={on !== was ? "font-semibold text-primary" : on ? "" : "text-muted"}>
+              <span aria-hidden="true">{on ? "✓" : "✗"} </span>
+              <span className="sr-only">{on ? "Yes: " : "No: "}</span>
+              {label}
+              {on !== was ? (on ? " · newly granted" : " · removed") : ""}
+            </li>
+          );
+        })}
+        <li className={value.role === "agency_admin" ? "" : "text-muted"}>
+          <span aria-hidden="true">{value.role === "agency_admin" ? "✓" : "✗"} </span>
+          <span className="sr-only">{value.role === "agency_admin" ? "Yes: " : "No: "}</span>Invite and manage staff
+        </li>
+      </ul>
+      {has(value, "can_confirm") ? <p className="text-[13px] text-muted">Their confirmation is final. You won&apos;t be asked to approve it again.</p> : null}
+    </section>
+  );
+}

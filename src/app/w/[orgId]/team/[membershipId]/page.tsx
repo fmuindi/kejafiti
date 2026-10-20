@@ -35,6 +35,7 @@ export default async function EditMemberPage({ params }: PageProps<"/w/[orgId]/t
         <p className="mt-1 text-[14.5px] text-muted">{m.email}</p>
       </div>
       <EditAccess
+        name={m.display_name}
         orgId={orgId}
         membershipId={membershipId}
         properties={properties.map((p) => ({ id: p.id, name: p.name }))}
