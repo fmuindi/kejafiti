@@ -56,7 +56,8 @@ export type WizardData = {
     viewing_instructions: string;
     house_rules: string;
   };
-  problems: string[];
+  /** Review checklist from listing_problem_items: required items block submission. */
+  issues: Array<{ code: string; message: string; step: number; field: string; required: boolean }>;
 };
 
 const STEPS = ["Location", "Home", "Costs", "Photos", "Availability", "Review"];
@@ -112,10 +113,21 @@ function SaveBadge({ state }: { state: SaveState }) {
   );
 }
 
-export function Wizard({ data, step }: { data: WizardData; step: number }) {
+export function Wizard({ data, step, focus, fromReview = false }: { data: WizardData; step: number; focus?: string; fromReview?: boolean }) {
   const router = useRouter();
   const base = `/w/${data.orgId}/listings/${data.listingId}`;
   const go = (s: number) => router.push(`${base}?step=${s}`, { scroll: true });
+  // Arriving from a review checklist link: focus the field that fixes it (IMP-13).
+  useEffect(() => {
+    if (!focus) return;
+    const t = setTimeout(() => {
+      const el = document.getElementById(focus);
+      el?.scrollIntoView({ block: "center" });
+      el?.focus();
+    }, 50);
+    return () => clearTimeout(t);
+  }, [focus, step]);
+  const review = fromReview ? () => go(6) : undefined;
 
   return (
     <div className="flex flex-col gap-5">
@@ -138,15 +150,15 @@ export function Wizard({ data, step }: { data: WizardData; step: number }) {
       </nav>
       {step === 1 ? <LocationStep data={data} onNext={() => go(2)} /> : null}
       {step === 2 ? <HomeStep data={data} onBack={() => go(1)} onNext={() => go(3)} /> : null}
-      {step === 3 ? <CostsStep data={data} onBack={() => go(2)} onNext={() => go(4)} /> : null}
-      {step === 4 ? <PhotoStep orgId={data.orgId} listingId={data.listingId} unitLabel={data.location.unit_label} initial={data.photos} onBack={() => go(3)} onNext={() => go(5)} /> : null}
-      {step === 5 ? <DetailsStep data={data} onBack={() => go(4)} onNext={() => go(6)} /> : null}
+      {step === 3 ? <CostsStep data={data} onBack={() => go(2)} onNext={() => go(4)} onReview={review} /> : null}
+      {step === 4 ? <PhotoStep orgId={data.orgId} listingId={data.listingId} unitLabel={data.location.unit_label} initial={data.photos} onBack={() => go(3)} onNext={() => go(5)} onReview={review} /> : null}
+      {step === 5 ? <DetailsStep data={data} onBack={() => go(4)} onNext={() => go(6)} onReview={review} /> : null}
       {step === 6 ? <ReviewStep data={data} onBack={() => go(5)} /> : null}
     </div>
   );
 }
 
-function StepNav({ onBack, onNext, nextLabel, pending, state }: { onBack?: () => void; onNext: () => void; nextLabel: string; pending?: boolean; state?: SaveState }) {
+function StepNav({ onBack, onNext, onReview, nextLabel, pending, state }: { onBack?: () => void; onNext: () => void; onReview?: () => void; nextLabel: string; pending?: boolean; state?: SaveState }) {
   return (
     <div className="safe-bottom sticky bottom-[58px] -mx-4 flex flex-col gap-2 border-t border-line bg-cream px-4 pt-3 md:static md:mx-0 md:border-0 md:p-0">
       {state ? <SaveBadge state={state} /> : null}
@@ -160,6 +172,11 @@ function StepNav({ onBack, onNext, nextLabel, pending, state }: { onBack?: () =>
           {nextLabel}
         </Button>
       </div>
+      {onReview ? (
+        <Button type="button" variant="dark" size="lg" onClick={onReview}>
+          Save and back to review
+        </Button>
+      ) : null}
       <p className="text-[12.5px] text-muted">You can leave and continue later. Publishing is always a separate final step.</p>
     </div>
   );
@@ -315,7 +332,7 @@ function HomeStep({ data, onBack, onNext }: { data: WizardData; onBack: () => vo
 // 3. Costs ---------------------------------------------------------------------------------
 const OTHER_KINDS = ["garbage", "security", "internet", "parking", "utility_deposit", "other_deposit", "agency_fee", "other"] as const;
 
-function CostsStep({ data, onBack, onNext }: { data: WizardData; onBack: () => void; onNext: () => void }) {
+function CostsStep({ data, onBack, onNext, onReview }: { data: WizardData; onBack: () => void; onNext: () => void; onReview?: () => void }) {
   const initService = data.costs.charges.find((c) => c.kind === "service_charge");
   const initWater = data.costs.charges.find((c) => c.kind === "water");
   const initPower = data.costs.charges.find((c) => c.kind === "electricity");
@@ -439,13 +456,14 @@ function CostsStep({ data, onBack, onNext }: { data: WizardData; onBack: () => v
         {period !== "month" ? <p className="mt-1 text-[13px] text-white/75">Rent per {period} isn&apos;t converted to months, so tenants see the rent and monthly charges separately.</p> : null}
         {!summary.complete ? <p className="mt-1 text-[13px] font-semibold text-[#ffd59a]">Total incomplete: a charge is not confirmed.</p> : null}
       </div>
-      <StepNav state={state} onBack={onBack} nextLabel="Continue to photos" onNext={async () => { if (validate() && (await saveNow())) onNext(); }} />
+      <StepNav state={state} onBack={onBack} nextLabel="Continue to photos" onNext={async () => { if (validate() && (await saveNow())) onNext(); }}
+        onReview={onReview ? async () => { if (validate() && (await saveNow())) onReview(); } : undefined} />
     </section>
   );
 }
 
 // 5. Availability and contact ------------------------------------------------------------
-function DetailsStep({ data, onBack, onNext }: { data: WizardData; onBack: () => void; onNext: () => void }) {
+function DetailsStep({ data, onBack, onNext, onReview }: { data: WizardData; onBack: () => void; onNext: () => void; onReview?: () => void }) {
   const [v, setV] = useState(data.details);
   const save = useCallback(async (x: typeof v) => saveDetails(data.orgId, data.listingId, x), [data.orgId, data.listingId]);
   const { state, saveNow } = useAutosave(v, save, true);
@@ -461,7 +479,7 @@ function DetailsStep({ data, onBack, onNext }: { data: WizardData; onBack: () =>
       <Field label="Description" htmlFor="description" optional>
         <TextArea id="description" rows={4} value={v.description} maxLength={4000} onChange={(e) => setV({ ...v, description: e.target.value })} />
       </Field>
-      <fieldset className="flex flex-col gap-2">
+      <fieldset id="contact" tabIndex={-1} className="flex flex-col gap-2 rounded-[12px] focus:ring-2 focus:ring-deep/40 focus:outline-none">
         <legend className="mb-1 text-[14px] font-semibold">How tenants can reach you</legend>
         <p className="text-[13px] text-muted">In-app messages are always on. Calls and WhatsApp happen outside nyumbani.</p>
         <Checkbox checked={v.contact_call} onChange={(e) => setV({ ...v, contact_call: e.target.checked })} label="Phone calls" />
@@ -478,13 +496,17 @@ function DetailsStep({ data, onBack, onNext }: { data: WizardData; onBack: () =>
       <Field label="House rules" htmlFor="house_rules" optional>
         <TextArea id="house_rules" rows={3} value={v.house_rules} onChange={(e) => setV({ ...v, house_rules: e.target.value })} />
       </Field>
-      <StepNav state={state} onBack={onBack} nextLabel="Review" onNext={async () => { if (await saveNow()) onNext(); }} />
+      <StepNav state={state} onBack={onBack} nextLabel="Review" onNext={async () => { if (await saveNow()) onNext(); }}
+        onReview={onReview ? async () => { if (await saveNow()) onReview(); } : undefined} />
     </section>
   );
 }
 
 // 6. Review --------------------------------------------------------------------------------
 function ReviewStep({ data, onBack }: { data: WizardData; onBack: () => void }) {
+  const base = `/w/${data.orgId}/listings/${data.listingId}`;
+  const required = data.issues.filter((i) => i.required);
+  const suggestions = data.issues.filter((i) => !i.required);
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -501,10 +523,25 @@ function ReviewStep({ data, onBack }: { data: WizardData; onBack: () => void }) 
   return (
     <section aria-labelledby="s6" className="flex flex-col gap-4">
       <h1 id="s6" className="font-display text-[26px] leading-[1.1] font-bold tracking-[-0.5px]">Review and submit</h1>
-      {data.problems.length ? (
+      {required.length ? (
         <Notice tone="waiting" title="Finish these before submitting">
           <ul className="list-disc pl-5">
-            {data.problems.map((p) => <li key={p}>{p}</li>)}
+            {required.map((p) => (
+              <li key={p.code}>
+                <Link href={`${base}?step=${p.step}&focus=${p.field}&from=review`} className="font-semibold underline">{p.message}</Link>
+              </li>
+            ))}
+          </ul>
+        </Notice>
+      ) : null}
+      {suggestions.length ? (
+        <Notice tone="info" title="Suggestions (optional)">
+          <ul className="list-disc pl-5">
+            {suggestions.map((p) => (
+              <li key={p.code}>
+                <Link href={`${base}?step=${p.step}&focus=${p.field}&from=review`} className="underline">{p.message}</Link>
+              </li>
+            ))}
           </ul>
         </Notice>
       ) : null}
@@ -534,7 +571,7 @@ function ReviewStep({ data, onBack }: { data: WizardData; onBack: () => void }) 
       <div className="flex gap-3">
         <Button variant="secondary" size="lg" onClick={onBack} className="flex-1">Back</Button>
         {canSubmit ? (
-          <Button size="lg" className="flex-[1.6]" pending={pending} pendingLabel="Submitting" disabled={data.problems.length > 0}
+          <Button size="lg" className="flex-[1.6]" pending={pending} pendingLabel="Submitting" disabled={required.length > 0}
             onClick={() => start(async () => {
               const r = await submitListing(data.orgId, data.listingId);
               if (!r.ok) return setError(r.message);

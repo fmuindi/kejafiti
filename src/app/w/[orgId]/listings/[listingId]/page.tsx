@@ -30,7 +30,8 @@ export default async function ListingWizardPage({ params, searchParams }: PagePr
   const property = l.properties as unknown as Record<string, unknown>;
   const photos = ((l.listing_photos as unknown as Array<Record<string, unknown>>) ?? []).sort((a, b) => Number(a.position) - Number(b.position));
   const urls = await signListingPhotos(supabase, photos.map((p) => (p.thumb_path as string | null) ?? (p.storage_path as string)));
-  const { data: problems } = await supabase.rpc("listing_problems", { p_listing: listingId });
+  // Same checks submit_listing applies, with the step and field that fix each one (IMP-13).
+  const { data: issues } = await supabase.rpc("listing_problem_items", { p_listing: listingId });
   const { data: org } = await supabase.from("organizations").select("contact_phone").eq("id", orgId).maybeSingle();
 
   const editable = ["draft", "needs_correction", "published", "paused"].includes(l.status);
@@ -98,7 +99,7 @@ export default async function ListingWizardPage({ params, searchParams }: PagePr
       viewing_instructions: l.viewing_instructions ?? "",
       house_rules: l.house_rules ?? "",
     },
-    problems: (problems ?? []) as string[],
+    issues: (issues ?? []) as unknown as WizardData["issues"],
   };
 
   return (
@@ -108,7 +109,7 @@ export default async function ListingWizardPage({ params, searchParams }: PagePr
       </Link>
       {l.status !== "draft" ? <ListingStatusPanel orgId={orgId} listingId={listingId} status={l.status} refId={l.ref} confirmedAt={l.availability_confirmed_at} reviewNote={l.review_note} /> : null}
       {editable ? (
-        <Wizard data={data} step={step} />
+        <Wizard data={data} step={step} focus={typeof sp.focus === "string" ? sp.focus : undefined} fromReview={sp.from === "review"} />
       ) : (
         <Notice tone="info" title={l.status === "under_review" ? "Waiting for review" : "This listing is closed"}>
           {l.status === "under_review"

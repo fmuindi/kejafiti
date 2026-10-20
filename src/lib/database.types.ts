@@ -1258,6 +1258,9 @@ isOneToOne: false
 "invite_member":
 { Args: { "p": Json,"p_org": string }; Returns: Json
                            },
+"listing_problem_items":
+{ Args: { "p_listing": string }; Returns: Json
+                           },
 "listing_problems":
 { Args: { "p_listing": string }; Returns: (string)[]
                            },

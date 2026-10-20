@@ -1,9 +1,10 @@
+-- IMP-13: the review checklist and submission use one set of checks.
 -- IMP-11: one cost definition. Monthly and move-in totals exist only for monthly prices,
 -- budgets compare monthly prices, and nothing is converted between periods.
 
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(8);
+select plan(13);
 
 insert into auth.users (id, email, raw_user_meta_data, aud, role, instance_id) values
   ('a6666666-0000-0000-0000-0000000000aa', 'owner6@example.test', '{"full_name":"Owner Six"}', 'authenticated', 'authenticated', '00000000-0000-0000-0000-000000000000'),
@@ -39,6 +40,24 @@ update public.listings set price_period = 'month' where id = (select v::uuid fro
 select is((select fixed_monthly_total::int from public.listings where id = (select v::uuid from ctx where k = 'nightly')), 2500,
   'Changing the price period recomputes the totals');
 update public.listings set price_period = 'night' where id = (select v::uuid from ctx where k = 'nightly');
+
+-- IMP-13: checklist items carry the step and field that fix them.
+select is((select jsonb_agg(i ->> 'code') from jsonb_array_elements(app.listing_problem_items((select v::uuid from ctx where k = 'monthly'))) i
+  where (i ->> 'required')::boolean), '["photos"]'::jsonb, 'IMP-13: the only missing item is photos');
+select is((select (i ->> 'step')::int || ' ' || (i ->> 'field') from jsonb_array_elements(app.listing_problem_items((select v::uuid from ctx where k = 'monthly'))) i
+  where i ->> 'code' = 'photos'), '4 photos', 'IMP-13: it points at step 4, the photo controls');
+select is(app.listing_problems((select v::uuid from ctx where k = 'monthly')), array['Add at least 4 photos of this unit.'],
+  'IMP-13: submission sees the same required item');
+insert into public.listing_charges (listing_id, kind, amount, frequency, billing) values
+  ((select v::uuid from ctx where k = 'monthly'), 'garbage', null, 'monthly', 'fixed');
+select is((select count(*)::int from jsonb_array_elements(app.listing_problem_items((select v::uuid from ctx where k = 'monthly'))) i
+  where i ->> 'code' = 'totals' and not (i ->> 'required')::boolean), 1, 'IMP-13: an unconfirmed charge is a suggestion, not a blocker');
+delete from public.listing_charges where listing_id = (select v::uuid from ctx where k = 'monthly') and kind = 'garbage';
+select set_config('request.jwt.claims', '{"sub":"c6666666-0000-0000-0000-0000000000cc","role":"authenticated"}', true);
+set local role authenticated;
+select throws_ok($$ select public.listing_problem_items((select v::uuid from ctx where k = 'monthly')) $$, 'P0001', null,
+  'IMP-13: someone without listing access cannot read the checklist');
+reset role;
 
 -- Publish both (rows only; photos and review as in 03_marketplace).
 insert into public.listing_photos (listing_id, org_id, storage_path, position)
