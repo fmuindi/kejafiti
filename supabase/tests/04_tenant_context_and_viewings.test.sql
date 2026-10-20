@@ -4,7 +4,7 @@
 
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(22);
+select plan(25);
 
 insert into auth.users (id, email, raw_user_meta_data, aud, role, instance_id) values
   ('a2222222-0000-0000-0000-0000000000aa', 'owner4@example.test', '{"full_name":"Wanjiru K"}', 'authenticated', 'authenticated', '00000000-0000-0000-0000-000000000000'),
@@ -60,12 +60,24 @@ select is((select listing_ref from public.my_viewings()), (select v from ctx whe
 select is((select ref from public.my_saved_listings()), (select v from ctx where k = 'ref'), 'IMP-02: the saved home links to the listing reference');
 select is((select meeting_instructions from public.my_viewings()), null, 'Meeting instructions stay hidden until the viewing is confirmed');
 
+-- IMP-12: a private note on the saved home.
+update public.saved_listings set note = 'Near my office' where user_id = 'b2222222-0000-0000-0000-0000000000bb';
+select is((select note from public.my_saved_listings()), 'Near my office', 'IMP-12: the tenant sees their own note');
+
 -- An unrelated tenant gets nothing.
 reset role;
 select set_config('request.jwt.claims', '{"sub":"b3333333-0000-0000-0000-0000000000bb","role":"authenticated"}', true);
 set local role authenticated;
 select is((select count(*)::int from public.my_conversations()) + (select count(*)::int from public.my_viewings())
   + (select count(*)::int from public.my_saved_listings()), 0, 'IMP-01/02: another tenant sees no conversations, viewings or saved homes');
+select is((select count(*)::int from public.saved_listings where note is not null), 0,
+  'IMP-12: another tenant cannot read someone else''s saved homes or notes');
+update public.saved_listings set note = 'hijack';
+-- Check the stored note with full visibility, then continue as the other tenant.
+reset role;
+select is((select note from public.saved_listings where user_id = 'b2222222-0000-0000-0000-0000000000bb'), 'Near my office',
+  'IMP-12: and cannot change them; the owner''s note is untouched');
+set local role authenticated;
 select is((select count(*)::int from public.conversations where id = (select v::uuid from ctx where k = 'conv')), 0,
   'IMP-01: another tenant cannot open the conversation by id');
 select is((select count(*)::int from public.my_conversations((select v::uuid from ctx where k = 'org'))), 0,

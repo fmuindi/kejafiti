@@ -20,6 +20,20 @@ export async function toggleSaved(ref: string, save: boolean): Promise<ActionRes
   return { ok: true };
 }
 
+/** Private note on one of the caller's saved homes (IMP-12). Only their own row is touched. */
+export async function saveListingNote(ref: string, note: string): Promise<ActionResult> {
+  const user = await getSessionUser();
+  if (!user) return { ok: false, message: "Sign in to keep notes.", code: "not_signed_in" };
+  const supabase = await createClient();
+  const { data: saved } = await supabase.rpc("my_saved_listings");
+  const row = (saved ?? []).find((s) => s.ref === ref);
+  if (!row) return { ok: false, message: "Save this home first to keep a note on it." };
+  const { error } = await supabase.from("saved_listings").update({ note: note.trim().slice(0, 500) || null }).eq("user_id", user.id).eq("listing_id", row.listing_id);
+  if (error) return fail(error);
+  revalidatePath("/saved/compare");
+  return { ok: true };
+}
+
 export async function saveSearch(label: string, query: string, frequency: "instant" | "daily" | "off"): Promise<ActionResult> {
   const user = await getSessionUser();
   if (!user) return { ok: false, message: "Sign in to get alerts for this search.", code: "not_signed_in" };

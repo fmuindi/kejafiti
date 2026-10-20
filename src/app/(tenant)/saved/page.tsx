@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ComparePicker } from "@/components/tenant/compare-picker";
 import { DeleteSavedSearch } from "@/components/tenant/delete-saved-search";
 import { ListingCard, type SearchRow } from "@/components/tenant/listing-card";
 import { ButtonLink, EmptyState, PageTitle } from "@/components/ui/primitives";
@@ -77,6 +78,10 @@ export default async function SavedPage() {
             <EmptyState title="No saved homes yet" icon="heart" action={<ButtonLink href="/search">Find a home</ButtonLink>}>Tap the heart on any listing to save it here.</EmptyState>
           </div>
         ) : (
+          <>
+          <div className="mt-3">
+            <ComparePicker homes={cards.map((c) => ({ ref: c.ref, label: `${c.title ?? c.area} · KES ${(c.fixed_monthly_total ?? c.rent_amount).toLocaleString("en-KE")}` }))} />
+          </div>
           <ul className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {cards.map((c) => (
               <li key={c.ref}>
@@ -84,6 +89,7 @@ export default async function SavedPage() {
               </li>
             ))}
           </ul>
+          </>
         )}
         {gone.length ? (
           <ul className="mt-4 flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">

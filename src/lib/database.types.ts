@@ -849,14 +849,14 @@ isOneToOne: false
                   ]
                 },"saved_listings": {
                   Row: {
-                    "created_at": string,"listing_id": string,"user_id": string
+                    "created_at": string,"listing_id": string,"note": string | null,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"listing_id": string,"user_id": string
+                    "created_at"?: string,"listing_id": string,"note"?: string | null,"user_id": string
                   }
                   Update: {
-                    "created_at"?: string,"listing_id"?: string,"user_id"?: string
+                    "created_at"?: string,"listing_id"?: string,"note"?: string | null,"user_id"?: string
                   }
                   Relationships: [
                     {
@@ -1285,7 +1285,7 @@ isOneToOne: false
                            },
 "my_saved_listings":
 { Args: Record<PropertyKey, never>; Returns: {
-              "area": string,"let_on": string,"listing_id": string,"ref": string,"saved_at": string,"status": string,"title": string
+              "area": string,"let_on": string,"listing_id": string,"note": string,"ref": string,"saved_at": string,"status": string,"title": string
             }[]
                            },
 "my_viewings":
