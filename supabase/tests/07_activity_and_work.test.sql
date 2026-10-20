@@ -3,7 +3,7 @@
 
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(13);
+select plan(19);
 
 insert into auth.users (id, email, raw_user_meta_data, aud, role, instance_id) values
   ('a7777777-0000-0000-0000-0000000000aa', 'owner7@example.test', '{"full_name":"Owner Seven"}', 'authenticated', 'authenticated', '00000000-0000-0000-0000-000000000000'),
@@ -105,6 +105,27 @@ select ok((select last_active_at is not null from public.team_overview((select v
   'IMP-15: recording payments counts as the caretaker''s last action');
 select is((select last_sign_in_at from public.team_overview((select v::uuid from ctx where k = 'org')) where display_name = 'Carl Caretaker'), null::timestamptz,
   'IMP-15: last sign-in comes from Auth and is shown as never here, not guessed from activity');
+reset role;
+
+-- IMP-18: reports carry the manager's commentary inside the frozen version.
+select set_config('request.jwt.claims', '{"sub":"b7777777-0000-0000-0000-0000000000bb","role":"authenticated"}', true);
+set local role authenticated;
+select is((public.report_prefinalize('a7000000-0000-0000-0000-000000000001', '2026-09-01') ->> 'pending_count')::int, 0,
+  'IMP-18: the pre-finalize review counts entries still awaiting confirmation');
+select is((public.finalize_report('a7000000-0000-0000-0000-000000000001', '2026-09-01', '', null,
+  '{"changes":"First month on the platform","issues":"S1 owes 6,000","next_actions":"Call S1"}'::jsonb) ->> 'version')::int, 1,
+  'IMP-18: a manager with confirm rights finalizes without a second approval');
+select is((select commentary ->> 'issues' from public.report_versions where property_id = 'a7000000-0000-0000-0000-000000000001'), 'S1 owes 6,000',
+  'IMP-18: the commentary is stored in the finalized version');
+select throws_like($$ select public.finalize_report('a7000000-0000-0000-0000-000000000001', '2026-09-01', '', null, null) $$, '%what changed%',
+  'IMP-18: a revised version needs a reason');
+select is((public.report_prefinalize('a7000000-0000-0000-0000-000000000001', '2026-09-01') ->> 'previous_version')::int, 1,
+  'IMP-18: the review shows the version that will stay as it was');
+reset role;
+select set_config('request.jwt.claims', '{"sub":"c7777777-0000-0000-0000-0000000000cc","role":"authenticated"}', true);
+set local role authenticated;
+select throws_like($$ select public.finalize_report('a7000000-0000-0000-0000-000000000001', '2026-09-01', '', 'try', null) $$, '%permission%',
+  'IMP-18: a caretaker cannot finalize reports');
 reset role;
 
 -- Caretaker removed from the property: their work leaves their list (access now, not then).

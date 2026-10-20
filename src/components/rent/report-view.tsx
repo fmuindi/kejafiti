@@ -18,7 +18,10 @@ const AGE: Record<string, string> = { "0_30": "Up to 30 days", "31_60": "31–60
 
 // One rendering for the draft preview, finalized versions and the printable PDF, so
 // everything shown comes from the same snapshot and calculation rules.
-export function ReportView({ r, meta }: { r: ReportSnapshot; meta: { status: string; preparedBy?: string; finalizedAt?: string; notes?: string | null; changeNote?: string | null } }) {
+export type ReportCommentary = { changes?: string; issues?: string; next_actions?: string } | null;
+
+export function ReportView({ r, meta }: { r: ReportSnapshot; meta: { status: string; preparedBy?: string; finalizedAt?: string; notes?: string | null; changeNote?: string | null; commentary?: ReportCommentary } }) {
+  const c = meta.commentary;
   const s = r.summary;
   return (
     <article className="flex flex-col gap-5 rounded-[18px] border border-line bg-surface p-5 print:border-0 print:p-0">
@@ -43,6 +46,16 @@ export function ReportView({ r, meta }: { r: ReportSnapshot; meta: { status: str
         </dl>
       ) : null}
       {meta.notes ? <p className="rounded-[12px] border border-line p-3 text-[14px]"><strong>Notes:</strong> {meta.notes}</p> : null}
+      {c && (c.changes || c.issues || c.next_actions) ? (
+        <section aria-label="Manager's commentary" className="grid gap-3 rounded-[12px] border border-line p-3 text-[14px] sm:grid-cols-3">
+          {[["What changed", c.changes], ["Unresolved issues", c.issues], ["Next actions", c.next_actions]].map(([k, v]) => (
+            <div key={k}>
+              <p className="font-semibold">{k}</p>
+              <p className="whitespace-pre-line text-muted">{v || "None noted"}</p>
+            </div>
+          ))}
+        </section>
+      ) : null}
       <section>
         <h3 className="font-semibold">Unit rent register (KSh)</h3>
         <div className="mt-2 overflow-x-auto">

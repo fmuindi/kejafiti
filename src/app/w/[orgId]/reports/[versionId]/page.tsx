@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PrintButton } from "@/components/rent/print-button";
-import { ReportView, type ReportSnapshot } from "@/components/rent/report-view";
+import { ReportView, type ReportCommentary, type ReportSnapshot } from "@/components/rent/report-view";
 import { Icon } from "@/components/ui/icon";
 import { requireWorkspace } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "Report version" };
 // the browser's print dialog, so the PDF matches exactly what is shown.
 export default async function ReportVersionPage({ params }: PageProps<"/w/[orgId]/reports/[versionId]">) {
   const { orgId, versionId } = await params;
-  await requireWorkspace(orgId, `/w/${orgId}/reports`);
+  const ws = await requireWorkspace(orgId, `/w/${orgId}/reports`);
   const supabase = await createClient();
   const { data: v } = await supabase.from("report_versions").select("*").eq("id", versionId).eq("org_id", orgId).maybeSingle();
   if (!v) notFound();
@@ -25,11 +25,11 @@ export default async function ReportVersionPage({ params }: PageProps<"/w/[orgId
           <Icon name="chevronLeft" /> Reports
         </Link>
         <div className="flex gap-2">
-          <a href={`/api/export/report?version=${v.id}`} className="inline-flex min-h-11 items-center gap-1.5 rounded-[12px] border-[1.5px] border-ink px-4 font-semibold"><Icon name="download" size={16} /> CSV</a>
+          {ws.can_export ? <a href={`/api/export/report?version=${v.id}`} className="inline-flex min-h-11 items-center gap-1.5 rounded-[12px] border-[1.5px] border-ink px-4 font-semibold"><Icon name="download" size={16} /> CSV of v{v.version}</a> : null}
           <PrintButton />
         </div>
       </div>
-      <ReportView r={v.snapshot as unknown as ReportSnapshot} meta={{ status: `Final v${v.version}`, preparedBy: who?.full_name ?? "staff", finalizedAt: v.finalized_at, notes: v.notes, changeNote: v.change_note }} />
+      <ReportView r={v.snapshot as unknown as ReportSnapshot} meta={{ status: `Final v${v.version}`, preparedBy: who?.full_name ?? "staff", finalizedAt: v.finalized_at, notes: v.notes, changeNote: v.change_note, commentary: v.commentary as ReportCommentary }} />
     </div>
   );
 }

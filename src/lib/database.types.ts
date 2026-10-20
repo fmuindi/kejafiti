@@ -817,14 +817,14 @@ isOneToOne: false
                   ]
                 },"report_versions": {
                   Row: {
-                    "change_note": string | null,"finalized_at": string,"id": string,"notes": string | null,"org_id": string,"period_start": string,"prepared_by": string,"property_id": string,"snapshot": NonNullable<Json>,"version": number
+                    "change_note": string | null,"commentary": Json | null,"finalized_at": string,"id": string,"notes": string | null,"org_id": string,"period_start": string,"prepared_by": string,"property_id": string,"snapshot": NonNullable<Json>,"version": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "change_note"?: string | null,"finalized_at"?: string,"id"?: string,"notes"?: string | null,"org_id": string,"period_start": string,"prepared_by": string,"property_id": string,"snapshot": NonNullable<Json>,"version": number
+                    "change_note"?: string | null,"commentary"?: Json | null,"finalized_at"?: string,"id"?: string,"notes"?: string | null,"org_id": string,"period_start": string,"prepared_by": string,"property_id": string,"snapshot": NonNullable<Json>,"version": number
                   }
                   Update: {
-                    "change_note"?: string | null,"finalized_at"?: string,"id"?: string,"notes"?: string | null,"org_id"?: string,"period_start"?: string,"prepared_by"?: string,"property_id"?: string,"snapshot"?: NonNullable<Json>,"version"?: number
+                    "change_note"?: string | null,"commentary"?: Json | null,"finalized_at"?: string,"id"?: string,"notes"?: string | null,"org_id"?: string,"period_start"?: string,"prepared_by"?: string,"property_id"?: string,"snapshot"?: NonNullable<Json>,"version"?: number
                   }
                   Relationships: [
                     {
@@ -1241,7 +1241,7 @@ isOneToOne: false
 { Args: { "p_end_date": string,"p_reason": string,"p_tenancy": string,"p_unit_occupancy"?: string }; Returns: undefined
                            },
 "finalize_report":
-{ Args: { "p_change_note"?: string,"p_notes": string,"p_period": string,"p_property": string }; Returns: Json
+{ Args: { "p_change_note"?: string,"p_commentary"?: Json,"p_notes": string,"p_period": string,"p_property": string }; Returns: Json
                            },
 "finish_delivery_task":
 { Args: { "p_error": string,"p_ok": boolean,"p_provider_ref": string,"p_retryable"?: boolean,"p_task": string }; Returns: undefined
@@ -1339,6 +1339,9 @@ isOneToOne: false
                            },
 "report_listing":
 { Args: { "p_details": string,"p_reason": string,"p_ref": string }; Returns: string
+                           },
+"report_prefinalize":
+{ Args: { "p_period": string,"p_property": string }; Returns: Json
                            },
 "request_viewing":
 { Args: { "p_client_ref": string,"p_note": string,"p_ref": string,"p_start": string }; Returns: string
