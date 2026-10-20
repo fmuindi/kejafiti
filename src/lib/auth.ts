@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -18,8 +19,26 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
 
 export async function requireUser(next: string): Promise<SessionUser> {
   const user = await getSessionUser();
-  if (!user) redirect(`/sign-in?next=${encodeURIComponent(next)}`);
+  if (!user) redirect(`/sign-in?next=${encodeURIComponent(await returnPath(next))}`);
   return user;
+}
+
+/**
+ * Where sign-in should bring the person back to. A server action runs from the page the
+ * person is on, so its session expiring returns them to that page (with its query, e.g.
+ * the rent form for one tenancy), where their unsent draft is offered again (IMP-20).
+ */
+async function returnPath(fallback: string): Promise<string> {
+  const h = await headers();
+  if (!h.has("next-action")) return fallback;
+  try {
+    const ref = new URL(h.get("referer") ?? "");
+    const host = h.get("x-forwarded-host") ?? h.get("host");
+    if (ref.host !== host || ref.pathname.startsWith("/sign-in")) return fallback;
+    return ref.pathname + ref.search;
+  } catch {
+    return fallback;
+  }
 }
 
 export const getProfile = cache(async () => {
