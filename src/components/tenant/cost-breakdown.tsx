@@ -30,10 +30,12 @@ export function CostBreakdown({
   pricePeriod: string;
   priceBasis: string;
 }) {
-  const c = computeCosts({ rent, depositAmount, depositMonths, charges });
+  const c = computeCosts({ rent, depositAmount, depositMonths, charges, pricePeriod });
   const period = PERIOD_LABEL[pricePeriod] ?? pricePeriod;
   const basis = PRICE_BASIS_LABEL[priceBasis];
-  const periodWord = period === "month" ? "monthly" : `per ${period}`;
+  // Rent per week, night or semester is never added to monthly charges (IMP-11).
+  const monthlyPrice = pricePeriod === "month";
+  const monthlyCharges = c.monthlyLines.reduce((s, l) => s + (l.amount ?? 0), 0);
 
   return (
     <section aria-labelledby="costs" className="overflow-hidden rounded-[20px] border border-line bg-surface">
@@ -49,7 +51,11 @@ export function CostBreakdown({
           {c.monthlyLines.map((l) => (
             <Row key={l.label} label={l.label} value={l.amount === null ? "Not confirmed" : formatAmount(l.amount)} />
           ))}
-          <Row label={`Fixed ${periodWord} total`} value={formatAmount(c.fixedMonthly)} strong />
+          {monthlyPrice ? (
+            <Row label="Fixed monthly total" value={formatAmount(c.fixedMonthly)} strong />
+          ) : c.monthlyLines.length ? (
+            <Row label="Fixed monthly charges" value={formatAmount(monthlyCharges)} strong />
+          ) : null}
         </dl>
       </div>
       <div className="bg-ink px-4 py-3 text-white">
@@ -61,20 +67,28 @@ export function CostBreakdown({
             </dt>
             <dd className="font-mono text-[14.5px]">{formatAmount(c.deposit)}</dd>
           </div>
-          <div className="flex items-baseline justify-between gap-4 py-1.5">
-            <dt className="text-[14.5px]">First {period}{c.monthlyLines.length ? " (rent + charges)" : ""}</dt>
-            <dd className="font-mono text-[14.5px]">{formatAmount(c.fixedMonthly)}</dd>
-          </div>
+          {monthlyPrice ? (
+            <div className="flex items-baseline justify-between gap-4 py-1.5">
+              <dt className="text-[14.5px]">First month{c.monthlyLines.length ? " (rent + charges)" : ""}</dt>
+              <dd className="font-mono text-[14.5px]">{formatAmount(c.fixedMonthly)}</dd>
+            </div>
+          ) : null}
           {c.oneOffLines.map((l) => (
             <div key={l.label} className="flex items-baseline justify-between gap-4 py-1.5">
               <dt className="text-[14.5px]">{l.label}</dt>
               <dd className="font-mono text-[14.5px]">{l.amount === null ? "Not confirmed" : formatAmount(l.amount)}</dd>
             </div>
           ))}
-          <div className="flex items-baseline justify-between gap-4 pt-2.5">
-            <dt className="font-semibold">Move-in total</dt>
-            <dd className="font-display text-[26px] font-extrabold">{formatAmount(c.moveIn)}</dd>
-          </div>
+          {monthlyPrice ? (
+            <div className="flex items-baseline justify-between gap-4 pt-2.5">
+              <dt className="font-semibold">Move-in total</dt>
+              <dd className="font-display text-[26px] font-extrabold">{formatAmount(c.moveIn)}</dd>
+            </div>
+          ) : (
+            <p className="pt-2.5 text-[14px]">
+              No move-in total: rent is charged per {period} and charges are monthly, and we don&apos;t convert between them. Confirm your first payment with the advertiser.
+            </p>
+          )}
         </dl>
         {!c.complete ? (
           <p className="mt-1 text-[13px] font-semibold text-[#ffd59a]">

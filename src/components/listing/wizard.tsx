@@ -341,7 +341,7 @@ function CostsStep({ data, onBack, onNext }: { data: WizardData; onBack: () => v
   ];
   const depositMonths = deposit === "other" ? null : Number(deposit);
   const depositAmt = deposit === "other" ? parseAmount(depositAmount) : null;
-  const summary = computeCosts({ rent: rentNum && Number.isFinite(rentNum) ? rentNum : null, depositMonths, depositAmount: depositAmt && Number.isFinite(depositAmt) ? depositAmt : deposit === "other" ? null : null, charges });
+  const summary = computeCosts({ rent: rentNum && Number.isFinite(rentNum) ? rentNum : null, depositMonths, depositAmount: depositAmt && Number.isFinite(depositAmt) ? depositAmt : deposit === "other" ? null : null, charges, pricePeriod: period });
 
   const payload = { rent_amount: rentNum && Number.isFinite(rentNum) ? rentNum : null, price_period: period, price_basis: basis, deposit_months: depositMonths, deposit_amount: deposit === "other" && depositAmt !== null && Number.isFinite(depositAmt) ? depositAmt : null, charges };
   const save = useCallback(async (x: typeof payload) => saveCosts(data.orgId, data.listingId, x), [data.orgId, data.listingId]);
@@ -432,8 +432,11 @@ function CostsStep({ data, onBack, onNext }: { data: WizardData; onBack: () => v
       <div className="rounded-[16px] bg-ink p-4 text-white" aria-live="polite">
         <p className="text-[13px] text-white/75">Tenants will see</p>
         <p className="mt-1 font-display text-[22px] font-extrabold">
-          KES {formatAmount(summary.fixedMonthly)} /{period === "month" ? "mo" : period} · move-in {formatAmount(summary.moveIn)}
+          {period === "month"
+            ? `KES ${formatAmount(summary.fixedMonthly)} /mo · move-in ${formatAmount(summary.moveIn)}`
+            : `KES ${formatAmount(rentNum ?? 0)} / ${period} · no monthly or move-in total`}
         </p>
+        {period !== "month" ? <p className="mt-1 text-[13px] text-white/75">Rent per {period} isn&apos;t converted to months, so tenants see the rent and monthly charges separately.</p> : null}
         {!summary.complete ? <p className="mt-1 text-[13px] font-semibold text-[#ffd59a]">Total incomplete: a charge is not confirmed.</p> : null}
       </div>
       <StepNav state={state} onBack={onBack} nextLabel="Continue to photos" onNext={async () => { if (validate() && (await saveNow())) onNext(); }} />
@@ -486,7 +489,7 @@ function ReviewStep({ data, onBack }: { data: WizardData; onBack: () => void }) 
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
-  const c = computeCosts({ rent: data.costs.rent_amount, depositAmount: data.costs.deposit_amount, depositMonths: data.costs.deposit_months, charges: data.costs.charges });
+  const c = computeCosts({ rent: data.costs.rent_amount, depositAmount: data.costs.deposit_amount, depositMonths: data.costs.deposit_months, charges: data.costs.charges, pricePeriod: data.costs.price_period });
   const canSubmit = ["draft", "needs_correction"].includes(data.status);
   if (done) {
     return (
@@ -510,7 +513,7 @@ function ReviewStep({ data, onBack }: { data: WizardData; onBack: () => void }) 
           ["Title", data.details.title || "Not set"],
           ["Area", [data.location.area, data.location.road].filter(Boolean).join(", ") || "Not set"],
           ["Unit", data.location.unit_label],
-          ["Monthly total", c.fixedMonthly === null ? "Rent not set" : `KES ${formatAmount(c.fixedMonthly)}${c.complete ? "" : " (incomplete)"}`],
+          ["Monthly total", data.costs.rent_amount === null ? "Rent not set" : c.fixedMonthly === null ? `Priced per ${data.costs.price_period}, no monthly total` : `KES ${formatAmount(c.fixedMonthly)}${c.complete ? "" : " (incomplete)"}`],
           ["Move-in total", c.moveIn === null ? "—" : `KES ${formatAmount(c.moveIn)}`],
           ["Photos", `${data.photos.length}`],
           ["Available from", data.details.available_from ?? "Not set"],

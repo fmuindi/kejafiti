@@ -133,3 +133,22 @@ export function describeSearch(p: SearchParams): { title: string; subtitle: stri
 export function factLabel(key: string) {
   return FACTS.find((f) => f.key === key)?.label ?? key;
 }
+
+// Return context for a listing opened from results (IMP-09). The listing URL carries
+// back=<search query> or back=saved; it is re-parsed so only valid filters survive and no
+// free-form value is ever followed.
+export function listingHref(ref: string, back?: string) {
+  return `/homes/${ref}${back !== undefined ? `?back=${encodeURIComponent(back)}` : ""}`;
+}
+
+export function backFromListing(back: string | string[] | undefined, ref: string): { href: string; label: string } {
+  const v = Array.isArray(back) ? back[0] : back;
+  if (v === "saved") return { href: `/saved#home-${ref}`, label: "Back to saved homes" };
+  if (v === undefined) return { href: "/search", label: "Search homes" };
+  // type and must repeat, so collect every value rather than the last one.
+  const params = new URLSearchParams(v);
+  const raw: Record<string, string[]> = {};
+  for (const k of new Set(params.keys())) raw[k] = params.getAll(k);
+  const query = toQuery(parseSearch(raw));
+  return { href: `/search${query ? `?${query}` : ""}#home-${ref}`, label: query ? "Back to results" : "Back to search" };
+}

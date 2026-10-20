@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { cx } from "@/components/ui/primitives";
-import { ADVERTISER_ROLE_LABEL, PERIOD_LABEL, PRICE_BASIS_LABEL, layoutLabel } from "@/lib/listing/catalog";
-import { chargeSummaryLine, type ListingCharge } from "@/lib/listing/costs";
-import { formatAmount } from "@/lib/money";
+import { ADVERTISER_ROLE_LABEL, PRICE_BASIS_LABEL, layoutLabel } from "@/lib/listing/catalog";
+import { cardPrice, type ListingCharge } from "@/lib/listing/costs";
+import { listingHref } from "@/lib/listing/search";
 import { daysSince, formatDate } from "@/lib/dates";
 import { SaveButton } from "./save-button";
 
@@ -30,6 +30,9 @@ export type SearchRow = {
   cover_path: string | null;
   photo_count: number;
   unconfirmed_match: boolean;
+  fixed_monthly_total: number | null;
+  move_in_total: number | null;
+  totals_complete: boolean;
   /** Set on a place search: km from the picked place to the home's approximate position. */
   distance_km: number | null;
 };
@@ -70,20 +73,24 @@ export function ListingCard({
   saved,
   signedIn,
   returnTo,
+  back,
 }: {
   row: SearchRow;
   photoUrl?: string;
   saved: boolean;
   signedIn: boolean;
   returnTo: string;
+  /** Where the listing's back link returns: a search query string, or "saved". */
+  back?: string;
 }) {
   const age = daysSince(row.availability_confirmed_at);
   const stale = age !== null && age > 10;
   const basis = PRICE_BASIS_LABEL[row.price_basis];
   const title = row.title ?? `${layoutLabel(row)} · ${row.area}`;
   const chips = factChips(row);
+  const price = cardPrice(row);
   return (
-    <article className="relative flex flex-col overflow-hidden rounded-[20px] border border-line bg-surface">
+    <article id={`home-${row.ref}`} className="relative flex scroll-mt-28 flex-col overflow-hidden rounded-[20px] border border-line bg-surface">
       <div className="relative aspect-[16/10] bg-cool">
         {photoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -104,17 +111,20 @@ export function ListingCard({
         </div>
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
-        <p>
-          <span className="font-display text-[24px] font-extrabold tracking-[-0.4px]">KES {formatAmount(row.rent_amount)}</span>
-          <span className="text-[14px] text-muted">
-            {" "}
-            / {PERIOD_LABEL[row.price_period] ?? row.price_period}
-            {basis ? ` ${basis}` : ""}
-          </span>
-        </p>
-        <p className="-mt-1 text-[13px] text-muted">{chargeSummaryLine(row.charges) || "No other monthly charges listed"}</p>
+        <div>
+          <p>
+            <span className="font-display text-[24px] font-extrabold tracking-[-0.4px]">{price.headline}</span>
+            <span className="text-[14px] text-muted">
+              {" "}
+              {price.headlineUnit}
+              {basis ? ` ${basis}` : ""}
+            </span>
+          </p>
+          {price.lines.map((l) => <p key={l} className="text-[13px] text-muted">{l}</p>)}
+          {price.warning ? <p className="text-[13px] font-semibold text-waiting-strong">{price.warning}</p> : null}
+        </div>
         <h3 className="text-[15.5px] leading-snug font-semibold">
-          <Link href={`/homes/${row.ref}`} className="after:absolute after:inset-0 hover:underline">
+          <Link href={listingHref(row.ref, back)} className="after:absolute after:inset-0 hover:underline">
             {title}
           </Link>
           <span className="font-normal text-muted">

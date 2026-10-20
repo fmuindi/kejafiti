@@ -5,6 +5,7 @@ import { ListingCard, type SearchRow } from "@/components/tenant/listing-card";
 import { NoResults } from "@/components/tenant/no-results";
 import { RememberSearch } from "@/components/tenant/remember-search";
 import { SaveSearchButton } from "@/components/tenant/save-search";
+import { ResultsLocation } from "@/components/tenant/results-location";
 import { RadiusSelect, SortSelect } from "@/components/tenant/sort-select";
 import { Icon } from "@/components/ui/icon";
 import { Notice, cx } from "@/components/ui/primitives";
@@ -12,6 +13,7 @@ import { getSessionUser } from "@/lib/auth";
 import { CATEGORIES } from "@/lib/listing/catalog";
 import { PAGE_SIZE, describeSearch, factLabel, parseSearch, toQuery, toRpcParams, type SearchParams } from "@/lib/listing/search";
 import { formatAmount } from "@/lib/money";
+import { PLACES_ENABLED } from "@/lib/places";
 import { signListingPhotos } from "@/lib/storage";
 import { createClient } from "@/lib/supabase/server";
 
@@ -60,6 +62,16 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
   return (
     <div className="mx-auto max-w-[1360px] px-4 pt-4 pb-10 md:px-6 md:pt-6">
       <RememberSearch label={`${p.q ?? "Anywhere"} · ${subtitle}`} query={query} />
+      <div className="mb-3 max-w-xl">
+        <ResultsLocation
+          placesEnabled={PLACES_ENABLED}
+          q={p.q}
+          lat={p.lat}
+          lng={p.lng}
+          r={p.r}
+          keep={[...new URLSearchParams(toQuery({ ...p, q: undefined, lat: undefined, lng: undefined, page: 1 })).entries()]}
+        />
+      </div>
       <div className="sticky top-0 z-20 -mx-4 border-b border-line bg-cream/95 px-4 pt-1 pb-3 backdrop-blur md:static md:mx-0 md:border-0 md:bg-transparent md:px-0">
         <div className="flex items-center gap-3">
           <Link href="/" aria-label="Back to Explore" className="grid size-10 place-items-center rounded-full md:hidden">
@@ -129,6 +141,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
               {total} home{total === 1 ? "" : "s"}
             </strong>{" "}
             match.
+            {p.max || p.min ? <span className="text-muted"> Budgets compare homes priced per month.</span> : null}
             {extra > 0 ? (
               <>
                 {" "}
@@ -143,7 +156,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
             {rows.map((r) => (
               <li key={r.ref} className="flex">
                 <div className="w-full">
-                  <ListingCard row={r} photoUrl={r.cover_path ? photos.get(r.cover_path) : undefined} saved={savedRefs.has(r.ref)} signedIn={!!user} returnTo={returnTo} />
+                  <ListingCard row={r} photoUrl={r.cover_path ? photos.get(r.cover_path) : undefined} saved={savedRefs.has(r.ref)} signedIn={!!user} returnTo={returnTo} back={query} />
                 </div>
               </li>
             ))}
