@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { saveCosts, saveDetails, saveHome, saveLocation, submitListing } from "@/app/w/[orgId]/listings/actions";
-import { Checkbox, ChoiceChips, Field, MoneyInput, Select, TextArea, TextInput } from "@/components/ui/form";
+import { Checkbox, ChoiceChips, Field, MoneyInput, Select, TextArea, TextInput, textInputClass } from "@/components/ui/form";
 import { Icon } from "@/components/ui/icon";
+import { PlaceAutocomplete } from "@/components/ui/place-autocomplete";
 import { Button, Notice, cx } from "@/components/ui/primitives";
 import { EDITABLE_FACTS, STYLE_LABEL } from "@/lib/listing/catalog";
 import { CHARGE_LABEL, computeCosts, type ListingCharge } from "@/lib/listing/costs";
@@ -21,7 +22,8 @@ export type WizardData = {
   status: string;
   reviewNote: string | null;
   canEditBuilding: boolean;
-  location: { area: string; town: string; county: string; road: string; landmark: string; viewing_address: string; unit_label: string; property_name: string };
+  placesEnabled: boolean;
+  location: { area: string; town: string; county: string; road: string; landmark: string; viewing_address: string; unit_label: string; property_name: string; latitude: number | null; longitude: number | null };
   home: {
     rental_scope: "entire_home" | "private_room" | "shared_room" | "bedspace";
     layout: "single_room" | "double_room" | "multiroom" | "bedsitter_studio" | "bedroom_home";
@@ -180,12 +182,38 @@ function LocationStep({ data, onNext }: { data: WizardData; onNext: () => void }
       <h1 id="s1" className="font-display text-[26px] leading-[1.1] font-bold tracking-[-0.5px]">Where is the home?</h1>
       <p className="-mt-2 text-[14.5px] text-muted">Tenants see the area and a nearby landmark. The exact address is shared only after a viewing is confirmed.</p>
       {!data.canEditBuilding ? <Notice tone="info">Building details are managed by the workspace owner. You can edit the unit reference.</Notice> : null}
-      <Field label="Area or estate" htmlFor="area" error={errors.area}>
-        <TextInput id="area" value={v.area} onChange={set("area")} disabled={!data.canEditBuilding} error={errors.area} list="wz-areas" />
+      <Field label="Area or estate" htmlFor="area" error={errors.area} hint={data.placesEnabled ? "Start typing and pick the estate, road or building to fill in the details below." : undefined}>
+        <PlaceAutocomplete
+          id="area"
+          enabled={data.placesEnabled}
+          value={v.area}
+          // Typed text no longer matches the pinned place, so drop its coordinates.
+          onChange={(area) => setV((x) => ({ ...x, area, latitude: null, longitude: null }))}
+          onPlace={(p) => {
+            if (!p) return;
+            // A new place replaces the old address; only a landmark the advertiser typed survives.
+            setV((x) => ({
+              ...x,
+              area: p.area || x.area,
+              town: p.town,
+              county: p.county,
+              road: p.road,
+              landmark: p.landmark || x.landmark,
+              latitude: p.latitude,
+              longitude: p.longitude,
+            }));
+          }}
+          fallback={["Ruaka", "Kilimani", "Kileleshwa", "Lavington", "Westlands", "Kasarani", "Juja", "Syokimau", "Rongai", "Embakasi", "Ngong", "Thika"]}
+          disabled={!data.canEditBuilding}
+          aria-invalid={errors.area ? true : undefined}
+          className={textInputClass(errors.area)}
+        />
       </Field>
-      <datalist id="wz-areas">
-        {["Ruaka", "Kilimani", "Kileleshwa", "Lavington", "Westlands", "Kasarani", "Juja", "Syokimau", "Rongai", "Embakasi", "Ngong", "Thika"].map((a) => <option key={a} value={a} />)}
-      </datalist>
+      {v.latitude !== null && v.longitude !== null ? (
+        <p className="-mt-2 inline-flex items-center gap-1 text-[13px] font-semibold text-success">
+          <Icon name="pin" size={15} /> Location pinned on the map
+        </p>
+      ) : null}
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Town" htmlFor="town" optional>
           <TextInput id="town" value={v.town} onChange={set("town")} disabled={!data.canEditBuilding} />

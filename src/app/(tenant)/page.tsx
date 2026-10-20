@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Icon, Logo } from "@/components/ui/icon";
 import { RecentSearches } from "@/components/tenant/recent-searches";
+import { WhereInput } from "@/components/tenant/where-input";
 import { CATEGORIES, HOME_TYPES } from "@/lib/listing/catalog";
+import { PLACES_ENABLED } from "@/lib/places";
 
 export default function ExplorePage() {
   return (
@@ -34,19 +36,7 @@ export default function ExplorePage() {
               <label htmlFor="q" className="block text-[12.5px] font-semibold text-muted">
                 Where
               </label>
-              <input
-                id="q"
-                name="q"
-                list="areas"
-                autoComplete="off"
-                placeholder="Area, estate or road, e.g. Ruaka"
-                className="w-full bg-transparent text-[17px] font-semibold text-ink placeholder:font-normal placeholder:text-[#8c959b] focus:outline-none"
-              />
-              <datalist id="areas">
-                {["Ruaka", "Kilimani", "Kileleshwa", "Lavington", "Westlands", "Ngong Road", "Juja", "Syokimau", "Kasarani", "Rongai", "Thika Road", "Embakasi"].map((a) => (
-                  <option key={a} value={a} />
-                ))}
-              </datalist>
+              <WhereInput placesEnabled={PLACES_ENABLED} />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-[14px] border border-input bg-surface px-3.5 pt-2 pb-2.5 focus-within:ring-2 focus-within:ring-deep/40">

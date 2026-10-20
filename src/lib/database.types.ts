@@ -1,4 +1,4 @@
-﻿
+
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export type Database = {
@@ -1267,7 +1267,7 @@ isOneToOne: false
                            },
 "search_listings":
 { Args: { "params": Json }; Returns: {
-              "advertiser_role": string,"approx_lat": number,"approx_lng": number,"area": string,"availability_confirmed_at": string,"available_from": string,"bedrooms": number,"building_style": string,"charges": Json,"cover_path": string,"facts": Json,"fixed_monthly_total": number,"floor_level": number,"furnishing": string,"layout": string,"move_in_total": number,"photo_count": number,"price_basis": string,"price_period": string,"published_at": string,"ref": string,"rent_amount": number,"rental_scope": string,"road": string,"sponsored": boolean,"title": string,"total_count": number,"totals_complete": boolean,"town": string,"unconfirmed_match": boolean
+              "advertiser_role": string,"approx_lat": number,"approx_lng": number,"area": string,"availability_confirmed_at": string,"available_from": string,"bedrooms": number,"building_style": string,"charges": Json,"cover_path": string,"distance_km": number,"facts": Json,"fixed_monthly_total": number,"floor_level": number,"furnishing": string,"layout": string,"move_in_total": number,"photo_count": number,"price_basis": string,"price_period": string,"published_at": string,"ref": string,"rent_amount": number,"rental_scope": string,"road": string,"sponsored": boolean,"title": string,"total_count": number,"totals_complete": boolean,"town": string,"unconfirmed_match": boolean
             }[]
                            },
 "send_message":
