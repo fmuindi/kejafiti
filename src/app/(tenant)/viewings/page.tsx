@@ -23,14 +23,20 @@ export default async function TenantViewingsPage() {
   const changes = (saved ?? []).filter((s) => s.status !== "published");
   const confirmed = open.filter((v) => v.status === "confirmed").length;
   const first = (profile?.full_name || "").split(" ")[0];
+  const headline = confirmed
+    ? `${confirmed} viewing${confirmed === 1 ? " is" : "s are"} confirmed.`
+    : open.length
+      ? "Your requests are waiting for replies."
+      : expired.length
+        ? `${expired.length === 1 ? "A requested time" : "Some requested times"} passed without confirmation.`
+        : "No viewings yet.";
 
   return (
     <div className="mx-auto flex max-w-[720px] flex-col gap-5 px-4 pt-5 pb-10">
       <div>
         <p className="font-mono text-[12px] tracking-[0.6px] text-muted uppercase">Your move</p>
         <h1 className="mt-1 font-display text-[30px] leading-[1.05] font-bold tracking-[-0.8px]">
-          {first ? `Hi ${first}, ` : ""}
-          {confirmed ? `${confirmed} viewing${confirmed === 1 ? " is" : "s are"} confirmed.` : open.length ? "Your requests are waiting for replies." : "No viewings yet."}
+          {first ? `Hi ${first}, ${headline.charAt(0).toLowerCase()}${headline.slice(1)}` : headline}
         </h1>
       </div>
       {error ? <p role="alert" className="text-error">We couldn&apos;t load your viewings. Reload to try again.</p> : null}
