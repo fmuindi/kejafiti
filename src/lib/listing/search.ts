@@ -103,6 +103,17 @@ export function toQuery(p: Partial<SearchParams>): string {
   return u.toString();
 }
 
+/**
+ * The exact query the search page will see for these parameters (coordinates rounded,
+ * invalid values dropped). Anything that hands a search URL to the page should use it.
+ */
+export function canonicalQuery(p: Partial<SearchParams>): string {
+  const u = new URLSearchParams(toQuery(p));
+  const raw: Record<string, string[]> = {};
+  for (const k of new Set(u.keys())) raw[k] = u.getAll(k);
+  return toQuery(parseSearch(raw));
+}
+
 /** Parameters for public.search_listings */
 export function toRpcParams(p: SearchParams, opts: { includeUnconfirmed?: boolean; limit?: number; offset?: number } = {}) {
   return {

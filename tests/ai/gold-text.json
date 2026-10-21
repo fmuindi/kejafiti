@@ -19,7 +19,7 @@
     { "id": "T16", "input": "Hello, how are you today?", "expect": { "outcome": "unsupported_input" } },
     { "id": "T17", "input": "Bedsitter Ruaka, need to move in next month", "expect": { "outcome": "success", "params": { "q": "Ruaka", "movein": "@first_of_next_month" } } },
     { "id": "T18", "input": "Self contained Ruaka 12k with own meter", "expect": { "outcome": "success", "params": { "q": "Ruaka", "type": ["bedsitter_studio"], "max": "12000" }, "has": { "must": ["own_meter"] } } },
-    { "id": "T19", "input": "Nyumba ya chumba kimoja Rongai, elfu kumi na tano", "expect": { "outcome": "success", "params": { "q": "Rongai", "max": "15000" } } },
+    { "id": "T19", "input": "Nyumba ya chumba kimoja Rongai, elfu kumi na tano", "expect": { "outcome": "success", "params": { "max": "15000" }, "q_any": ["Rongai", "Ongata Rongai"] } },
     { "id": "T20", "current": "q=Ruaka&type=bedsitter_studio&max=15000&must=private_bathroom", "input": "Parking would be nice", "expect": { "outcome": "success", "params": { "q": "Ruaka", "max": "15000" }, "has": { "must": ["private_bathroom"], "prefer": ["parking"] } } }
   ]
 }

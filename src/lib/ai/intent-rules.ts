@@ -93,6 +93,12 @@ export const MAX_BUDGET = 5_000_000;
 
 export type Check = { ok: true } | { ok: false; ask: "amount" | "location" | "date"; question: string; options: number[] };
 
+/** Amounts written as negative: "minus 5000", "negative 15k", "-5,000". */
+export function negativeAmountsIn(text: string): number[] {
+  const s = text.toLowerCase();
+  return [...s.matchAll(/(?:\b(?:minus|negative)\s+|(?:^|\s)-\s*)((?:ksh\.?\s*)?[\d,]+(?:\.\d+)?\s*k?\b)/g)].flatMap((m) => amountsIn(m[1].replace(/ksh\.?\s*/, "")));
+}
+
 /** Accept a budget only if it is plausible and stated in the input. Otherwise ask, never guess. */
 export function checkBudget(b: IntentPatch["budget"], text: string): Check {
   if (b.op !== "set") return { ok: true };
@@ -102,6 +108,8 @@ export function checkBudget(b: IntentPatch["budget"], text: string): Check {
     return { ok: false, ask: "amount", question: "What is your budget in KSh?", options: [] };
   }
   if (!appearsIn(b.evidence, text)) return { ok: false, ask: "amount", question: "We couldn't tell the amount. What is your budget?", options: values };
+  // "minus 5000" must not quietly become 5,000: a negative amount is asked about, not fixed.
+  if (negativeAmountsIn(text).some((n) => values.includes(n))) return { ok: false, ask: "amount", question: "What is your budget in KSh?", options: [] };
   const stated = amountsIn(b.evidence as string);
   const unsupported = values.filter((v) => !stated.includes(v));
   if (unsupported.length) {

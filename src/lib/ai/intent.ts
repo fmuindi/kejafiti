@@ -1,6 +1,6 @@
 import "server-only";
 import { CATEGORIES, FACTS, HOME_TYPES } from "@/lib/listing/catalog";
-import { toQuery, type SearchParams } from "@/lib/listing/search";
+import { canonicalQuery, type SearchParams } from "@/lib/listing/search";
 import { todayEAT } from "@/lib/dates";
 import { PLACES_ENABLED, autocomplete, placeDetails } from "@/lib/places";
 import { INTENT_PROMPT_VERSION } from "./config";
@@ -24,7 +24,7 @@ Rules:
 - Words that are not checkable facts ("safe", "executive", "family friendly", "quiet", "own entrance", commute times) go in unsupported, verbatim. Never turn them into features.
 - move_in_by: a date YYYY-MM-DD only if they give a deadline ("next month" = the first day of next month). evidence: their exact words.
 - not_a_search: true when the text is not a request about finding a home (silence, music, unrelated talk).
-- clarify: at most one short question, only when a needed value cannot be safely read (an amount that could be 15,000 or 50,000, an ambiguous place). Give up to 3 short options. Otherwise field "none".`;
+- clarify: at most one short question, only when something the person DID say cannot be safely read (an amount that could be 15,000 or 50,000, a place name that could mean two places). Give 2-3 short options. Never ask about things they did not mention: no area given means search everywhere, no budget means any budget. Otherwise field "none".`;
 
 export type IntentOutcome =
   | { outcome: "success"; query: string; changes: string[]; defaults: string[]; notes: string[]; placeLabel?: string }
@@ -78,7 +78,9 @@ export async function interpret(text: string, current: SearchParams): Promise<{ 
 
   const budget = checkBudget(p.budget, text);
   const movein = checkMoveIn(p.move_in_by, text, today);
-  const modelAsks = p.clarify.field !== "none" && p.clarify.question ? p.clarify : null;
+  // A question needs choices to tap; one without them (e.g. "which area?" when none was
+  // mentioned) would only add a step, so it is ignored and the clear parts are searched.
+  const modelAsks = p.clarify.field !== "none" && p.clarify.question && p.clarify.options.length >= 2 ? p.clarify : null;
 
   if (!budget.ok || modelAsks?.field === "amount") {
     // Search the parts that are clear; the amount waits for the person's choice.
@@ -89,8 +91,8 @@ export async function interpret(text: string, current: SearchParams): Promise<{ 
       result: {
         outcome: "clarification_required",
         question: !budget.ok ? budget.question : (modelAsks!.question as string),
-        choices: options.filter((v) => v >= 500).map((v) => ({ label: `KSh ${v.toLocaleString("en-KE")}`, query: toQuery({ ...withoutAmount, max: v, basis }) })),
-        partialQuery: toQuery(withoutAmount),
+        choices: options.filter((v) => v >= 500).map((v) => ({ label: `KSh ${v.toLocaleString("en-KE")}`, query: canonicalQuery({ ...withoutAmount, max: v, basis }) })),
+        partialQuery: canonicalQuery(withoutAmount),
         notes,
       },
       usage,
@@ -101,14 +103,14 @@ export async function interpret(text: string, current: SearchParams): Promise<{ 
     const choices = await Promise.all(
       modelAsks.options.slice(0, 3).map(async (o) => {
         const pl = await resolvePlace(o);
-        return { label: pl.name, query: toQuery({ ...without, q: pl.name, lat: pl.lat, lng: pl.lng }) };
+        return { label: pl.name, query: canonicalQuery({ ...without, q: pl.name, lat: pl.lat, lng: pl.lng }) };
       }),
     );
-    return { result: { outcome: "clarification_required", question: modelAsks.question as string, choices, partialQuery: toQuery(without), notes }, usage };
+    return { result: { outcome: "clarification_required", question: modelAsks.question as string, choices, partialQuery: canonicalQuery(without), notes }, usage };
   }
 
   const safe: IntentPatch = { ...p, move_in_by: movein.ok ? p.move_in_by : { ...p.move_in_by, op: "keep" } };
   const { next, defaults } = applyPatch(current, safe, place);
   if (!movein.ok) notes.push("We couldn't read a move-in date, so it isn't applied.");
-  return { result: { outcome: "success", query: toQuery(next), changes: describeChanges(current, next), defaults, notes, placeLabel: place?.name }, usage };
+  return { result: { outcome: "success", query: canonicalQuery(next), changes: describeChanges(current, next), defaults, notes, placeLabel: place?.name }, usage };
 }

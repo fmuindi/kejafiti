@@ -27,6 +27,8 @@ function check(c, out) {
     }
   }
   for (const k of e.absent ?? []) if (q.has(k)) fails.push(`${k} should be absent, got ${q.getAll(k)}`);
+  // Places resolve to their official names (e.g. Rongai -> Ongata Rongai); accept known forms.
+  if (e.q_any && !e.q_any.includes(q.get("q") ?? "")) fails.push(`q=${q.get("q")} (wanted one of ${e.q_any.join(", ")})`);
   for (const [k, vs] of Object.entries(e.has ?? {})) for (const v of vs) if (!q.getAll(k).includes(v)) fails.push(`${k} missing ${v}`);
   for (const [k, vs] of Object.entries(e.lacks ?? {})) for (const v of vs) if (q.getAll(k).includes(v)) fails.push(`${k} must not include ${v}`);
   if (e.defaults && !(out.defaults ?? []).length) fails.push("expected a visible default note");

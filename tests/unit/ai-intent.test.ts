@@ -46,6 +46,11 @@ describe("budget checks", () => {
     if (!c.ok) expect(c.options).toEqual(expect.arrayContaining([50000, 15000]));
   });
   it("asks when the quoted words aren't in the request", () => expect(checkBudget(budget(15000, "15 thousand shillings"), text).ok).toBe(false));
+  it("asks when the request says a negative amount, even if the model dropped the sign", () => {
+    expect(checkBudget(budget(5000, "minus 5000"), "Bedsitter Ruaka for minus 5000").ok).toBe(false);
+    expect(checkBudget(budget(5000, "5000"), "Bedsitter Ruaka for -5000").ok).toBe(false);
+    expect(checkBudget(budget(15000, "15k"), "Bedsitter 15k, 2-3 rooms").ok).toBe(true);
+  });
   it("rejects implausible or negative budgets instead of correcting them", () => {
     expect(checkBudget(budget(-15000, "15k"), text).ok).toBe(false);
     expect(checkBudget(budget(15, "15k"), text).ok).toBe(false);
@@ -99,5 +104,14 @@ describe("applying a request to the search", () => {
   it("removing a feature removes exactly that one", () => {
     const next = applyPatch(first, patch({ mode: "refine", remove_features: ["own_meter"] }), null).next;
     expect(next.must).toEqual(["private_bathroom"]);
+  });
+});
+
+describe("the query handed to the results page is canonical", () => {
+  it("rounds Places coordinates the way the page does, so the interpretation banner matches", async () => {
+    const { canonicalQuery } = await import("@/lib/listing/search");
+    const q = canonicalQuery({ ...EMPTY, q: "Ruaka", lat: -1.2058128, lng: 36.7795319 });
+    expect(q).toBe("q=Ruaka&lat=-1.20581&lng=36.77953");
+    expect(toQuery(parseSearch(Object.fromEntries(new URLSearchParams(q))))).toBe(q);
   });
 });
