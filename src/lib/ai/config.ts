@@ -6,14 +6,18 @@ import "server-only";
 const num = (v: string | undefined, d: number) => (v && Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v) : d);
 const flag = (v: string | undefined, d: boolean) => (v === undefined || v === "" ? d : v === "true" || v === "1");
 
-const hasKey = () => !!process.env.OPENAI_API_KEY;
+// Typed search needs any text provider; voice needs OpenAI (Claude has no speech-to-text).
+const hasTextProvider = () => !!process.env.OPENAI_API_KEY || !!process.env.ANTHROPIC_API_KEY;
+const hasSpeechProvider = () => !!process.env.OPENAI_API_KEY;
 
 export const AI = {
   /** Natural-language search (AI-01). On by default when a key is configured. */
-  searchEnabled: () => hasKey() && flag(process.env.AI_SEARCH_ENABLED, true),
+  searchEnabled: () => hasTextProvider() && flag(process.env.AI_SEARCH_ENABLED, true),
   /** Voice-to-search (AI-02). */
-  voiceEnabled: () => hasKey() && flag(process.env.AI_VOICE_ENABLED, true),
+  voiceEnabled: () => hasSpeechProvider() && flag(process.env.AI_VOICE_ENABLED, true),
   intentModel: () => process.env.OPENAI_INTENT_MODEL || "gpt-5.4-mini",
+  /** Backup parser when OpenAI is unavailable or out of credit. */
+  claudeIntentModel: () => process.env.ANTHROPIC_INTENT_MODEL || "claude-opus-5-5",
   transcribeModel: () => process.env.OPENAI_TRANSCRIBE_MODEL || "gpt-4o-mini-transcribe",
   /** Daily caps: all visitors together, and per visitor (salted hash of the address). */
   dailyCap: (feature: "search_intent" | "transcribe") =>

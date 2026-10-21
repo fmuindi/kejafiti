@@ -245,7 +245,7 @@ export function AiSearch({ variant, currentQuery = "", voice, placeholder }: { v
         ) : null}
       </form>
       {voice && variant === "home" && !recording ? (
-        <p className="text-[12px] text-muted">Voice: your recording is sent to our speech provider (OpenAI) to turn it into text. nyumbani doesn&apos;t keep it.</p>
+        <p className="text-[12px] text-muted">Your request is read by our AI providers (OpenAI, or Anthropic as a backup) to set the filters. Voice recordings go to OpenAI to become text; nyumbani doesn&apos;t keep them.</p>
       ) : null}
       {heard ? <p className="text-[13px] text-muted">We heard: &quot;{heard}&quot;. Edit the words above if anything is wrong.</p> : null}
       {message ? <p role="alert" className="text-[14px] font-semibold text-error">{message}</p> : null}

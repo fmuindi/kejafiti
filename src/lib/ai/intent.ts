@@ -3,9 +3,9 @@ import { CATEGORIES, FACTS, HOME_TYPES } from "@/lib/listing/catalog";
 import { toQuery, type SearchParams } from "@/lib/listing/search";
 import { todayEAT } from "@/lib/dates";
 import { PLACES_ENABLED, autocomplete, placeDetails } from "@/lib/places";
-import { AI, INTENT_PROMPT_VERSION } from "./config";
+import { INTENT_PROMPT_VERSION } from "./config";
 import { INTENT_SCHEMA, appearsIn, applyPatch, checkBudget, checkMoveIn, describeChanges, type IntentPatch, type ResolvedPlace } from "./intent-rules";
-import { completeJson } from "./openai";
+import { completeIntentJson } from "./providers";
 
 // AI-01: a sentence (typed or transcribed) becomes a change to the canonical search state.
 // The model never chooses homes; the existing search query does, exactly as for manual filters.
@@ -60,16 +60,14 @@ async function resolvePlace(text: string): Promise<ResolvedPlace> {
 
 export async function interpret(text: string, current: SearchParams): Promise<{ result: IntentOutcome; usage: { input: number; output: number; model: string } }> {
   const today = todayEAT();
-  const res = await completeJson<IntentPatch>({
-    model: AI.intentModel(),
+  const res = await completeIntentJson<IntentPatch>({
     system: SYSTEM,
     user: `Today is ${today} (Africa/Nairobi).\nCurrent search: ${summarize(current)}\nRequest: ${text}`,
     schemaName: "search_intent",
     schema: INTENT_SCHEMA,
-    timeoutMs: AI.intentTimeoutMs,
   });
   const p = res.value;
-  const usage = { input: res.inputTokens, output: res.outputTokens, model: `${res.model}/${INTENT_PROMPT_VERSION}` };
+  const usage = { input: res.inputTokens, output: res.outputTokens, model: `${res.provider}:${res.model}/${INTENT_PROMPT_VERSION}` };
 
   if (p.not_a_search) return { result: { outcome: "unsupported_input", message: "That didn't sound like a home search. Try something like \"bedsitter in Ruaka under 15k\"." }, usage };
   const notes = p.unsupported.length ? [`We can't search by ${p.unsupported.map((u) => `"${u}"`).join(", ")}. Try specific features instead.`] : [];
