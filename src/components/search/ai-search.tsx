@@ -204,10 +204,12 @@ export function AiSearch({ variant, currentQuery = "", voice, placeholder }: { v
         }}
         className="flex flex-col gap-2"
       >
-        <div className={cx("flex items-stretch gap-2 rounded-[14px] border bg-surface p-1.5 focus-within:ring-2 focus-within:ring-deep/40", recording ? "border-primary" : "border-input")}>
-          <label htmlFor={`ai-${variant}`} className="sr-only">{variant === "home" ? "Describe your home" : "Refine this search"}</label>
+        <label htmlFor={`ai-${variant}`} className={variant === "home" ? "text-[13px] font-semibold text-muted" : "sr-only"}>
+          {variant === "home" ? "Describe your home" : "Refine this search"}
+        </label>
+        <div className={cx("flex flex-wrap items-stretch gap-2 rounded-[14px] border bg-surface p-1.5 focus-within:ring-2 focus-within:ring-deep/40 sm:flex-nowrap", recording ? "border-primary" : "border-input")}>
           {recording ? (
-            <p className="flex min-h-11 flex-1 items-center gap-2 px-2 text-[15px] font-semibold" role="status" aria-live="polite">
+            <p className="flex min-h-11 w-full items-center gap-2 px-2 text-[15px] font-semibold sm:w-auto sm:flex-1" role="status" aria-live="polite">
               <span className="inline-block size-2.5 animate-pulse rounded-full bg-primary" aria-hidden="true" />
               Listening · {seconds}s{seconds >= MAX_SECONDS - 5 ? ` · stops at ${MAX_SECONDS}s` : ""}
             </p>
@@ -219,7 +221,7 @@ export function AiSearch({ variant, currentQuery = "", voice, placeholder }: { v
               maxLength={500}
               disabled={busy}
               placeholder={placeholder ?? (variant === "home" ? "e.g. Bedsitter in Ruaka under 15k, private bathroom" : "e.g. Make it 18k, or try Ruiru instead")}
-              className="min-h-11 min-w-0 flex-1 bg-transparent px-2 text-[16px] font-semibold text-ink placeholder:font-normal placeholder:text-[#8c959b] focus:outline-none"
+              className="min-h-11 w-full min-w-0 bg-transparent px-2 text-[16px] font-semibold sm:w-auto sm:flex-1 text-ink placeholder:font-normal placeholder:text-[#8c959b] focus:outline-none"
             />
           )}
           {voice && !recording ? (
@@ -229,11 +231,11 @@ export function AiSearch({ variant, currentQuery = "", voice, placeholder }: { v
           ) : null}
           {recording ? (
             <>
-              <Button type="button" variant="secondary" onClick={cancel} className="shrink-0">Cancel</Button>
-              <Button type="button" onClick={stopAndSearch} className="shrink-0">Stop and search</Button>
+              <Button type="button" variant="secondary" onClick={cancel} className="flex-1 sm:flex-none">Cancel</Button>
+              <Button type="button" onClick={stopAndSearch} className="flex-[1.6] sm:flex-none">Stop and search</Button>
             </>
           ) : (
-            <Button type="submit" pending={busy} pendingLabel={phase === "transcribing" ? "Listening" : "Searching"} disabled={busy || text.trim().length < 2} className="shrink-0" icon="search">
+            <Button type="submit" pending={busy} pendingLabel={phase === "transcribing" ? "Listening" : "Searching"} disabled={busy || text.trim().length < 2} className="flex-1 sm:flex-none" icon="search">
               {variant === "home" ? "Find homes" : "Refine"}
             </Button>
           )}
