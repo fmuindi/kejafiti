@@ -420,3 +420,27 @@ enabled = true
 # formatted with uppercase keywords, indent 2, max width 180, trailing commas,
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
+
+# Hosted project. Only the settings below differ from local; everything else above is pushed as is.
+# Update site_url and the redirect list when the live domain (or Vercel address) is known.
+[remotes.production]
+project_id = "kxjxfvhkayctuhpwolkq"
+
+[remotes.production.auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = []
+
+[remotes.production.auth.email]
+# One code email per address per minute, so the form can't be used to flood inboxes.
+max_frequency = "1m0s"
+
+[remotes.production.auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[remotes.production.db.pooler]
+default_pool_size = 15
+max_client_conn = 200
+
+[remotes.production.storage.vector]
+enabled = false
