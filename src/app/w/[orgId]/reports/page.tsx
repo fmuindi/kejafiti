@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { FinalizeReport, type PreFinalize } from "@/components/rent/finalize-report";
 import { PrintButton } from "@/components/rent/print-button";
+import { AI } from "@/lib/ai/config";
 import { ReportView, type ReportSnapshot } from "@/components/rent/report-view";
 import { Icon } from "@/components/ui/icon";
 import { EmptyState, Notice, PageTitle } from "@/components/ui/primitives";
@@ -99,7 +100,7 @@ export default async function ReportsPage({ params, searchParams }: PageProps<"/
         <>
           {pending ? <Notice tone="waiting" title={`${pending} entr${pending === 1 ? "y is" : "ies are"} still awaiting confirmation`}>Resolve them before finalizing, so the report reflects every checked payment.</Notice> : null}
           {canFinalize && pre ? (
-            <FinalizeReport orgId={orgId} propertyId={propertyId} propertyName={snapshot.property.name} period={period} nextVersion={(versions?.[0]?.version ?? 0) + 1} review={pre as unknown as PreFinalize} />
+            <FinalizeReport orgId={orgId} propertyId={propertyId} propertyName={snapshot.property.name} period={period} nextVersion={(versions?.[0]?.version ?? 0) + 1} review={pre as unknown as PreFinalize} aiCommentary={AI.assistEnabled("report_commentary")} />
           ) : null}
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="flex items-center gap-2 text-[14px] font-semibold">

@@ -4,7 +4,7 @@
 
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(13);
+select plan(22);
 
 insert into auth.users (id, email, raw_user_meta_data, aud, role, instance_id) values
   ('a6666666-0000-0000-0000-0000000000aa', 'owner6@example.test', '{"full_name":"Owner Six"}', 'authenticated', 'authenticated', '00000000-0000-0000-0000-000000000000'),
@@ -80,6 +80,47 @@ select is((select string_agg(title, ', ') from public.search_listings('{"q":"Cos
   'The same holds for a budget on rent plus fixed charges');
 select is((select string_agg(title, ', ' order by null) from public.search_listings('{"q":"Costville","sort":"lowest_total"}'::jsonb)),
   'Monthly bedsitter, Nightly bedsitter', 'Lowest monthly total lists monthly prices first, not the cheap-looking nightly rate');
+
+-- AI search (AIS-03): move-in budgets, strict totals and preferences -----------------------
+reset role;
+set local role anon;
+select is((select string_agg(title, ', ') from public.search_listings('{"q":"Costville","max_rent":30000,"budget_basis":"movein"}'::jsonb)), 'Monthly bedsitter',
+  'A move-in budget compares the move-in total (29,000 fits 30,000)');
+select is((select count(*)::int from public.search_listings('{"q":"Costville","max_rent":28000,"budget_basis":"movein"}'::jsonb)), 0,
+  'A move-in total above the budget is excluded, never read as monthly rent');
+reset role;
+insert into public.listing_charges (listing_id, kind, amount, frequency, billing) values
+  ((select v::uuid from ctx where k = 'monthly'), 'garbage', null, 'monthly', 'fixed');
+set local role anon;
+select is((select count(*)::int from public.search_listings('{"q":"Costville","max_rent":20000,"budget_basis":"fixed"}'::jsonb)), 0,
+  'An unconfirmed compulsory charge means the total is not proven to fit a total budget');
+select is((select count(*)::int from public.search_listings('{"q":"Costville","max_rent":20000,"budget_basis":"fixed","include_unconfirmed":true}'::jsonb)), 1,
+  'It is included only when the tenant includes unconfirmed answers');
+select is((select count(*)::int from public.search_listings('{"q":"Costville","max_rent":20000}'::jsonb)), 1,
+  'A rent-only budget is unaffected by an unconfirmed charge');
+reset role;
+delete from public.listing_charges where listing_id = (select v::uuid from ctx where k = 'monthly') and kind = 'garbage';
+-- Preferences rank but never filter: give only the nightly home parking.
+update public.listings set price_period = 'month', rent_amount = 9000, deposit_amount = 0 where id = (select v::uuid from ctx where k = 'nightly');
+update public.units set facts = facts || '{"parking":"yes"}'::jsonb where id = (select unit_id from public.listings where id = (select v::uuid from ctx where k = 'nightly'));
+set local role anon;
+select is((select string_agg(title, ', ') from public.search_listings('{"q":"Costville"}'::jsonb)), 'Monthly bedsitter, Nightly bedsitter',
+  'Without a preference the usual order applies');
+select is((select string_agg(title, ', ') from public.search_listings('{"q":"Costville","preferred":["parking"]}'::jsonb)), 'Nightly bedsitter, Monthly bedsitter',
+  'A preferred feature moves matching homes up');
+select is((select count(*)::int from public.search_listings('{"q":"Costville","preferred":["parking"]}'::jsonb)), 2,
+  'A preferred feature never removes homes without it');
+reset role;
+
+-- AIS-07: daily caps are enforced atomically on the server.
+delete from public.ai_client_daily;
+delete from public.ai_usage_daily;
+set local role service_role;
+select is(array[public.ai_take('search_intent', 'client-aaaaaaaaaaaaaaaa', 2, 100), public.ai_take('search_intent', 'client-aaaaaaaaaaaaaaaa', 2, 100),
+  public.ai_take('search_intent', 'client-aaaaaaaaaaaaaaaa', 2, 100), public.ai_take('search_intent', 'client-bbbbbbbbbbbbbbbb', 2, 3),
+  public.ai_take('search_intent', 'client-cccccccccccccccc', 2, 3)], array['ok', 'ok', 'client_limit', 'ok', 'global_limit'],
+  'Per-visitor and global daily caps stop requests before the provider is called');
+reset role;
 
 select * from finish();
 rollback;

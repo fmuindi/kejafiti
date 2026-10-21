@@ -5,7 +5,35 @@ export type Database = {
   
   "public": {
           Tables: {
-            "allocations": {
+            "ai_client_daily": {
+                  Row: {
+                    "client_hash": string,"day": string,"feature": string,"requests": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "client_hash": string,"day": string,"feature": string,"requests"?: number
+                  }
+                  Update: {
+                    "client_hash"?: string,"day"?: string,"feature"?: string,"requests"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"ai_usage_daily": {
+                  Row: {
+                    "audio_seconds": number,"day": string,"failures": number,"feature": string,"input_tokens": number,"output_tokens": number,"requests": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "audio_seconds"?: number,"day": string,"failures"?: number,"feature": string,"input_tokens"?: number,"output_tokens"?: number,"requests"?: number
+                  }
+                  Update: {
+                    "audio_seconds"?: number,"day"?: string,"failures"?: number,"feature"?: string,"input_tokens"?: number,"output_tokens"?: number,"requests"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"allocations": {
                   Row: {
                     "amount": number,"charge_id": string,"entry_id": string,"id": string,"org_id": string,"posted_at": string,"posted_by": string | null,"property_id": string,"reverses_allocation_id": string | null,"tenancy_id": string
                   }
@@ -1257,6 +1285,12 @@ isOneToOne: false
                            },
 "admin_update_ticket":
 { Args: { "p": Json,"p_ticket": string }; Returns: undefined
+                           },
+"ai_record":
+{ Args: { "p_audio": number,"p_failed": boolean,"p_feature": string,"p_input": number,"p_output": number }; Returns: undefined
+                           },
+"ai_take":
+{ Args: { "p_client": string,"p_client_cap": number,"p_feature": string,"p_global_cap": number }; Returns: string
                            },
 "apply_credit":
 { Args: { "p_allocations": Json,"p_entry": string }; Returns: Json

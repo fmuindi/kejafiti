@@ -1,0 +1,25 @@
+{
+  "_about": "AI-01 gold text cases (blueprint pp.9, 14). Expected behaviour is fixed before choosing a model. 'params' must equal; 'absent' must be missing; 'has' must include. Run: node scripts/ai-eval.mjs",
+  "cases": [
+    { "id": "T01", "input": "Bedsitter Ruaka under 15k", "expect": { "outcome": "success", "params": { "q": "Ruaka", "type": ["bedsitter_studio"], "max": "15000" }, "absent": ["basis"], "defaults": true } },
+    { "id": "T02", "input": "Ruaka bedsitter up to 15k including service", "expect": { "outcome": "success", "params": { "q": "Ruaka", "type": ["bedsitter_studio"], "max": "15000", "basis": "fixed" } } },
+    { "id": "T03", "input": "Natafuta bedsitter Ruaka, choo isiwe shared", "expect": { "outcome": "success", "params": { "q": "Ruaka", "type": ["bedsitter_studio"] }, "has": { "must": ["private_bathroom"] } } },
+    { "id": "T04", "input": "One bedroom Ruiru, 20k, parking would be nice", "expect": { "outcome": "success", "params": { "q": "Ruiru", "type": ["1_bedroom"], "max": "20000" }, "has": { "prefer": ["parking"] }, "lacks": { "must": ["parking"] } } },
+    { "id": "T05", "input": "Total move-in budget is 30k", "expect": { "outcome": "success", "params": { "max": "30000", "basis": "movein" } } },
+    { "id": "T06", "input": "SQ with own entrance, no shared bathroom", "expect": { "outcome": "success", "params": { "category": "sq" }, "has": { "must": ["private_bathroom"] }, "notes": true } },
+    { "id": "T07", "input": "Somewhere safe and executive", "expect": { "outcome": "any", "absent": ["must", "prefer", "q"], "notes_or_question": true } },
+    { "id": "T08", "current": "q=Ruaka&type=bedsitter_studio&max=15000&must=private_bathroom", "input": "Not Ruaka, Ruiru instead", "expect": { "outcome": "success", "params": { "q": "Ruiru", "type": ["bedsitter_studio"], "max": "15000" }, "has": { "must": ["private_bathroom"] } } },
+    { "id": "T09", "current": "q=Ruaka&type=bedsitter_studio&max=15000&basis=fixed", "input": "Make it 18k", "expect": { "outcome": "success", "params": { "q": "Ruaka", "max": "18000", "basis": "fixed" } } },
+    { "id": "T10", "input": "Bedsitter in Ruaka, fifteen thousand", "expect": { "outcome": "success", "params": { "q": "Ruaka", "max": "15000" } } },
+    { "id": "T11", "input": "Natafuta one bedroom Ruiru, twenty k", "expect": { "outcome": "success", "params": { "q": "Ruiru", "type": ["1_bedroom"], "max": "20000" } } },
+    { "id": "T12", "input": "Bedsitter tao karibu na stage", "expect": { "outcome": "any", "absent": ["q"], "params_if_success": { "type": ["bedsitter_studio"] } } },
+    { "id": "T13", "input": "Bedsitter Kilimani between 10k and 20k", "expect": { "outcome": "success", "params": { "q": "Kilimani", "min": "10000", "max": "20000" } } },
+    { "id": "T14", "input": "Bedsitter Ruaka for minus 5000", "expect": { "outcome": "any", "absent": ["max", "min"] } },
+    { "id": "T15", "input": "Two bedroom Kileleshwa KSh 50,000 furnished", "expect": { "outcome": "success", "params": { "q": "Kileleshwa", "type": ["2_bedrooms"], "max": "50000", "furnishing": "furnished" } } },
+    { "id": "T16", "input": "Hello, how are you today?", "expect": { "outcome": "unsupported_input" } },
+    { "id": "T17", "input": "Bedsitter Ruaka, need to move in next month", "expect": { "outcome": "success", "params": { "q": "Ruaka", "movein": "@first_of_next_month" } } },
+    { "id": "T18", "input": "Self contained Ruaka 12k with own meter", "expect": { "outcome": "success", "params": { "q": "Ruaka", "type": ["bedsitter_studio"], "max": "12000" }, "has": { "must": ["own_meter"] } } },
+    { "id": "T19", "input": "Nyumba ya chumba kimoja Rongai, elfu kumi na tano", "expect": { "outcome": "success", "params": { "max": "15000" }, "q_any": ["Rongai", "Ongata Rongai"] } },
+    { "id": "T20", "current": "q=Ruaka&type=bedsitter_studio&max=15000&must=private_bathroom", "input": "Parking would be nice", "expect": { "outcome": "success", "params": { "q": "Ruaka", "max": "15000" }, "has": { "must": ["private_bathroom"], "prefer": ["parking"] } } }
+  ]
+}

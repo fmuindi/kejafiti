@@ -8,6 +8,7 @@ import { Notice } from "@/components/ui/primitives";
 import { isOrgAdmin, requireWorkspace } from "@/lib/auth";
 import type { ListingCharge } from "@/lib/listing/costs";
 import { PLACES_ENABLED } from "@/lib/places";
+import { AI } from "@/lib/ai/config";
 import { signListingPhotos } from "@/lib/storage";
 import { createClient } from "@/lib/supabase/server";
 
@@ -46,6 +47,7 @@ export default async function ListingWizardPage({ params, searchParams }: PagePr
     reviewNote: l.review_note,
     canEditBuilding: isOrgAdmin(ws),
     placesEnabled: PLACES_ENABLED,
+    aiDraft: AI.assistEnabled("listing_draft"),
     location: {
       area: String(property.area ?? ""),
       town: String(property.town ?? ""),

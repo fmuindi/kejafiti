@@ -95,7 +95,7 @@ export function FiltersSheet({ params, count }: { params: SearchParams; count: n
             </h2>
             <button
               type="button"
-              onClick={() => setDraft({ ...params, min: undefined, max: undefined, basis: "rent", types: [], must: [], unconfirmed: false, furnishing: undefined, by: undefined, movein: undefined })}
+              onClick={() => setDraft({ ...params, min: undefined, max: undefined, basis: "rent", types: [], must: [], prefer: [], unconfirmed: false, furnishing: undefined, by: undefined, movein: undefined })}
               className="min-h-11 px-2 text-[14px] font-semibold text-primary"
             >
               Clear all
@@ -126,8 +126,8 @@ export function FiltersSheet({ params, count }: { params: SearchParams; count: n
                     </label>
                   ))}
                 </div>
-                <div role="radiogroup" aria-label="Budget applies to" className="mt-3 grid grid-cols-2 rounded-[12px] bg-cool p-1">
-                  {(["rent", "fixed"] as const).map((b) => (
+                <div role="radiogroup" aria-label="Budget applies to" className="mt-3 grid grid-cols-3 rounded-[12px] bg-cool p-1">
+                  {(["rent", "fixed", "movein"] as const).map((b) => (
                     <button
                       key={b}
                       type="button"
@@ -136,7 +136,7 @@ export function FiltersSheet({ params, count }: { params: SearchParams; count: n
                       onClick={() => setDraft((d) => ({ ...d, basis: b }))}
                       className={`min-h-10 rounded-[10px] text-[14px] font-semibold ${draft.basis === b ? "bg-surface shadow-[0_0_0_1px_#ccc]" : "text-muted"}`}
                     >
-                      {b === "rent" ? "Rent only" : "Rent + fixed charges"}
+                      {b === "rent" ? "Rent only" : b === "fixed" ? "Rent + charges" : "Move-in total"}
                     </button>
                   ))}
                 </div>

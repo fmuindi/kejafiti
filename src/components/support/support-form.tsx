@@ -13,11 +13,11 @@ const TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
 
 // Contact support (IMP-19). Asks only for what's needed; a file is optional. The page the
 // person came from is attached as context, never anything from their records.
-export function SupportForm({ contextLink }: { contextLink?: string }) {
+export function SupportForm({ contextLink, initialDescription = "" }: { contextLink?: string; initialDescription?: string }) {
   const router = useRouter();
   const [category, setCategory] = useState("other");
   const [subject, setSubject] = useState("");
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(initialDescription);
   const [file, setFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [message, setMessage] = useState<string | undefined>();

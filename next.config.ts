@@ -4,8 +4,8 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  // Camera is used only for receipt and listing photo capture on our own pages.
-  { key: "Permissions-Policy", value: "camera=(self), geolocation=(self), microphone=()" },
+  // Camera: receipt and listing photos. Microphone: voice search (only after the person taps it).
+  { key: "Permissions-Policy", value: "camera=(self), geolocation=(self), microphone=(self)" },
 ];
 
 const nextConfig: NextConfig = {
