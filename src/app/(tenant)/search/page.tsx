@@ -10,7 +10,10 @@ import { RadiusSelect, SortSelect } from "@/components/tenant/sort-select";
 import { Icon } from "@/components/ui/icon";
 import { Notice, cx } from "@/components/ui/primitives";
 import { getSessionUser } from "@/lib/auth";
-import { CATEGORIES } from "@/lib/listing/catalog";
+import { CATEGORIES, HOME_TYPES } from "@/lib/listing/catalog";
+import { AI } from "@/lib/ai/config";
+import { AiInterpretation } from "@/components/search/ai-interpretation";
+import { AiSearch } from "@/components/search/ai-search";
 import { PAGE_SIZE, describeSearch, factLabel, parseSearch, toQuery, toRpcParams, type SearchParams } from "@/lib/listing/search";
 import { formatAmount } from "@/lib/money";
 import { PLACES_ENABLED } from "@/lib/places";
@@ -50,18 +53,27 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
   const returnTo = `/search?${query}`;
 
   const chips: Array<{ label: string; href: string }> = [
+    ...p.types.map((t) => ({ label: HOME_TYPES.find((h) => h.value === t)?.label ?? t, href: removeChip(p, { types: p.types.filter((x) => x !== t) }) })),
+    ...(p.max ? [{ label: `${p.basis === "movein" ? "Move-in" : p.basis === "fixed" ? "Rent + charges" : "Rent"} up to KES ${formatAmount(p.max)}`, href: removeChip(p, { max: undefined, basis: "rent" }) }] : []),
     ...p.must.map((m) => ({ label: factLabel(m), href: removeChip(p, { must: p.must.filter((x) => x !== m) }) })),
+    ...p.prefer.map((m) => ({ label: `Nice to have: ${factLabel(m)}`, href: removeChip(p, { prefer: p.prefer.filter((x) => x !== m) }) })),
     ...(p.furnishing ? [{ label: p.furnishing === "furnished" ? "Furnished" : "Unfurnished", href: removeChip(p, { furnishing: undefined }) }] : []),
     ...(p.by ? [{ label: p.by === "landlord" ? "Direct landlord" : "Agent or manager", href: removeChip(p, { by: undefined }) }] : []),
     ...(p.min ? [{ label: `From KES ${formatAmount(p.min)}`, href: removeChip(p, { min: undefined }) }] : []),
     ...(p.movein ? [{ label: `Move in by ${p.movein}`, href: removeChip(p, { movein: undefined }) }] : []),
     ...(p.unconfirmed ? [{ label: "Including unconfirmed", href: removeChip(p, { unconfirmed: false }) }] : []),
   ];
-  const filterCount = chips.length + p.types.length;
+  const filterCount = chips.length;
 
   return (
     <div className="mx-auto max-w-[1360px] px-4 pt-4 pb-10 md:px-6 md:pt-6">
       <RememberSearch label={`${p.q ?? "Anywhere"} · ${subtitle}`} query={query} />
+      {AI.searchEnabled() ? (
+        <div className="mb-3 max-w-xl">
+          <AiSearch variant="refine" currentQuery={query} voice={AI.voiceEnabled()} />
+          <AiInterpretation query={query} />
+        </div>
+      ) : null}
       <div className="mb-3 max-w-xl">
         <ResultsLocation
           placesEnabled={PLACES_ENABLED}

@@ -47,7 +47,7 @@ select set_config('request.jwt.claims', '{"sub":"c8888888-0000-0000-0000-0000000
 set local role authenticated;
 select public.admin_update_ticket((select v::uuid from ctx where k = 't'), '{"assign_to_me":true,"priority":"high"}'::jsonb);
 select public.reply_support_ticket((select v::uuid from ctx where k = 't'), 'Check the spam folder, then tell us.');
-select is((select status || ' ' || priority from public.support_tickets), 'in_progress high', 'A support reply moves it to in progress');
+select is((select status || ' ' || priority from public.support_tickets where id = (select v::uuid from ctx where k = 't')), 'in_progress high', 'A support reply moves it to in progress');
 select public.admin_update_ticket((select v::uuid from ctx where k = 't'), '{"status":"resolved"}'::jsonb);
 reset role;
 select is((select count(*)::int from public.notifications where user_id = 'a8888888-0000-0000-0000-0000000000aa' and kind in ('support_reply', 'support_status')), 2,

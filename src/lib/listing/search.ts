@@ -12,9 +12,12 @@ export type SearchParams = {
   r: number;
   max?: number;
   min?: number;
-  basis: "rent" | "fixed";
+  /** What a budget limits: rent alone, rent + fixed monthly charges, or the move-in total. */
+  basis: "rent" | "fixed" | "movein";
   types: string[];
   must: string[];
+  /** Nice-to-have features: they rank results, never filter them. */
+  prefer: string[];
   unconfirmed: boolean;
   furnishing?: "furnished" | "unfurnished";
   by?: "landlord" | "agent";
@@ -61,9 +64,11 @@ export function parseSearch(raw: Raw): SearchParams {
     r: (RADII as readonly number[]).includes(r) ? r : DEFAULT_RADIUS,
     max: num("max"),
     min: num("min"),
-    basis: first(raw.basis) === "fixed" ? "fixed" : "rent",
+    basis: first(raw.basis) === "fixed" ? "fixed" : first(raw.basis) === "movein" ? "movein" : "rent",
     types: all(raw.type).filter((t) => TYPE_VALUES.has(t)),
     must: all(raw.must).filter((m) => FACT_VALUES.has(m)),
+    // A feature can't be both required and merely preferred.
+    prefer: all(raw.prefer).filter((m) => FACT_VALUES.has(m) && !all(raw.must).includes(m)),
     unconfirmed: first(raw.unconfirmed) === "1",
     furnishing: furnishing === "furnished" || furnishing === "unfurnished" ? furnishing : undefined,
     by: by === "landlord" || by === "agent" ? by : undefined,
@@ -84,9 +89,10 @@ export function toQuery(p: Partial<SearchParams>): string {
   }
   if (p.max) u.set("max", String(p.max));
   if (p.min) u.set("min", String(p.min));
-  if (p.basis === "fixed") u.set("basis", "fixed");
+  if (p.basis === "fixed" || p.basis === "movein") u.set("basis", p.basis);
   for (const t of p.types ?? []) u.append("type", t);
   for (const m of p.must ?? []) u.append("must", m);
+  for (const m of p.prefer ?? []) u.append("prefer", m);
   if (p.unconfirmed) u.set("unconfirmed", "1");
   if (p.furnishing) u.set("furnishing", p.furnishing);
   if (p.by) u.set("by", p.by);
@@ -109,6 +115,7 @@ export function toRpcParams(p: SearchParams, opts: { includeUnconfirmed?: boolea
     budget_basis: p.basis,
     home_types: p.types,
     must_haves: p.must,
+    preferred: p.prefer,
     include_unconfirmed: opts.includeUnconfirmed ?? p.unconfirmed,
     furnishing: p.furnishing ?? null,
     listed_by: p.by ?? null,
@@ -126,7 +133,7 @@ export function describeSearch(p: SearchParams): { title: string; subtitle: stri
   const what = cat ?? (type ? `${type} homes` : "Homes");
   const near = p.lat !== undefined;
   const title = p.q ? `${what} ${near ? "near" : "in"} ${p.q}` : near ? `${what} near the picked place` : what;
-  const parts = [near ? `Within ${p.r} km` : null, type && !cat ? type : null, p.max ? `Up to KES ${formatAmount(p.max)} / month` : null].filter(Boolean);
+  const parts = [near ? `Within ${p.r} km` : null, type && !cat ? type : null, p.max ? `${p.basis === "movein" ? "Move-in up to" : "Up to"} KES ${formatAmount(p.max)}${p.basis === "movein" ? "" : " / month"}${p.basis === "fixed" ? " incl. charges" : ""}` : null].filter(Boolean);
   return { title, subtitle: parts.join(" · ") || "Any budget" };
 }
 
