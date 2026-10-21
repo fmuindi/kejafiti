@@ -15,6 +15,10 @@ describe("grounding", () => {
     expect(r.text).toBe("KSh 45,000 was confirmed. The rate was 88.9%. Two units owe 5,000 each.");
     expect(r.removed).toEqual(["Collections rose by 15,000."]);
   });
+  it("accepts a change written without its sign", () => {
+    const allowed = allowedNumbers({ change: { confirmed: -15000, rate_points: -11.1 } });
+    expect(keepGrounded("Collections fell by KSh 15,000 and the rate dropped 11.1 points.", allowed).removed).toEqual([]);
+  });
   it("allows small counts and numbers inside fact strings", () => {
     const allowed = allowedNumbers({ notes: "Near Stage 42" });
     expect(keepGrounded("It has 2 bedrooms near Stage 42.", allowed).removed).toEqual([]);

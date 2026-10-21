@@ -16,8 +16,9 @@ export function allowedNumbers(facts: unknown): Set<number> {
   const set = new Set<number>();
   const walk = (v: unknown) => {
     if (typeof v === "number" && Number.isFinite(v)) {
-      set.add(v);
-      set.add(Math.round(v * 10) / 10);
+      // Prose states a change without its sign: -15000 is written "fell by 15,000".
+      set.add(Math.abs(v));
+      set.add(Math.round(Math.abs(v) * 10) / 10);
     } else if (typeof v === "string") numbersIn(v).forEach((n) => set.add(n));
     else if (Array.isArray(v)) v.forEach(walk);
     else if (v && typeof v === "object") Object.values(v).forEach(walk);
