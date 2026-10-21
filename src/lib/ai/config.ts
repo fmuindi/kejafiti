@@ -10,6 +10,8 @@ const flag = (v: string | undefined, d: boolean) => (v === undefined || v === ""
 const hasTextProvider = () => !!process.env.OPENAI_API_KEY || !!process.env.ANTHROPIC_API_KEY;
 const hasSpeechProvider = () => !!process.env.OPENAI_API_KEY;
 
+export type AiFeature = "search_intent" | "transcribe" | "listing_draft" | "report_commentary" | "help_answer";
+
 export const AI = {
   /** Natural-language search (AI-01). On by default when a key is configured. */
   searchEnabled: () => hasTextProvider() && flag(process.env.AI_SEARCH_ENABLED, true),
@@ -20,10 +22,13 @@ export const AI = {
   claudeIntentModel: () => process.env.ANTHROPIC_INTENT_MODEL || "claude-opus-5-5",
   transcribeModel: () => process.env.OPENAI_TRANSCRIBE_MODEL || "gpt-4o-mini-transcribe",
   /** Daily caps: all visitors together, and per visitor (salted hash of the address). */
-  dailyCap: (feature: "search_intent" | "transcribe") =>
-    feature === "search_intent" ? num(process.env.AI_DAILY_SEARCH_CAP, 2000) : num(process.env.AI_DAILY_VOICE_CAP, 300),
-  clientCap: (feature: "search_intent" | "transcribe") =>
-    feature === "search_intent" ? num(process.env.AI_CLIENT_DAILY_SEARCH_CAP, 60) : num(process.env.AI_CLIENT_DAILY_VOICE_CAP, 20),
+  dailyCap: (feature: AiFeature) =>
+    ({ search_intent: num(process.env.AI_DAILY_SEARCH_CAP, 2000), transcribe: num(process.env.AI_DAILY_VOICE_CAP, 300), listing_draft: num(process.env.AI_DAILY_ASSIST_CAP, 500), report_commentary: num(process.env.AI_DAILY_ASSIST_CAP, 500), help_answer: num(process.env.AI_DAILY_HELP_CAP, 1000) })[feature],
+  clientCap: (feature: AiFeature) =>
+    ({ search_intent: num(process.env.AI_CLIENT_DAILY_SEARCH_CAP, 60), transcribe: num(process.env.AI_CLIENT_DAILY_VOICE_CAP, 20), listing_draft: 20, report_commentary: 20, help_answer: 30 })[feature],
+  /** Assistance features (milestone D), each switchable on its own. */
+  assistEnabled: (feature: "listing_draft" | "report_commentary" | "help_answer") =>
+    hasTextProvider() && flag(process.env.AI_ASSIST_ENABLED, true) && flag(process.env[`AI_${feature.toUpperCase()}_ENABLED`], true),
   /** Proposed starting limits from the blueprint (page 12); adjust to the provider and devices. */
   maxClipSeconds: 30,
   maxClipBytes: 8 * 1024 * 1024,

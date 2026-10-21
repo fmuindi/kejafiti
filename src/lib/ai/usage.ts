@@ -6,7 +6,7 @@ import { AI } from "./config";
 // Usage caps and accounting (AIS-07). Visitors are identified only by a salted hash of their
 // address, kept per day; the raw address is never stored.
 
-export type Feature = "search_intent" | "transcribe";
+export type Feature = "search_intent" | "transcribe" | "listing_draft" | "report_commentary" | "help_answer";
 
 export function clientKey(headers: Headers): string {
   const ip = (headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || headers.get("x-real-ip") || "unknown";

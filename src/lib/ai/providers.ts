@@ -19,6 +19,7 @@ export function providerOrder(): Provider[] {
   return wanted.filter((p) => (p === "openai" || p === "anthropic") && configured(p));
 }
 
+/** Any structured task (search, drafts, help) goes through the same chain and validation. */
 export async function completeIntentJson<T>(opts: { system: string; user: string; schemaName: string; schema: object }): Promise<JsonResult<T> & { provider: Provider; skipped: Provider[] }> {
   const order = providerOrder();
   const now = Date.now();

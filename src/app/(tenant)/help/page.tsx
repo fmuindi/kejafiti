@@ -1,27 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AskHelp } from "@/components/support/ask-help";
 import { SupportForm } from "@/components/support/support-form";
 import { Icon } from "@/components/ui/icon";
 import { ButtonLink, PageTitle, StatusBadge } from "@/components/ui/primitives";
+import { AI } from "@/lib/ai/config";
 import { getSessionUser } from "@/lib/auth";
 import { timeAgo } from "@/lib/dates";
+import { HELP_ARTICLES } from "@/lib/help/articles";
 import { SUPPORT_STATUS, categoryLabel } from "@/lib/support";
 import { safeInternalLink } from "@/lib/updates";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Help and support" };
 
-// Answers that are true of the product today; nothing here promises more than it does.
-const FAQ: Array<[string, string]> = [
-  ["Does nyumbani take rent payments?", "No. Tenants pay through each property's own arrangements. Staff check payments outside nyumbani, then record and confirm them here."],
-  ["Why does my viewing say \"not confirmed\"?", "A request stays pending until the advertiser accepts it. If the time passes first, ask for a new time from Viewings."],
-  ["Why do some totals say \"incomplete\"?", "The advertiser hasn't confirmed every compulsory charge yet. Ask them before you pay anything."],
-  ["I'm staff. Why can't I confirm a payment?", "Confirming needs the \"Can confirm rent records\" permission. Ask the workspace owner, who can see and change your access under Team."],
-  ["How do I report a suspicious listing?", "Open the listing and use \"Report this listing\". Our team reviews every report."],
-];
-
 export default async function HelpPage({ searchParams }: PageProps<"/help">) {
-  const from = safeInternalLink(typeof (await searchParams).from === "string" ? ((await searchParams).from as string) : null) ?? undefined;
+  const sp = await searchParams;
+  const from = safeInternalLink(typeof sp.from === "string" ? sp.from : null) ?? undefined;
+  // A question handed over from "Ask a question" starts the support message.
+  const ask = typeof sp.ask === "string" ? sp.ask.slice(0, 500) : "";
   const user = await getSessionUser();
   const supabase = await createClient();
   const { data: tickets } = user
@@ -30,10 +27,11 @@ export default async function HelpPage({ searchParams }: PageProps<"/help">) {
   return (
     <div className="mx-auto flex max-w-[760px] flex-col gap-6 px-4 pt-5 pb-10">
       <PageTitle>Help and support</PageTitle>
+      {AI.assistEnabled("help_answer") ? <AskHelp signedIn={!!user} /> : null}
       <section aria-labelledby="faq" className="flex flex-col gap-2">
         <h2 id="faq" className="font-display text-[20px] font-bold">Common questions</h2>
-        {FAQ.map(([q, a]) => (
-          <details key={q} className="rounded-[14px] border border-line bg-surface px-4 py-3">
+        {HELP_ARTICLES.map(({ id, question: q, answer: a }) => (
+          <details key={id} id={id} className="rounded-[14px] border border-line bg-surface px-4 py-3">
             <summary className="cursor-pointer font-semibold">{q}</summary>
             <p className="mt-2 text-[14.5px] text-muted">{a}</p>
           </details>
@@ -61,13 +59,13 @@ export default async function HelpPage({ searchParams }: PageProps<"/help">) {
           </ul>
         </section>
       ) : null}
-      <section aria-labelledby="contact" className="flex flex-col gap-2">
-        <h2 id="contact" className="font-display text-[20px] font-bold">Contact support</h2>
+      <section id="contact" aria-labelledby="contact-h" className="flex flex-col gap-2">
+        <h2 id="contact-h" className="font-display text-[20px] font-bold">Contact support</h2>
         <p className="text-[14px] text-muted">For a problem with a listing, use &quot;Report this listing&quot; on that listing. Questions about your rent go to your landlord or property manager.</p>
         {user ? (
-          <SupportForm contextLink={from} />
+          <SupportForm contextLink={from} initialDescription={ask} />
         ) : (
-          <ButtonLink href={`/sign-in?next=${encodeURIComponent(`/help${from ? `?from=${encodeURIComponent(from)}` : ""}`)}`} className="self-start">Sign in to contact support</ButtonLink>
+          <ButtonLink href={`/sign-in?next=${encodeURIComponent(`/help${ask ? `?ask=${encodeURIComponent(ask)}#contact` : from ? `?from=${encodeURIComponent(from)}` : ""}`)}`} className="self-start">Sign in to contact support</ButtonLink>
         )}
       </section>
     </div>

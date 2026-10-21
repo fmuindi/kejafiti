@@ -11,6 +11,7 @@ import { Button, Notice, cx } from "@/components/ui/primitives";
 import { EDITABLE_FACTS, STYLE_LABEL } from "@/lib/listing/catalog";
 import { CHARGE_LABEL, computeCosts, type ListingCharge } from "@/lib/listing/costs";
 import { formatAmount, parseAmount } from "@/lib/money";
+import { DescribeHelper } from "./describe-helper";
 import { PhotoStep, type WizardPhoto } from "./photo-step";
 
 type FactValue = "yes" | "no" | "unknown";
@@ -23,6 +24,8 @@ export type WizardData = {
   reviewNote: string | null;
   canEditBuilding: boolean;
   placesEnabled: boolean;
+  /** AI-04 "Help me describe this home" is available. */
+  aiDraft: boolean;
   location: { area: string; town: string; county: string; road: string; landmark: string; viewing_address: string; unit_label: string; property_name: string; latitude: number | null; longitude: number | null };
   home: {
     rental_scope: "entire_home" | "private_room" | "shared_room" | "bedspace";
@@ -479,6 +482,7 @@ function DetailsStep({ data, onBack, onNext, onReview }: { data: WizardData; onB
       <Field label="Description" htmlFor="description" optional>
         <TextArea id="description" rows={4} value={v.description} maxLength={4000} onChange={(e) => setV({ ...v, description: e.target.value })} />
       </Field>
+      {data.aiDraft ? <DescribeHelper orgId={data.orgId} listingId={data.listingId} onApply={(d) => setV({ ...v, title: d.title || v.title, description: d.description })} /> : null}
       <fieldset id="contact" tabIndex={-1} className="flex flex-col gap-2 rounded-[12px] focus:ring-2 focus:ring-deep/40 focus:outline-none">
         <legend className="mb-1 text-[14px] font-semibold">How tenants can reach you</legend>
         <p className="text-[13px] text-muted">In-app messages are always on. Calls and WhatsApp happen outside nyumbani.</p>

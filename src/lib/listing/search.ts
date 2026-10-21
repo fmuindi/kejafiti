@@ -159,6 +159,16 @@ export function listingHref(ref: string, back?: string) {
   return `/homes/${ref}${back !== undefined ? `?back=${encodeURIComponent(back)}` : ""}`;
 }
 
+/** The search a listing was opened from, if any (not for saved homes or direct visits). */
+export function searchFromBack(back: string | string[] | undefined): SearchParams | null {
+  const v = Array.isArray(back) ? back[0] : back;
+  if (v === undefined || v === "saved") return null;
+  const params = new URLSearchParams(v);
+  const raw: Record<string, string[]> = {};
+  for (const k of new Set(params.keys())) raw[k] = params.getAll(k);
+  return parseSearch(raw);
+}
+
 export function backFromListing(back: string | string[] | undefined, ref: string): { href: string; label: string } {
   const v = Array.isArray(back) ? back[0] : back;
   if (v === "saved") return { href: `/saved#home-${ref}`, label: "Back to saved homes" };

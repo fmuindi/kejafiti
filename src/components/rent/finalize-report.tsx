@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { finalizeReport, type Commentary } from "@/app/w/[orgId]/reports/actions";
+import { draftCommentary } from "@/app/w/[orgId]/reports/ai-actions";
 import { Field, TextArea } from "@/components/ui/form";
 import { Button, Notice } from "@/components/ui/primitives";
 import { formatDateTime, formatPeriod } from "@/lib/dates";
@@ -21,7 +22,7 @@ export type PreFinalize = {
 // Finalizing freezes a version. The person first writes the commentary, then reviews
 // exactly what will be frozen (IMP-18) and confirms. Their authority is enough: no
 // second approval.
-export function FinalizeReport({ orgId, propertyId, propertyName, period, nextVersion, review }: { orgId: string; propertyId: string; propertyName: string; period: string; nextVersion: number; review: PreFinalize }) {
+export function FinalizeReport({ orgId, propertyId, propertyName, period, nextVersion, review, aiCommentary = false }: { orgId: string; propertyId: string; propertyName: string; period: string; nextVersion: number; review: PreFinalize; aiCommentary?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [reviewing, setReviewing] = useState(false);
@@ -29,6 +30,8 @@ export function FinalizeReport({ orgId, propertyId, propertyName, period, nextVe
   const [change, setChange] = useState("");
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [pending, start] = useTransition();
+  const [drafting, startDraft] = useTransition();
+  const [draftNote, setDraftNote] = useState<string | null>(null);
   const set = (k: keyof Commentary) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setC({ ...c, [k]: e.target.value });
     setReviewing(false);
@@ -63,6 +66,21 @@ export function FinalizeReport({ orgId, propertyId, propertyName, period, nextVe
     >
       <h2 className="font-display text-[18px] font-bold">Manager&apos;s commentary</h2>
       <p className="-mt-2 text-[13px] text-muted">Saved inside v{nextVersion}. It won&apos;t change after finalizing.</p>
+      {aiCommentary ? (
+        <div className="flex flex-col gap-1">
+          <Button type="button" size="sm" variant="secondary" icon="edit" className="self-start" pending={drafting} pendingLabel="Drafting" onClick={() => startDraft(async () => {
+            setDraftNote(null);
+            const r = await draftCommentary(orgId, propertyId, period);
+            if (!r.ok) return setDraftNote(r.message);
+            setC({ changes: r.draft.changes, issues: r.draft.issues, next_actions: r.draft.next_actions });
+            setReviewing(false);
+            setDraftNote(`Drafted from this report's figures. Read and edit before finalizing.${r.draft.removed ? ` ${r.draft.removed} sentence${r.draft.removed === 1 ? " was" : "s were"} removed for stating figures not in the report.` : ""}`);
+          })}>
+            Draft commentary
+          </Button>
+          {draftNote ? <p role="status" className="text-[13px] text-muted">{draftNote}</p> : null}
+        </div>
+      ) : null}
       <Field label="What changed this month" htmlFor="c_changes" optional>
         <TextArea id="c_changes" value={c.changes} onChange={set("changes")} maxLength={1500} rows={2} />
       </Field>

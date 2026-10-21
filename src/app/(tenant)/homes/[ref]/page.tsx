@@ -16,7 +16,9 @@ import { daysSince, formatDate } from "@/lib/dates";
 import { formatAmount } from "@/lib/money";
 import { signListingPhotos } from "@/lib/storage";
 import { AreaMap } from "@/components/tenant/area-map";
-import { backFromListing } from "@/lib/listing/search";
+import { backFromListing, searchFromBack } from "@/lib/listing/search";
+import { approxDistanceKm, explainMatch } from "@/lib/listing/match";
+import { WhyMatches } from "@/components/tenant/why-matches";
 import { createClient } from "@/lib/supabase/server";
 
 async function load(ref: string) {
@@ -51,7 +53,9 @@ const yn = (v: string | undefined) => (v === "yes" ? "Yes" : v === "no" ? "No" :
 
 export default async function ListingPage({ params, searchParams }: PageProps<"/homes/[ref]">) {
   const { ref } = await params;
-  const back = backFromListing((await searchParams).back, ref);
+  const sp = await searchParams;
+  const back = backFromListing(sp.back, ref);
+  const fromSearch = searchFromBack(sp.back);
   const { supabase, listing } = await load(ref);
   if (!listing) notFound();
   if (!isOpenListing(listing)) return <ListingUnavailable listing={listing} />;
@@ -152,6 +156,11 @@ export default async function ListingPage({ params, searchParams }: PageProps<"/
             <Notice tone="info" title="You manage this listing">
               This is how tenants see it. Status: {listing.status.replace("_", " ")}.
             </Notice>
+          ) : null}
+          {fromSearch ? (
+            <WhyMatches
+              why={explainMatch(fromSearch, listing, fromSearch.lat !== undefined && fromSearch.lng !== undefined ? approxDistanceKm(fromSearch.lat, fromSearch.lng, listing.location.approx_lat, listing.location.approx_lng) : null)}
+            />
           ) : null}
           <CostBreakdown
             rent={listing.rent_amount}
