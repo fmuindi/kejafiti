@@ -4,7 +4,7 @@ import { canonicalQuery, type SearchParams } from "@/lib/listing/search";
 import { todayEAT } from "@/lib/dates";
 import { PLACES_ENABLED, autocomplete, placeDetails } from "@/lib/places";
 import { INTENT_PROMPT_VERSION } from "./config";
-import { INTENT_SCHEMA, appearsIn, applyPatch, checkBudget, checkMoveIn, describeChanges, type IntentPatch, type ResolvedPlace } from "./intent-rules";
+import { INTENT_SCHEMA, appearsIn, applyPatch, checkBudget, fillBudgetFromEvidence, checkMoveIn, describeChanges, type IntentPatch, type ResolvedPlace } from "./intent-rules";
 import { completeIntentJson } from "./providers";
 
 // AI-01: a sentence (typed or transcribed) becomes a change to the canonical search state.
@@ -76,6 +76,7 @@ export async function interpret(text: string, current: SearchParams): Promise<{ 
   if (p.location.op === "set" && !appearsIn(p.location.text, text)) p.location = { op: "keep", text: null };
   const place = p.location.op === "set" && p.location.text ? await resolvePlace(p.location.text) : null;
 
+  p.budget = fillBudgetFromEvidence(p.budget, text);
   const budget = checkBudget(p.budget, text);
   const movein = checkMoveIn(p.move_in_by, text, today);
   // A question needs choices to tap; one without them (e.g. "which area?" when none was

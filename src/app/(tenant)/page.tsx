@@ -5,12 +5,11 @@ import { WhereInput } from "@/components/tenant/where-input";
 import { CATEGORIES, HOME_TYPES } from "@/lib/listing/catalog";
 import { PLACES_ENABLED } from "@/lib/places";
 import { AI } from "@/lib/ai/config";
-import { AiSearch } from "@/components/search/ai-search";
+import { VoiceSearch } from "@/components/search/ai-search";
 
 export default function ExplorePage() {
-  // Describe-your-home search is optional; ordinary search works the same without it.
+  // Voice search is optional and comes second; the filters work the same without it.
   const aiSearch = AI.searchEnabled();
-  const aiVoice = AI.voiceEnabled();
   return (
     <div className="mx-auto max-w-[1100px] px-4 pt-4 pb-10 md:px-6 md:pt-14">
       <div className="md:grid md:grid-cols-[1.1fr_1fr] md:items-start md:gap-14">
@@ -25,13 +24,7 @@ export default function ExplorePage() {
             Every listing shows rent, charges and move-in total up front.
           </p>
 
-          {aiSearch ? (
-            <div className="mt-6">
-              <AiSearch variant="home" voice={aiVoice} />
-              <p className="mt-4 mb-1 text-[13px] font-semibold tracking-[0.4px] text-muted uppercase">Or search with filters</p>
-            </div>
-          ) : null}
-          <form action="/search" className={aiSearch ? "flex flex-col gap-3" : "mt-6 flex flex-col gap-3"}>
+          <form action="/search" className="mt-6 flex flex-col gap-3">
             <div className="rounded-[14px] border border-input bg-surface px-3.5 pt-2 pb-2.5 focus-within:ring-2 focus-within:ring-deep/40">
               <label htmlFor="q" className="block text-[12.5px] font-semibold text-muted">
                 Where
@@ -84,6 +77,8 @@ export default function ExplorePage() {
               Find a home
             </button>
           </form>
+          {/* Floating mic; the filters above stay the main way to search. */}
+          {aiSearch ? <VoiceSearch serverVoice={AI.voiceEnabled()} /> : null}
         </section>
 
         <div className="mt-8 flex flex-col gap-8 md:mt-2">

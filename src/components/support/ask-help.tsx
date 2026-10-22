@@ -35,7 +35,7 @@ export function AskHelp({ signedIn }: { signedIn: boolean }) {
         <TextInput id="ask-q" value={q} maxLength={500} onChange={(e) => setQ(e.target.value)} placeholder="e.g. Can I pay rent here?" className="flex-1" />
         <Button type="submit" pending={pending} pendingLabel="Checking">Ask</Button>
       </form>
-      <p className="text-[12.5px] text-muted">Answered by AI from the help articles on this page only. Don&apos;t include personal details.</p>
+      <p className="text-[12.5px] text-muted">Answers come from the help articles on this page. Please don&apos;t include personal details.</p>
       <div aria-live="polite">
         {error ? <Notice tone="error">{error}</Notice> : null}
         {result?.found ? (

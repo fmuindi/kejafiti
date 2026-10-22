@@ -13,7 +13,7 @@ import { getSessionUser } from "@/lib/auth";
 import { CATEGORIES, HOME_TYPES } from "@/lib/listing/catalog";
 import { AI } from "@/lib/ai/config";
 import { AiInterpretation } from "@/components/search/ai-interpretation";
-import { AiSearch } from "@/components/search/ai-search";
+import { VoiceSearch } from "@/components/search/ai-search";
 import { PAGE_SIZE, describeSearch, factLabel, parseSearch, toQuery, toRpcParams, type SearchParams } from "@/lib/listing/search";
 import { formatAmount } from "@/lib/money";
 import { PLACES_ENABLED } from "@/lib/places";
@@ -68,12 +68,6 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
   return (
     <div className="mx-auto max-w-[1360px] px-4 pt-4 pb-10 md:px-6 md:pt-6">
       <RememberSearch label={`${p.q ?? "Anywhere"} · ${subtitle}`} query={query} />
-      {AI.searchEnabled() ? (
-        <div className="mb-3 max-w-xl">
-          <AiSearch variant="refine" currentQuery={query} voice={AI.voiceEnabled()} />
-          <AiInterpretation query={query} />
-        </div>
-      ) : null}
       <div className="mb-3 max-w-xl">
         <ResultsLocation
           placesEnabled={PLACES_ENABLED}
@@ -139,6 +133,12 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
           </ul>
         ) : null}
       </div>
+      {AI.searchEnabled() ? (
+        <div className="mt-4 max-w-xl">
+          <AiInterpretation query={query} />
+          <VoiceSearch currentQuery={query} serverVoice={AI.voiceEnabled()} />
+        </div>
+      ) : null}
 
       {error ? (
         <Notice tone="error" role="alert" className="mt-4" title="We couldn't load homes right now.">

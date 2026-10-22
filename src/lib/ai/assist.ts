@@ -18,10 +18,9 @@ export function userKey(userId: string) {
 }
 
 export async function runAssist<T>(feature: Exclude<AiFeature, "search_intent" | "transcribe">, client: string, task: { system: string; user: string; schema: object }): Promise<AssistResult<T>> {
-  if (!AI.assistEnabled(feature)) return { ok: false, message: "This assistant is switched off. You can still write it yourself." };
+  if (!AI.assistEnabled(feature)) return { ok: false, message: "This isn't available at the moment. Please try again later." };
   const limited = await takeQuota(feature, client);
-  if (limited === "client_limit") return { ok: false, message: "You've used this assistant a lot today. Try again tomorrow, or write it yourself." };
-  if (limited) return { ok: false, message: "The assistant is busy right now. Try again shortly, or write it yourself." };
+  if (limited) return { ok: false, message: "This isn't available at the moment. Please try again later." };
   const started = Date.now();
   try {
     const r = await completeIntentJson<T>({ system: task.system, user: task.user, schemaName: feature, schema: task.schema });
@@ -31,6 +30,6 @@ export async function runAssist<T>(feature: Exclude<AiFeature, "search_intent" |
   } catch (e) {
     await recordUsage(feature, { failed: true });
     console.warn(`[ai.${feature}] failed`, JSON.stringify({ kind: e instanceof AiProviderError ? e.detail.kind : "unavailable", ms: Date.now() - started }));
-    return { ok: false, message: "The assistant isn't available right now. You can still write it yourself." };
+    return { ok: false, message: "This isn't available at the moment. Please try again later." };
   }
 }
