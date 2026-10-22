@@ -6,6 +6,11 @@ import { CATEGORIES, HOME_TYPES } from "@/lib/listing/catalog";
 import { PLACES_ENABLED } from "@/lib/places";
 import { AI } from "@/lib/ai/config";
 import { VoiceSearch } from "@/components/search/ai-search";
+import { cx } from "@/components/ui/primitives";
+
+// One quiet border at rest; on focus the whole field (not the input inside it) takes the ring.
+const FIELD = "group rounded-[14px] border border-input bg-surface px-3.5 pt-2 transition-[border-color,box-shadow] duration-150 hover:border-ink/60 focus-within:border-deep focus-within:ring-4 focus-within:ring-deep/15";
+const LABEL = "block text-[12.5px] font-semibold text-muted transition-colors group-focus-within:text-deep";
 
 export default function ExplorePage() {
   // Voice search is optional and comes second; the filters work the same without it.
@@ -27,15 +32,15 @@ export default function ExplorePage() {
           </p>
 
           <form action="/search" className="mt-6 flex flex-col gap-3">
-            <div className="rounded-[14px] border border-input bg-surface px-3.5 pt-2 pb-2.5 focus-within:ring-2 focus-within:ring-deep/40">
-              <label htmlFor="q" className="block text-[12.5px] font-semibold text-muted">
+            <div className={cx(FIELD, "pb-2.5")}>
+              <label htmlFor="q" className={LABEL}>
                 Where
               </label>
               <WhereInput placesEnabled={PLACES_ENABLED} />
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-[14px] border border-input bg-surface px-3.5 pt-2 pb-2.5 focus-within:ring-2 focus-within:ring-deep/40">
-                <label htmlFor="max" className="block text-[12.5px] font-semibold text-muted">
+              <div className={cx(FIELD, "pb-2.5")}>
+                <label htmlFor="max" className={LABEL}>
                   Max rent / month
                 </label>
                 <div className="flex items-baseline gap-1.5">
@@ -52,8 +57,8 @@ export default function ExplorePage() {
                   />
                 </div>
               </div>
-              <div className="rounded-[14px] border border-input bg-surface px-3.5 pt-2 pb-1.5 focus-within:ring-2 focus-within:ring-deep/40">
-                <label htmlFor="type" className="block text-[12.5px] font-semibold text-muted">
+              <div className={cx(FIELD, "pb-1.5")}>
+                <label htmlFor="type" className={LABEL}>
                   Layout
                 </label>
                 <select

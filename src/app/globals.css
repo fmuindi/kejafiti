@@ -51,11 +51,21 @@ body {
   }
 }
 
-/* Visible focus everywhere; sticky bars add scroll padding so focus is never hidden. */
-:focus-visible {
-  outline: 3px solid var(--color-deep);
-  outline-offset: 2px;
-  border-radius: 6px;
+/* Visible focus everywhere; sticky bars add scroll padding so focus is never hidden. In the
+   base layer so a field that draws its own focus ring (focus:outline-none) isn't outlined twice. */
+@layer base {
+  :focus-visible {
+    outline: 3px solid var(--color-deep);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+/* Typing caret for the example address in the Where box. */
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 html {
