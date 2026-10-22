@@ -18,10 +18,12 @@ export default function ExplorePage() {
             id="hero"
             className="font-display text-[34px] leading-[1.02] font-bold tracking-[-1.2px] md:text-[56px] md:tracking-[-2px]"
           >
-            Find a home you can actually afford to move into.
+            Find your next home.
+            <br />
+            Without the <span className="text-primary">hassle</span>.
           </h1>
           <p className="mt-3 text-[15px] text-muted md:text-[17px]">
-            Every listing shows rent, charges and move-in total up front.
+            Stop hunting. Find a home you love with a budget that fits you.
           </p>
 
           <form action="/search" className="mt-6 flex flex-col gap-3">
