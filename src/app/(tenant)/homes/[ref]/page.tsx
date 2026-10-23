@@ -33,10 +33,14 @@ export async function generateMetadata({ params }: PageProps<"/homes/[ref]">): P
   if (!listing) return { title: "Home not found" };
   if (!isOpenListing(listing)) return { title: "No longer available", robots: { index: false } };
   const title = listing.title ?? `${layoutLabel(listing.unit)} in ${listing.location.area}`;
+  const pageTitle = `${title} · KES ${formatAmount(listing.rent_amount)}`;
+  const description = `${title}, ${listing.location.area}. Rent KES ${formatAmount(listing.rent_amount)} per ${listing.price_period}; move-in total KES ${formatAmount(listing.move_in_total)}.`;
   return {
-    title: `${title} · KES ${formatAmount(listing.rent_amount)}`,
-    description: `${title}, ${listing.location.area}. Rent KES ${formatAmount(listing.rent_amount)} per ${listing.price_period}; move-in total KES ${formatAmount(listing.move_in_total)}.`,
+    title: pageTitle,
+    description,
     alternates: { canonical: `/homes/${ref}` },
+    // The share image comes from ./opengraph-image.tsx; these give the card its text.
+    openGraph: { title: pageTitle, description, url: `/homes/${ref}` },
   };
 }
 
@@ -62,14 +66,14 @@ export default async function ListingPage({ params, searchParams }: PageProps<"/
 
   const user = await getSessionUser();
   const [photoUrls, savedRow, myViewing] = await Promise.all([
-    signListingPhotos(supabase, listing.photos.map((p) => p.path)),
+    signListingPhotos(supabase, listing.photos.flatMap((p) => [p.path, p.thumb])),
     user ? supabase.from("saved_listings").select("listing_id").eq("listing_id", listing.id).maybeSingle() : Promise.resolve({ data: null }),
     user
       ? supabase.from("viewing_states").select("id, state, requested_start, confirmed_start, proposed_start").eq("listing_id", listing.id).eq("tenant_id", user.id).in("status", ["requested", "new_time_proposed", "confirmed"]).maybeSingle()
       : Promise.resolve({ data: null }),
   ]);
   const photos = listing.photos
-    .map((p) => ({ url: photoUrls.get(p.path) ?? "", label: p.label, alt: p.alt }))
+    .map((p) => ({ url: photoUrls.get(p.path) ?? "", thumbUrl: p.thumb ? photoUrls.get(p.thumb) : undefined, label: p.label, alt: p.alt }))
     .filter((p) => p.url);
 
   const u = listing.unit;

@@ -74,6 +74,7 @@ export function ListingCard({
   signedIn,
   returnTo,
   back,
+  eager = false,
 }: {
   row: SearchRow;
   photoUrl?: string;
@@ -82,6 +83,8 @@ export function ListingCard({
   returnTo: string;
   /** Where the listing's back link returns: a search query string, or "saved". */
   back?: string;
+  /** The first card is usually in view on load: fetch its photo straight away. */
+  eager?: boolean;
 }) {
   const age = daysSince(row.availability_confirmed_at);
   const stale = age !== null && age > 10;
@@ -94,7 +97,7 @@ export function ListingCard({
       <div className="relative aspect-[16/10] bg-cool">
         {photoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photoUrl} alt="" loading="lazy" decoding="async" className="size-full object-cover" />
+          <img src={photoUrl} alt="" loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : "auto"} decoding="async" className="size-full object-cover" />
         ) : (
           <div className="grid size-full place-items-center text-muted">
             <Icon name="image" size={28} />
