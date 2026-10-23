@@ -1,13 +1,12 @@
-import Link from "next/link";
 import { ChargesActions } from "@/components/rent/charges-actions";
 import { PeriodNav, periodHref } from "@/components/rent/period-nav";
-import { Icon } from "@/components/ui/icon";
 import { EmptyState, Eyebrow, Notice } from "@/components/ui/primitives";
 import { isOrgAdmin, requireWorkspace } from "@/lib/auth";
 import { formatDate, formatPeriod, parsePeriodParam } from "@/lib/dates";
 import { formatMoney, sumAmounts } from "@/lib/money";
 import { getProperty } from "@/lib/rent/queries";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
 
 export default async function ChargesPage({ params, searchParams }: PageProps<"/w/[orgId]/rent/[propertyId]/charges">) {
   const { orgId, propertyId } = await params;
@@ -24,9 +23,7 @@ export default async function ChargesPage({ params, searchParams }: PageProps<"/
 
   return (
     <div className="mx-auto flex max-w-[760px] flex-col gap-5">
-      <Link href={base} className="inline-flex min-h-11 items-center gap-1 self-start font-semibold">
-        <Icon name="chevronLeft" /> {property.name}
-      </Link>
+      <BackLink href={base}>{property.name}</BackLink>
       <div>
         <Eyebrow>Rent charges</Eyebrow>
         <h1 className="mt-1 font-display text-[28px] font-bold">Review {formatPeriod(period)} charges</h1>

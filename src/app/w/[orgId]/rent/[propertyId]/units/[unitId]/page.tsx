@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { EntryStatusBadge } from "@/components/rent/badges";
 import { TenancyActions, TenancySetup } from "@/components/rent/tenancy-forms";
 import { ChargeAdjust } from "@/components/rent/charge-adjust";
-import { Icon } from "@/components/ui/icon";
 import { ButtonLink, Card, EmptyState, Eyebrow, Notice } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
 import { formatDate, formatPeriod, parsePeriodParam, periodParam, todayEAT } from "@/lib/dates";
@@ -11,6 +10,7 @@ import { formatAmount, formatMoney } from "@/lib/money";
 import { getOpenCharges, getProperty } from "@/lib/rent/queries";
 import { OCCUPANCY, type Occupancy } from "@/lib/rent/status";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
 
 type Statement = { line_date: string; kind: string; description: string; charge: number; payment: number; balance: number; ref: string | null };
 
@@ -58,9 +58,7 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
 
   return (
     <div className="mx-auto flex max-w-[860px] flex-col gap-5">
-      <Link href={`${base}?period=${periodParam(period)}`} className="inline-flex min-h-11 items-center gap-1 self-start font-semibold">
-        <Icon name="chevronLeft" /> {property.name}
-      </Link>
+      <BackLink href={`${base}?period=${periodParam(period)}`}>{property.name}</BackLink>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <Eyebrow>{property.name}</Eyebrow>

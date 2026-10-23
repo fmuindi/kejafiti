@@ -1,8 +1,7 @@
 "use server";
 
-import { headers } from "next/headers";
 import { runAssist } from "@/lib/ai/assist";
-import { clientKey } from "@/lib/ai/usage";
+import { visitorKey } from "@/lib/ai/usage";
 import { HELP_ARTICLES, HELP_VERSION, articleById } from "@/lib/help/articles";
 
 // AI-11: answer a help question from the help articles only. If they don't cover it, say so and
@@ -25,7 +24,7 @@ export type HelpAnswer = { found: true; answer: string; articles: { id: string; 
 export async function askHelp(question: string): Promise<{ ok: true; result: HelpAnswer } | { ok: false; message: string }> {
   const q = question.trim().slice(0, 500);
   if (q.length < 3) return { ok: false, message: "Type your question first." };
-  const r = await runAssist<{ found: boolean; answer: string; article_ids: string[] }>("help_answer", clientKey(await headers()), {
+  const r = await runAssist<{ found: boolean; answer: string; article_ids: string[] }>("help_answer", await visitorKey(), {
     system: SYSTEM,
     user: `Help articles (JSON):\n${JSON.stringify(HELP_ARTICLES)}\nQuestion:\n${q}`,
     schema: SCHEMA,

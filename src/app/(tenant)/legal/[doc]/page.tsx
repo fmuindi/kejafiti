@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageTitle } from "@/components/ui/primitives";
+import { BackLink } from "@/components/shell/back-link";
 
 // Policy pages (IMP-19). The approved wording comes from the product owner; until it is
 // supplied the page says so plainly rather than inventing commitments.
@@ -17,6 +18,7 @@ export default async function LegalPage({ params }: PageProps<"/legal/[doc]">) {
   if (!title) notFound();
   return (
     <div className="mx-auto flex max-w-[720px] flex-col gap-4 px-4 pt-5 pb-10">
+      <BackLink href="/help">Help and support</BackLink>
       <PageTitle>{title}</PageTitle>
       <p className="text-[15px]">The full {title.toLowerCase()} will be published on this page.</p>
       <p className="text-[15px] text-muted">

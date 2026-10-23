@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { StartListingForm } from "@/components/listing/start-form";
-import { PageTitle } from "@/components/ui/primitives";
 import { isOrgAdmin, requireWorkspace } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
+import { PageHeader } from "@/components/shell/page-header";
 
 export const metadata: Metadata = { title: "List a home" };
 
@@ -16,7 +17,8 @@ export default async function NewListingPage({ params, searchParams }: PageProps
   const { data: properties } = await supabase.from("properties").select("id, name, area, units(id, label, occupancy)").eq("org_id", orgId).is("archived_at", null).order("name");
   return (
     <div className="mx-auto flex max-w-[600px] flex-col gap-4">
-      <PageTitle>List a home</PageTitle>
+      <BackLink href={`/w/${orgId}`}>Overview</BackLink>
+      <PageHeader icon="plus" title="List a home" />
       <p className="text-[15px] text-muted">Listing is free for one vacancy. It takes about 10 minutes and saves as you go.</p>
       <StartListingForm
         orgId={orgId}

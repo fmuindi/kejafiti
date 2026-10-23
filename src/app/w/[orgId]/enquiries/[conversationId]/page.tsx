@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FollowUpControls } from "@/components/messaging/follow-up";
+import { LiveConversation, PeerStatus } from "@/components/messaging/live";
 import { Thread, type ThreadMessage } from "@/components/messaging/thread";
+import { BackLink } from "@/components/shell/back-link";
 import { ViewingResponse } from "@/components/messaging/viewing-response";
-import { Icon } from "@/components/ui/icon";
-import { StatusBadge } from "@/components/ui/primitives";
+import { Avatar, StatusBadge } from "@/components/ui/primitives";
 import { getSessionUser, requireWorkspace } from "@/lib/auth";
 import { formatAppointment } from "@/lib/dates";
 import { formatAmount } from "@/lib/money";
@@ -39,27 +40,32 @@ export default async function EnquiryPage({ params }: PageProps<"/w/[orgId]/enqu
   const messages: ThreadMessage[] = (msgs ?? []).map((m) => ({ id: m.id, body: m.body, side: m.sender_side as ThreadMessage["side"], created_at: m.created_at, mine: m.sender_side === "advertiser" || m.sender_id === user?.id }));
 
   return (
+    <LiveConversation conversationId={conversationId} userId={user?.id ?? ""} side="advertiser">
     <div className="mx-auto flex max-w-[760px] flex-col gap-4">
-      <Link href={`/w/${orgId}/enquiries`} className="inline-flex min-h-11 items-center gap-1 self-start font-semibold"><Icon name="chevronLeft" /> Enquiries</Link>
+      <BackLink href={`/w/${orgId}/enquiries`}>Enquiries</BackLink>
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="font-display text-[24px] font-bold">{tenant?.full_name || "Tenant"}</h1>
-          <Link href={`/homes/${l.ref}`} className="text-[14px] text-muted hover:underline">Unit {l.units?.label} · {l.title}{l.rent_amount ? ` · KES ${formatAmount(Number(l.rent_amount))}` : ""}</Link>
+        <div className="flex min-w-0 items-center gap-3">
+          <Avatar name={tenant?.full_name || "Tenant"} size={48} />
+          <div className="min-w-0">
+            <h1 className="truncate font-display text-[24px] font-bold">{tenant?.full_name || "Tenant"}</h1>
+            <div><PeerStatus /></div>
+            <Link href={`/homes/${l.ref}`} className="text-[14px] text-muted block hover:underline">Unit {l.units?.label} · {l.title}{l.rent_amount ? ` · KES ${formatAmount(Number(l.rent_amount))}` : ""}</Link>
+          </div>
         </div>
         <FollowUpControls conversationId={conversationId} stage={c.follow_up} assigned={c.assigned_membership_id} members={(members ?? []) as Array<{ id: string; display_name: string }>} />
       </div>
       {viewing ? (
-        <div className="flex flex-col gap-3 rounded-[16px] border border-line bg-surface p-4">
+        <div id="viewing" className="flex scroll-mt-24 flex-col gap-3 rounded-[16px] border border-line bg-surface p-4 target:border-primary target:ring-4 target:ring-primary/15">
           <div className="flex items-center justify-between gap-3">
             <span className="font-semibold">Viewing · {formatAppointment(viewing.confirmed_start ?? viewing.proposed_start ?? viewing.requested_start)} EAT</span>
             <StatusBadge tone={STAFF_LABEL[viewing.state]?.tone ?? "neutral"}>{STAFF_LABEL[viewing.state]?.label ?? viewing.state}</StatusBadge>
           </div>
-          {viewing.state === "requested" || viewing.state === "expired" ? <ViewingResponse viewingId={viewing.id} expired={viewing.state === "expired"} /> : null}
-          {viewing.status === "confirmed" ? <ViewingResponse viewingId={viewing.id} confirmed /> : null}
+          <ViewingResponse viewingId={viewing.id} state={viewing.state} />
         </div>
       ) : null}
       <p className="text-[12.5px] text-muted">You&apos;re replying as {ws.org_name}. Calls or WhatsApp chats outside nyumbani won&apos;t appear here.</p>
-      <Thread userId={user?.id ?? ""} conversationId={conversationId} messages={messages} quickReplies={QUICK} />
+      <Thread userId={user?.id ?? ""} conversationId={conversationId} messages={messages} quickReplies={QUICK} peerName={tenant?.full_name || "The tenant"} />
     </div>
+    </LiveConversation>
   );
 }

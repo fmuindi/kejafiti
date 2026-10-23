@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProfileForm } from "@/components/auth/profile-form";
 import { Icon } from "@/components/ui/icon";
-import { PageTitle } from "@/components/ui/primitives";
 import { getProfile, getWorkspaces, requireUser, requireWorkspace } from "@/lib/auth";
 import { ROLE_LABEL } from "@/lib/rent/status";
+import { PageHeader } from "@/components/shell/page-header";
 
 export const metadata: Metadata = { title: "Account" };
 
@@ -25,7 +25,7 @@ export default async function WorkspaceAccountPage({ params }: PageProps<"/w/[or
   ] as const;
   return (
     <div className="mx-auto flex max-w-[640px] flex-col gap-5">
-      <PageTitle>Account</PageTitle>
+      <PageHeader icon="user" title="Account" />
       <ProfileForm name={profile?.full_name ?? ""} email={profile?.email ?? ""} />
       <section aria-labelledby="access" className="rounded-[18px] border border-line bg-surface p-4">
         <h2 id="access" className="font-semibold">Your access in {ws.org_name}</h2>

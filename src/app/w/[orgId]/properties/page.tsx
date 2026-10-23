@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
-import { ButtonLink, EmptyState, PageTitle } from "@/components/ui/primitives";
+import { ButtonLink, EmptyState } from "@/components/ui/primitives";
 import { isOrgAdmin, requireWorkspace } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/shell/page-header";
 
 export const metadata: Metadata = { title: "Properties" };
 
@@ -21,7 +22,7 @@ export default async function PropertiesPage({ params, searchParams }: PageProps
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <PageTitle>Your properties</PageTitle>
+          <PageHeader icon="building" title="Properties" />
           <p className="mt-1 text-[14.5px] text-muted">Buildings and their units. Listings and rent records use the same units.</p>
         </div>
         <div className="flex gap-2">

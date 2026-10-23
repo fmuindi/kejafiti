@@ -100,6 +100,17 @@ export function negativeAmountsIn(text: string): number[] {
 }
 
 /** Accept a budget only if it is plausible and stated in the input. Otherwise ask, never guess. */
+/**
+ * Some replies set a budget and quote the amount as evidence but leave max and min empty. When
+ * the quoted words are the person's own and state exactly one sensible amount, that is the max.
+ */
+export function fillBudgetFromEvidence(b: IntentPatch["budget"], text: string): IntentPatch["budget"] {
+  if (b.op !== "set" || b.max !== null || b.min !== null || !appearsIn(b.evidence, text)) return b;
+  const stated = [...new Set(amountsIn(b.evidence as string))].filter((v) => v >= MIN_BUDGET && v <= MAX_BUDGET);
+  if (stated.length !== 1 || negativeAmountsIn(text).includes(stated[0])) return b;
+  return { ...b, max: stated[0] };
+}
+
 export function checkBudget(b: IntentPatch["budget"], text: string): Check {
   if (b.op !== "set") return { ok: true };
   const values = [b.max, b.min].filter((v): v is number => v !== null);

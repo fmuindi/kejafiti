@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AdminNav } from "@/components/admin/admin-nav";
+import { LiveUpdates } from "@/components/shell/live-updates";
 import { Logo } from "@/components/ui/icon";
 import { SignOutForm } from "@/components/auth/sign-out-form";
 import { getProfile, requirePlatformAdmin, requireUser } from "@/lib/auth";
@@ -36,6 +37,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
         </div>
       </aside>
       <main id="main" className="min-w-0 px-4 py-6 md:px-8">{children}</main>
+      <LiveUpdates userId={user.id} />
     </div>
   );
 }

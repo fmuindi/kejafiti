@@ -13,7 +13,7 @@ import { getSessionUser } from "@/lib/auth";
 import { CATEGORIES, HOME_TYPES } from "@/lib/listing/catalog";
 import { AI } from "@/lib/ai/config";
 import { AiInterpretation } from "@/components/search/ai-interpretation";
-import { AiSearch } from "@/components/search/ai-search";
+import { VoiceSearch } from "@/components/search/ai-search";
 import { PAGE_SIZE, describeSearch, factLabel, parseSearch, toQuery, toRpcParams, type SearchParams } from "@/lib/listing/search";
 import { formatAmount } from "@/lib/money";
 import { PLACES_ENABLED } from "@/lib/places";
@@ -68,12 +68,6 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
   return (
     <div className="mx-auto max-w-[1360px] px-4 pt-4 pb-10 md:px-6 md:pt-6">
       <RememberSearch label={`${p.q ?? "Anywhere"} · ${subtitle}`} query={query} />
-      {AI.searchEnabled() ? (
-        <div className="mb-3 max-w-xl">
-          <AiSearch variant="refine" currentQuery={query} voice={AI.voiceEnabled()} />
-          <AiInterpretation query={query} />
-        </div>
-      ) : null}
       <div className="mb-3 max-w-xl">
         <ResultsLocation
           placesEnabled={PLACES_ENABLED}
@@ -86,7 +80,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
       </div>
       <div className="sticky top-0 z-20 -mx-4 border-b border-line bg-cream/95 px-4 pt-1 pb-3 backdrop-blur md:static md:mx-0 md:border-0 md:bg-transparent md:px-0">
         <div className="flex items-center gap-3">
-          <Link href="/" aria-label="Back to Explore" className="grid size-10 place-items-center rounded-full md:hidden">
+          <Link href="/" aria-label="Back to Explore" className="grid size-9 shrink-0 place-items-center rounded-full border border-line bg-surface md:hidden">
             <Icon name="chevronLeft" />
           </Link>
           <div className="min-w-0 flex-1">
@@ -139,6 +133,12 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
           </ul>
         ) : null}
       </div>
+      {AI.searchEnabled() ? (
+        <div className="mt-4 max-w-xl">
+          <AiInterpretation query={query} />
+          <VoiceSearch currentQuery={query} serverVoice={AI.voiceEnabled()} />
+        </div>
+      ) : null}
 
       {error ? (
         <Notice tone="error" role="alert" className="mt-4" title="We couldn't load homes right now.">
@@ -190,8 +190,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
               ) : null}
             </div>
             <p className="max-w-xl text-center text-[12.5px] text-muted">
-              Sponsored homes are paid placements. They still match every filter you set and get the same checks as other
-              listings.
+              Sponsored homes are paid placements that match your filters.
             </p>
           </div>
         </>

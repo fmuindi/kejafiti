@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ContactSheet } from "@/components/tenant/contact-sheet";
 import { CostBreakdown } from "@/components/tenant/cost-breakdown";
@@ -20,6 +19,7 @@ import { backFromListing, searchFromBack } from "@/lib/listing/search";
 import { approxDistanceKm, explainMatch } from "@/lib/listing/match";
 import { WhyMatches } from "@/components/tenant/why-matches";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
 
 async function load(ref: string) {
   const supabase = await createClient();
@@ -88,9 +88,7 @@ export default async function ListingPage({ params, searchParams }: PageProps<"/
   return (
     <div className="mx-auto max-w-[1100px] pb-28 md:px-6 md:pt-6 md:pb-12">
       <div className="no-print flex items-center justify-between px-4 py-3 md:px-0">
-        <Link href={back.href} className="inline-flex min-h-11 items-center gap-1 font-semibold">
-          <Icon name="chevronLeft" /> {back.label}
-        </Link>
+        <BackLink href={back.href}>{back.label}</BackLink>
         <SaveButton refId={ref} saved={!!savedRow.data} signedIn={!!user} returnTo={returnTo} />
       </div>
 

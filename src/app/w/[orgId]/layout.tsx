@@ -1,9 +1,12 @@
 import { SignOutForm } from "@/components/auth/sign-out-form";
 import Link from "next/link";
+import { ActivityPing } from "@/components/shell/activity-ping";
+import { LiveUpdates } from "@/components/shell/live-updates";
 import { BottomTabs, SidebarLinks, type NavItem } from "@/components/shell/nav-link";
 import { HelpLink } from "@/components/shell/help-link";
 import { UpdatesBell } from "@/components/shell/updates-bell";
 import { Icon, Logo } from "@/components/ui/icon";
+import { Avatar } from "@/components/ui/primitives";
 import { getProfile, getWorkspaces, isOrgAdmin, requireUser, requireWorkspace } from "@/lib/auth";
 import { ROLE_LABEL } from "@/lib/rent/status";
 import { createClient } from "@/lib/supabase/server";
@@ -20,6 +23,7 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
     await supabase.from("profiles").update({ last_role: "workspace", last_org_id: orgId }).eq("id", signedInUserId);
   }
   const base = `/w/${orgId}`;
+  const me = profile?.full_name?.trim() || profile?.email || "Me";
   const admin = isOrgAdmin(ws);
   const listings = ws.can_manage_listings;
 
@@ -40,12 +44,12 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
 
   const sidebar: NavItem[] = [
     { href: base, label: "Overview", icon: "home", exact: true },
-    ...(listings || admin ? [{ href: `${base}/properties`, label: "Properties & units", icon: "building" as const }] : []),
+    ...(listings || admin ? [{ href: `${base}/properties`, label: "Properties", icon: "building" as const }] : []),
     { href: `${base}/rent`, label: "Rent records", icon: "wallet", badge: pending ?? 0 },
     ...(enterOnly ? [{ href: `${base}/rent/mine`, label: "My entries", icon: "inbox" as const, badge: myOpenWork }] : []),
     // IMP-07: the financial dashboard, one click from anywhere.
     { href: `${base}/dashboard`, label: "Performance", icon: "chart" },
-    ...(listings ? [{ href: `${base}/enquiries`, label: "Enquiries & viewings", icon: "message" as const, badge: unanswered }] : []),
+    ...(listings ? [{ href: `${base}/enquiries`, label: "Enquiries", icon: "message" as const, badge: unanswered }] : []),
     ...(admin ? [{ href: `${base}/team`, label: "Team", icon: "team" as const }] : []),
     { href: `${base}/reports`, label: "Reports", icon: "file" },
     { href: `${base}/activity`, label: "Updates", icon: "bell", badge: unreadUpdates },
@@ -57,7 +61,7 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
     { href: `${base}/rent`, label: "Rent", icon: "wallet", badge: pending ?? 0 },
     { href: `${base}/dashboard`, label: "Performance", icon: "chart" },
     { href: `${base}/enquiries`, label: "Enquiries", icon: "message", badge: unanswered },
-    { href: `${base}/account`, label: "Account", icon: "user" },
+    { href: `${base}/account`, label: "Account", icon: "user", avatar: me },
   ];
   const staffTabs: NavItem[] = [
     { href: `${base}/rent`, label: "Rent", icon: "wallet" },
@@ -65,7 +69,7 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
     ...(enterOnly ? [{ href: `${base}/rent/mine`, label: "My entries", icon: "inbox" as const, badge: myOpenWork }] : []),
     ...(listings ? [{ href: `${base}/enquiries`, label: "Enquiries", icon: "message" as const, badge: unanswered }] : []),
     { href: `${base}/dashboard`, label: "Performance", icon: "chart" },
-    { href: `${base}/account`, label: "Account", icon: "user" },
+    { href: `${base}/account`, label: "Account", icon: "user", avatar: me },
   ];
   const tabs = admin ? ownerTabs : staffTabs;
 
@@ -97,21 +101,24 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
               </ul>
             </details>
           ) : null}
+          <Link href={`${base}/account`} className="flex min-h-12 items-center gap-2.5 rounded-[12px] px-2 py-1.5 hover:bg-surface">
+            <Avatar name={me} size={32} />
+            <span className="min-w-0">
+              <span className="block truncate font-semibold">{me}</span>
+              <span className="block text-[12px] text-muted">Your account</span>
+            </span>
+          </Link>
           <HelpLink className="flex min-h-11 items-center gap-2 rounded-[12px] px-3 hover:bg-surface">
             <Icon name="info" size={18} /> Help and support
           </HelpLink>
-          <Link href="/" className="flex min-h-11 flex-col justify-center rounded-[12px] px-3 py-1.5 hover:bg-surface">
-            <span className="flex items-center gap-2"><Icon name="search" size={18} /> Browse homes</span>
-            <span className="pl-[26px] text-[12px] text-muted">Same account. Your access doesn&apos;t change.</span>
+          <Link href="/" className="flex min-h-11 items-center gap-2 rounded-[12px] px-3 hover:bg-surface">
+            <Icon name="search" size={18} /> Browse homes
           </Link>
           <SignOutForm userId={signedInUserId}>
             <button type="submit" className="flex min-h-11 w-full items-center gap-2 rounded-[12px] px-3 hover:bg-surface">
               <Icon name="logout" size={18} /> Sign out
             </button>
           </SignOutForm>
-          <p className="px-3 pt-2 text-[12px] leading-snug text-muted">
-            Tenants pay through each property&apos;s own arrangements. Figures here are records your staff entered and confirmed.
-          </p>
         </div>
       </aside>
       <div className="min-w-0 pb-[76px] md:pb-0">
@@ -130,6 +137,8 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
         </main>
       </div>
       <BottomTabs items={tabs} label="Workspace" />
+      <ActivityPing />
+      <LiveUpdates userId={signedInUserId} />
     </div>
   );
 }

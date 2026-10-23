@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { ReviewDecision } from "@/components/admin/review-decision";
 import { CostBreakdown } from "@/components/tenant/cost-breakdown";
 import { Gallery } from "@/components/tenant/gallery";
-import { Icon } from "@/components/ui/icon";
 import { Notice, StatusBadge } from "@/components/ui/primitives";
 import { ADVERTISER_ROLE_LABEL, FACTS, layoutLabel } from "@/lib/listing/catalog";
 import { formatDate } from "@/lib/dates";
@@ -12,6 +11,7 @@ import type { PublicListing } from "@/lib/listing/types";
 import { signListingPhotos } from "@/lib/storage";
 import { requirePlatformAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
 
 export const metadata: Metadata = { title: "Review listing" };
 
@@ -31,7 +31,7 @@ export default async function AdminListingPage({ params }: PageProps<"/admin/lis
 
   return (
     <div className="mx-auto flex max-w-[1000px] flex-col gap-5">
-      <Link href="/admin" className="inline-flex min-h-11 items-center gap-1 self-start font-semibold"><Icon name="chevronLeft" /> Review queue</Link>
+      <BackLink href="/admin">Review queue</BackLink>
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="font-display text-[28px] font-bold">{l.title}</h1>
         <StatusBadge tone={row.status === "under_review" ? "waiting" : row.status === "published" ? "success" : "neutral"}>{row.status.replace("_", " ")}</StatusBadge>

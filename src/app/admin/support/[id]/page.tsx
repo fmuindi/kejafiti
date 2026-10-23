@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TicketControls } from "@/components/support/ticket-controls";
 import { TicketThread } from "@/components/support/ticket-thread";
@@ -9,6 +8,7 @@ import { requirePlatformAdmin } from "@/lib/auth";
 import { formatDateTime } from "@/lib/dates";
 import { SUPPORT_STATUS, categoryLabel } from "@/lib/support";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
 
 export const metadata: Metadata = { title: "Support request" };
 
@@ -28,7 +28,7 @@ export default async function AdminTicketPage({ params }: PageProps<"/admin/supp
   const assignee = people?.find((p) => p.id === t.assignee_id);
   return (
     <div className="mx-auto flex max-w-[820px] flex-col gap-4">
-      <Link href="/admin/support" className="inline-flex min-h-11 items-center gap-1 self-start font-semibold"><Icon name="chevronLeft" /> Support</Link>
+      <BackLink href="/admin/support">Support</BackLink>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="font-mono text-[12px] text-muted">{t.ref} · {categoryLabel(t.category)} · opened {formatDateTime(t.created_at)}</p>

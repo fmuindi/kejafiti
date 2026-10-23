@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ViewingResponse } from "@/components/messaging/viewing-response";
-import { EmptyState, PageTitle, StatusBadge } from "@/components/ui/primitives";
+import { EmptyState, StatusBadge } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
 import { formatDayDate, formatTime, isoHoursAgo } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
 import { STAFF_LABEL, viewingRows } from "@/lib/viewings";
+import { BackLink } from "@/components/shell/back-link";
+import { PageHeader } from "@/components/shell/page-header";
 
 export const metadata: Metadata = { title: "Viewings" };
 
@@ -33,7 +35,8 @@ export default async function AgendaPage({ params }: PageProps<"/w/[orgId]/viewi
   }
   return (
     <div className="mx-auto flex max-w-[720px] flex-col gap-5">
-      <PageTitle>Viewings</PageTitle>
+      <BackLink href={`/w/${orgId}/enquiries`}>Enquiries</BackLink>
+      <PageHeader icon="calendar" title="Viewings" />
       {days.size === 0 ? (
         <EmptyState title="No upcoming viewings" icon="calendar">Requests and confirmed viewings appear here by day, in East Africa Time.</EmptyState>
       ) : (
@@ -53,7 +56,7 @@ export default async function AgendaPage({ params }: PageProps<"/w/[orgId]/viewi
                       </span>
                       <StatusBadge tone={STAFF_LABEL[v.state]?.tone ?? "neutral"}>{STAFF_LABEL[v.state]?.label ?? v.state}</StatusBadge>
                     </div>
-                    {v.state === "requested" || v.state === "expired" ? <ViewingResponse viewingId={v.id} expired={v.state === "expired"} /> : null}
+                    <ViewingResponse viewingId={v.id} state={v.state} />
                   </li>
                 );
               })}

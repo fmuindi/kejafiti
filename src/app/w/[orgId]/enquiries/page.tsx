@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ActivityAvatar } from "@/components/messaging/activity-avatar";
 import { ViewingResponse } from "@/components/messaging/viewing-response";
-import { Avatar, EmptyState, PageTitle, StatusBadge, cx } from "@/components/ui/primitives";
+import { EmptyState, StatusBadge, cx } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
 import { formatAppointment, timeAgo } from "@/lib/dates";
+import { onlineConversations } from "@/lib/presence-server";
 import { createClient } from "@/lib/supabase/server";
 import { STAFF_LABEL, viewingRows } from "@/lib/viewings";
+import { PageHeader } from "@/components/shell/page-header";
 
 export const metadata: Metadata = { title: "Enquiries" };
 
@@ -28,12 +31,13 @@ export default async function EnquiriesPage({ params, searchParams }: PageProps<
   const rows = (convs ?? []).filter((c) => (tab === "reply" ? c.needs_reply && c.follow_up !== "closed" : tab === "all" ? true : false));
   const grouped = new Map<string, typeof rows>();
   for (const r of rows) grouped.set(`${r.area} · ${r.listing_title ?? ""}`, [...(grouped.get(`${r.area} · ${r.listing_title ?? ""}`) ?? []), r]);
+  const online = await onlineConversations(supabase, rows.map((c) => c.id));
   const memberName = new Map((members ?? []).map((m) => [m.id, m.display_name]));
   const needCount = (convs ?? []).filter((c) => c.needs_reply && c.follow_up !== "closed").length;
 
   return (
     <div className="mx-auto flex max-w-[820px] flex-col gap-4">
-      <PageTitle>Enquiries</PageTitle>
+      <PageHeader icon="message" title="Enquiries" meta={needCount ? `${needCount} need a reply` : "All answered"} />
       <nav aria-label="Enquiry views" className="flex gap-2 border-b border-line">
         {[["reply", `Reply needed ${needCount}`], ["viewings", `Viewings ${(requests ?? []).length}`], ["all", "All"]].map(([k, label]) => (
           <Link key={k} href={`/w/${orgId}/enquiries?tab=${k}`} aria-current={tab === k ? "page" : undefined} className={cx("-mb-px border-b-2 px-3 py-2.5 text-[15px] font-semibold", tab === k ? "border-primary text-ink" : "border-transparent text-muted")}>
@@ -60,7 +64,7 @@ export default async function EnquiriesPage({ params, searchParams }: PageProps<
                     {v.state === "expired" ? <><StatusBadge tone="error">{STAFF_LABEL.expired.label}</StatusBadge>{" "}{v.status === "new_time_proposed" ? "Your suggested time" : "The requested time"} <strong>{formatAppointment((v.proposed_start ?? v.requested_start) as string)}</strong> passed without confirmation.</> : v.status === "new_time_proposed" ? <>You proposed <strong>{formatAppointment(v.proposed_start as string)}</strong>; waiting for the tenant.</> : <>Wants to view on <strong>{formatAppointment(v.requested_start)}</strong> EAT</>}
                   </p>
                   {v.tenant_note ? <p className="text-[14px] text-muted">&quot;{v.tenant_note}&quot;</p> : null}
-                  {v.state === "requested" || v.state === "expired" ? <ViewingResponse viewingId={v.id} expired={v.state === "expired"} /> : null}
+                  <ViewingResponse viewingId={v.id} state={v.state} />
                 </li>
               );
             })}
@@ -78,7 +82,7 @@ export default async function EnquiriesPage({ params, searchParams }: PageProps<
               {items.map((c) => (
                 <li key={c.id}>
                   <Link href={`/w/${orgId}/enquiries/${c.id}`} className="flex gap-3 px-4 py-3.5 hover:bg-cool">
-                    <Avatar name={c.tenant_name ?? "Tenant"} />
+                    <ActivityAvatar name={c.tenant_name ?? "Tenant"} online={online.has(c.id)} />
                     <span className="min-w-0 flex-1">
                       <span className="flex justify-between gap-3">
                         <span className={cx("truncate", c.unread ? "font-bold" : "font-semibold")}>{c.tenant_name ?? "Tenant"} · {c.unit_label}</span>

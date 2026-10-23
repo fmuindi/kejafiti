@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EMPTY, amountsIn, applyPatch, checkBudget, describeChanges, type IntentPatch } from "@/lib/ai/intent-rules";
+import { EMPTY, amountsIn, applyPatch, checkBudget, describeChanges, fillBudgetFromEvidence, type IntentPatch } from "@/lib/ai/intent-rules";
 import { parseSearch, toQuery } from "@/lib/listing/search";
 
 // Deterministic rules around the model (blueprint pp.7-9, 14-15). The model's output is
@@ -113,5 +113,17 @@ describe("the query handed to the results page is canonical", () => {
     const q = canonicalQuery({ ...EMPTY, q: "Ruaka", lat: -1.2058128, lng: 36.7795319 });
     expect(q).toBe("q=Ruaka&lat=-1.20581&lng=36.77953");
     expect(toQuery(parseSearch(Object.fromEntries(new URLSearchParams(q))))).toBe(q);
+  });
+});
+
+describe("a budget set without an amount", () => {
+  const set = (evidence: string | null) => ({ op: "set" as const, max: null, min: null, basis: "movein" as const, evidence });
+  it("takes the one amount from the person's own words", () => {
+    expect(fillBudgetFromEvidence(set("30k"), "Total move-in budget is 30k").max).toBe(30000);
+  });
+  it("does nothing when the words aren't theirs, are unclear, or negative", () => {
+    expect(fillBudgetFromEvidence(set("30k"), "Total move-in budget is high").max).toBeNull();
+    expect(fillBudgetFromEvidence(set("15k or 20k"), "15k or 20k").max).toBeNull();
+    expect(fillBudgetFromEvidence(set("minus 30k"), "minus 30k").max).toBeNull();
   });
 });

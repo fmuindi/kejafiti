@@ -34,7 +34,7 @@ export function AiInterpretation({ query }: { query: string }) {
   return (
     <section aria-label="How we read your request" className="mt-3 flex flex-col gap-1.5 rounded-[14px] border border-line bg-surface p-3 text-[14px]">
       <p>
-        <span className="text-muted">You asked for </span>&quot;{info.text}&quot;
+        <span className="text-muted">We heard </span>&quot;{info.text}&quot;
       </p>
       {info.changes.length ? <p><span className="text-muted">We searched: </span>{info.changes.join(" · ")}</p> : null}
       {info.defaults.map((d) => <p key={d} className="text-waiting-strong">{d}</p>)}

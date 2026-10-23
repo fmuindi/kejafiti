@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ListingStatusPanel } from "@/components/listing/status-panel";
 import { Wizard, type WizardData } from "@/components/listing/wizard";
-import { Icon } from "@/components/ui/icon";
 import { Notice } from "@/components/ui/primitives";
 import { isOrgAdmin, requireWorkspace } from "@/lib/auth";
 import type { ListingCharge } from "@/lib/listing/costs";
@@ -11,6 +9,7 @@ import { PLACES_ENABLED } from "@/lib/places";
 import { AI } from "@/lib/ai/config";
 import { signListingPhotos } from "@/lib/storage";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
 
 export const metadata: Metadata = { title: "List a home" };
 
@@ -106,9 +105,7 @@ export default async function ListingWizardPage({ params, searchParams }: PagePr
 
   return (
     <div className="mx-auto flex max-w-[680px] flex-col gap-4">
-      <Link href={`/w/${orgId}/properties/${l.property_id}`} className="inline-flex min-h-11 items-center gap-1 self-start font-semibold">
-        <Icon name="chevronLeft" /> {String(property.name)}
-      </Link>
+      <BackLink href={`/w/${orgId}/properties/${l.property_id}`}>{String(property.name)}</BackLink>
       {l.status !== "draft" ? <ListingStatusPanel orgId={orgId} listingId={listingId} status={l.status} refId={l.ref} confirmedAt={l.availability_confirmed_at} reviewNote={l.review_note} /> : null}
       {editable ? (
         <Wizard data={data} step={step} focus={typeof sp.focus === "string" ? sp.focus : undefined} fromReview={sp.from === "review"} />
