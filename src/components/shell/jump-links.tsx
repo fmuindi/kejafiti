@@ -18,7 +18,7 @@ export function JumpLinks({ items, label = "Related" }: { items: Jump[]; label?:
             <Link
               href={j.href}
               className={cx(
-                "group inline-flex min-h-11 items-center gap-2 rounded-full border-[1.5px] py-1.5 pr-3 pl-2 text-[14.5px] font-semibold whitespace-nowrap transition-colors",
+                "group inline-flex min-h-11 items-center gap-2 rounded-full border-[1.5px] py-1.5 pr-3 pl-2 text-[0.90625rem] font-semibold whitespace-nowrap transition-colors",
                 j.attention ? "border-primary bg-pink text-primary-hover hover:bg-primary hover:text-white" : "border-line bg-surface text-ink hover:border-ink",
               )}
             >
@@ -27,7 +27,7 @@ export function JumpLinks({ items, label = "Related" }: { items: Jump[]; label?:
               </span>
               {j.label}
               {j.count ? (
-                <span className={cx("min-w-6 rounded-full px-1.5 text-center text-[12.5px] leading-6 font-bold", j.attention ? "bg-primary text-white group-hover:bg-white group-hover:text-primary" : "bg-cool text-ink")}>
+                <span className={cx("min-w-6 rounded-full px-1.5 text-center text-[0.78125rem] leading-6 font-bold", j.attention ? "bg-primary text-white group-hover:bg-white group-hover:text-primary" : "bg-cool text-ink")}>
                   {j.count}
                 </span>
               ) : null}

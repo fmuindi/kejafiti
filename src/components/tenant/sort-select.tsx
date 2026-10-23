@@ -15,7 +15,7 @@ const OPTIONS: Array<{ value: SearchParams["sort"]; label: string }> = [
 export function SortSelect({ value, query }: { value: SearchParams["sort"]; query: SearchParams }) {
   const router = useRouter();
   return (
-    <label className="relative inline-flex min-h-11 items-center rounded-[12px] border border-line bg-surface pr-9 pl-3 text-[14.5px] focus-within:ring-2 focus-within:ring-deep/40">
+    <label className="relative inline-flex min-h-11 items-center rounded-[12px] border border-line bg-surface pr-9 pl-3 text-[0.90625rem] focus-within:ring-2 focus-within:ring-deep/40">
       <span className="text-muted">Sort:&nbsp;</span>
       <select
         value={value}
@@ -37,7 +37,7 @@ export function SortSelect({ value, query }: { value: SearchParams["sort"]; quer
 export function RadiusSelect({ query }: { query: SearchParams }) {
   const router = useRouter();
   return (
-    <label className="relative inline-flex min-h-11 items-center rounded-[12px] border border-line bg-surface pr-9 pl-3 text-[14.5px] focus-within:ring-2 focus-within:ring-deep/40">
+    <label className="relative inline-flex min-h-11 items-center rounded-[12px] border border-line bg-surface pr-9 pl-3 text-[0.90625rem] focus-within:ring-2 focus-within:ring-deep/40">
       <span className="text-muted">Within:&nbsp;</span>
       <select
         value={query.r}

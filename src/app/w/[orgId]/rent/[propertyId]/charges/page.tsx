@@ -26,8 +26,8 @@ export default async function ChargesPage({ params, searchParams }: PageProps<"/
       <BackLink href={base}>{property.name}</BackLink>
       <div>
         <Eyebrow>Rent charges</Eyebrow>
-        <h1 className="mt-1 font-display text-[28px] font-bold">Review {formatPeriod(period)} charges</h1>
-        <p className="mt-1 text-[14px] text-muted">
+        <h1 className="mt-1 font-display text-[1.75rem] font-bold">Review {formatPeriod(period)} charges</h1>
+        <p className="mt-1 text-[0.875rem] text-muted">
           Each current tenancy is charged its rent for the period, using the rate in effect on the first day. Check this list before
           creating the charges. Vacant units are never charged.
         </p>
@@ -41,21 +41,21 @@ export default async function ChargesPage({ params, searchParams }: PageProps<"/
         <>
           <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
             {rows.map((r) => (
-              <li key={r.tenancy_id} className="flex items-center justify-between gap-3 px-4 py-3 text-[14.5px]">
+              <li key={r.tenancy_id} className="flex items-center justify-between gap-3 px-4 py-3 text-[0.90625rem]">
                 <span>
                   <span className="font-mono">{r.unit_label}</span> · {r.tenant_name}
-                  <span className="block text-[13px] text-muted">Due {formatDate(r.due_date)}</span>
+                  <span className="block text-[0.8125rem] text-muted">Due {formatDate(r.due_date)}</span>
                 </span>
                 <span className="text-right">
                   <span className="font-mono font-medium">{formatMoney(r.amount)}</span>
-                  <span className={`block text-[12.5px] font-semibold ${r.already_exists ? "text-success" : "text-waiting"}`}>
+                  <span className={`block text-[0.78125rem] font-semibold ${r.already_exists ? "text-success" : "text-waiting"}`}>
                     {r.already_exists ? "Created" : "Not created yet"}
                   </span>
                 </span>
               </li>
             ))}
           </ul>
-          <p className="text-[14px]">
+          <p className="text-[0.875rem]">
             {toCreate.length
               ? `${toCreate.length} charge${toCreate.length === 1 ? "" : "s"} to create · ${formatMoney(sumAmounts(toCreate.map((r) => r.amount)))}`
               : "All charges for this period exist."}

@@ -20,12 +20,12 @@ export default async function LegalPage({ params }: PageProps<"/legal/[doc]">) {
     <div className="mx-auto flex max-w-[720px] flex-col gap-4 px-4 pt-5 pb-10">
       <BackLink href="/help">Help and support</BackLink>
       <PageTitle>{title}</PageTitle>
-      <p className="text-[15px]">The full {title.toLowerCase()} will be published on this page.</p>
-      <p className="text-[15px] text-muted">
+      <p className="text-[0.9375rem]">The full {title.toLowerCase()} will be published on this page.</p>
+      <p className="text-[0.9375rem] text-muted">
         If you have a question about how nyumbani handles your account or information in the meantime,{" "}
         <Link href="/help" className="font-semibold text-ink underline">contact support</Link>.
       </p>
-      <p className="text-[13px] text-muted">
+      <p className="text-[0.8125rem] text-muted">
         <Link href="/legal/terms" className="underline">Terms of use</Link> · <Link href="/legal/privacy" className="underline">Privacy notice</Link>
       </p>
     </div>

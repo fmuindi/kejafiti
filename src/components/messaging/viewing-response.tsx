@@ -41,7 +41,7 @@ export function ViewingResponse({ viewingId, state }: { viewingId: string; state
 
   const timeForm = (label: string) => (
     <div className="flex flex-wrap items-end gap-2">
-      <label className="flex flex-col gap-1 text-[13px] font-semibold">
+      <label className="flex flex-col gap-1 text-[0.8125rem] font-semibold">
         New day and time (EAT)
         <TextInput type="datetime-local" value={time} onChange={(e) => setTime(e.target.value)} />
       </label>
@@ -54,7 +54,7 @@ export function ViewingResponse({ viewingId, state }: { viewingId: string; state
       <Button variant="danger" pending={pending} onClick={() => run(action)}>{label}</Button>
     </div>
   );
-  const errorLine = error ? <p role="alert" className="text-[13.5px] font-semibold text-error">{error}</p> : null;
+  const errorLine = error ? <p role="alert" className="text-[0.84375rem] font-semibold text-error">{error}</p> : null;
 
   if (state === "confirmed") {
     return (
@@ -75,7 +75,7 @@ export function ViewingResponse({ viewingId, state }: { viewingId: string; state
   if (state === "new_time_proposed") {
     return (
       <div className="flex flex-col gap-2">
-        <p className="text-[14px] text-muted">Waiting for the tenant to accept the new time. They&apos;ve been notified.</p>
+        <p className="text-[0.875rem] text-muted">Waiting for the tenant to accept the new time. They&apos;ve been notified.</p>
         <div className="flex flex-wrap gap-2">
           <Button size="sm" variant="secondary" onClick={() => toggle("propose")}>Change time</Button>
           <Button size="sm" variant="quiet" onClick={() => toggle("cancel")}>Cancel viewing</Button>
@@ -95,9 +95,9 @@ export function ViewingResponse({ viewingId, state }: { viewingId: string; state
         <Notice tone="waiting" role="alert" title="Possible clash" action={<Button size="sm" variant="dark" pending={pending} onClick={() => run("accept", true)}>Accept anyway</Button>}>{conflict}</Notice>
       ) : null}
       {expired ? (
-        <p className="text-[14px] text-muted">The requested time has passed, so it can&apos;t be accepted.</p>
+        <p className="text-[0.875rem] text-muted">The requested time has passed, so it can&apos;t be accepted.</p>
       ) : (
-        <p className="text-[14px] text-muted">Accept the time first; the tenant is notified straight away. You can message them about details after.</p>
+        <p className="text-[0.875rem] text-muted">Accept the time first; the tenant is notified straight away. You can message them about details after.</p>
       )}
       <div className={expired ? "grid grid-cols-2 gap-2" : "grid grid-cols-[1.4fr_1fr_1fr] gap-2"}>
         {expired ? null : <Button pending={pending && !mode} onClick={() => run("accept")}>Accept</Button>}

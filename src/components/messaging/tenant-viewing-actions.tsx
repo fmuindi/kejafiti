@@ -37,14 +37,14 @@ export function TenantViewingActions({ viewingId, status, conversationId }: { vi
       </div>
       {mode === "change" ? (
         <div className="flex flex-wrap items-end gap-2">
-          <label className="flex flex-col gap-1 text-[13px] font-semibold">
+          <label className="flex flex-col gap-1 text-[0.8125rem] font-semibold">
             New day and time (EAT)
             <TextInput type="datetime-local" value={time} onChange={(e) => setTime(e.target.value)} />
           </label>
           <Button size="sm" pending={pending} onClick={() => run("change")}>Send new time</Button>
         </div>
       ) : null}
-      {error ? <p role="alert" className="text-[13.5px] font-semibold text-error">{error}</p> : null}
+      {error ? <p role="alert" className="text-[0.84375rem] font-semibold text-error">{error}</p> : null}
     </div>
   );
 }

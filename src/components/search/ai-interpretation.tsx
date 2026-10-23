@@ -32,7 +32,7 @@ export function AiInterpretation({ query }: { query: string }) {
   const undo = stack ? read<Array<{ from: string; to: string }>>(UNDO_KEY, []).at(-1) : undefined;
   if (!info || info.to !== query) return null;
   return (
-    <section aria-label="How we read your request" className="mt-3 flex flex-col gap-1.5 rounded-[14px] border border-line bg-surface p-3 text-[14px]">
+    <section aria-label="How we read your request" className="mt-3 flex flex-col gap-1.5 rounded-[14px] border border-line bg-surface p-3 text-[0.875rem]">
       <p>
         <span className="text-muted">We heard </span>&quot;{info.text}&quot;
       </p>

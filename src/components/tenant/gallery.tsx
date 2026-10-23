@@ -16,7 +16,7 @@ export function Gallery({
   if (photos.length === 0) {
     return (
       <div className="grid aspect-[4/3] place-items-center bg-cool text-muted md:rounded-[20px]">
-        <span className="flex flex-col items-center gap-2 text-[14px]">
+        <span className="flex flex-col items-center gap-2 text-[0.875rem]">
           <Icon name="image" size={28} /> No photos yet
         </span>
       </div>
@@ -42,7 +42,7 @@ export function Gallery({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={p.url} alt={p.alt ?? `${labelText}, photo ${i + 1} of ${photos.length}`} className="size-full object-cover" />
       <span
-        className={`absolute bottom-3 left-3 rounded-[8px] px-2.5 py-1 text-[12.5px] font-semibold ${p.label === "sample" ? "bg-waiting-tint text-waiting-strong" : "bg-ink/85 text-white"}`}
+        className={`absolute bottom-3 left-3 rounded-[8px] px-2.5 py-1 text-[0.78125rem] font-semibold ${p.label === "sample" ? "bg-waiting-tint text-waiting-strong" : "bg-ink/85 text-white"}`}
         aria-live="polite"
       >
         {labelText} · photo {i + 1} of {photos.length}

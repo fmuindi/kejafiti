@@ -25,9 +25,9 @@ const buttonVariants: Record<ButtonVariant, string> = {
   danger: "bg-surface text-error border-[1.5px] border-error hover:bg-error-tint disabled:opacity-60",
 };
 const buttonSizes: Record<ButtonSize, string> = {
-  sm: "min-h-10 px-3.5 text-[14px] rounded-[10px]",
-  md: "min-h-11 px-4 text-[15px] rounded-[12px]",
-  lg: "min-h-[54px] px-5 text-[16px] rounded-[14px]",
+  sm: "min-h-10 px-3.5 text-[0.875rem] rounded-[10px]",
+  md: "min-h-11 px-4 text-[0.9375rem] rounded-[12px]",
+  lg: "min-h-[54px] px-5 text-[1rem] rounded-[14px]",
 };
 
 export function buttonClass(variant: ButtonVariant = "primary", size: ButtonSize = "md", extra?: string) {
@@ -112,7 +112,7 @@ export function StatusBadge({ tone, children, className, icon }: { tone: Tone; c
   return (
     <span
       className={cx(
-        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12.5px] font-semibold leading-none whitespace-nowrap",
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[0.78125rem] font-semibold leading-none whitespace-nowrap",
         toneClasses[tone],
         className,
       )}
@@ -142,13 +142,13 @@ export function Card({ className, children, ...props }: ComponentProps<"div">) {
 
 export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <p className={cx("font-mono text-[12px] uppercase tracking-[0.6px] text-muted", className)}>{children}</p>
+    <p className={cx("font-mono text-[0.75rem] uppercase tracking-[0.6px] text-muted", className)}>{children}</p>
   );
 }
 
 export function PageTitle({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <h1 className={cx("font-display text-[28px] leading-[1.05] font-bold tracking-[-0.6px] md:text-[40px] md:tracking-[-1.2px]", className)}>
+    <h1 className={cx("font-display text-[1.75rem] leading-[1.05] font-bold tracking-[-0.6px] md:text-[2.5rem] md:tracking-[-1.2px]", className)}>
       {children}
     </h1>
   );
@@ -156,7 +156,7 @@ export function PageTitle({ children, className }: { children: ReactNode; classN
 
 export function SectionTitle({ children, className, id }: { children: ReactNode; className?: string; id?: string }) {
   return (
-    <h2 id={id} className={cx("font-display text-[18px] font-bold md:text-[20px]", className)}>
+    <h2 id={id} className={cx("font-display text-[1.125rem] font-bold md:text-[1.25rem]", className)}>
       {children}
     </h2>
   );
@@ -197,7 +197,7 @@ export function Notice({
       <span className={cx("mt-0.5 shrink-0", iconColor[tone])}>
         <Icon name={i} size={18} strokeWidth={2.2} />
       </span>
-      <div className="min-w-0 flex-1 text-[14px] leading-snug">
+      <div className="min-w-0 flex-1 text-[0.875rem] leading-snug">
         {title ? <p className="font-semibold">{title}</p> : null}
         {children ? <div className={title ? "mt-0.5" : undefined}>{children}</div> : null}
         {action ? <div className="mt-2">{action}</div> : null}
@@ -222,8 +222,8 @@ export function EmptyState({
       <span className="grid size-12 place-items-center rounded-full bg-cool text-deep">
         <Icon name={icon} size={22} />
       </span>
-      <p className="font-display text-[18px] font-bold">{title}</p>
-      {children ? <div className="max-w-md text-[14px] text-muted">{children}</div> : null}
+      <p className="font-display text-[1.125rem] font-bold">{title}</p>
+      {children ? <div className="max-w-md text-[0.875rem] text-muted">{children}</div> : null}
       {action ? <div className="mt-1">{action}</div> : null}
     </div>
   );
@@ -247,8 +247,8 @@ export function LoadingBlock({ label = "Loading…", rows = 3 }: { label?: strin
 export function KeyValue({ label, value, className }: { label: ReactNode; value: ReactNode; className?: string }) {
   return (
     <div className={cx("flex items-baseline justify-between gap-4 py-2", className)}>
-      <dt className="text-[14px] text-muted">{label}</dt>
-      <dd className="text-right text-[14px] font-semibold">{value}</dd>
+      <dt className="text-[0.875rem] text-muted">{label}</dt>
+      <dd className="text-right text-[0.875rem] font-semibold">{value}</dd>
     </div>
   );
 }

@@ -79,15 +79,15 @@ export function PhotoStep({ orgId, listingId, unitLabel, initial, onBack, onNext
 
   return (
     <section aria-labelledby="s4" className="flex flex-col gap-4">
-      <h1 id="s4" className="font-display text-[26px] leading-[1.1] font-bold tracking-[-0.5px]">Photos of Unit {unitLabel}</h1>
-      <p className="-mt-2 text-[14.5px] text-muted">Use photos of this actual unit. Remove people, documents and personal items before uploading.</p>
+      <h1 id="s4" className="font-display text-[1.625rem] leading-[1.1] font-bold tracking-[-0.5px]">Photos of Unit {unitLabel}</h1>
+      <p className="-mt-2 text-[0.90625rem] text-muted">Use photos of this actual unit. Remove people, documents and personal items before uploading.</p>
       <div id="photos" tabIndex={-1} className="grid grid-cols-2 gap-2 rounded-[12px] focus:ring-2 focus:ring-deep/40 focus:outline-none">
         <Button type="button" variant="secondary" size="lg" icon="camera" onClick={() => cameraRef.current?.click()}>Take photo</Button>
         <Button type="button" variant="secondary" size="lg" icon="image" onClick={() => fileRef.current?.click()}>Choose photos</Button>
       </div>
       <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="sr-only" tabIndex={-1} aria-hidden="true" aria-label="Take photo" onChange={(e) => { add(e.target.files); e.target.value = ""; }} />
       <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic" multiple className="sr-only" tabIndex={-1} aria-hidden="true" aria-label="Choose photos" onChange={(e) => { add(e.target.files); e.target.value = ""; }} />
-      <p className="text-[12.5px] text-muted">JPG, PNG, WEBP or HEIC · up to 15 MB each · at least 4 photos. We resize photos on your phone before uploading to save data.</p>
+      <p className="text-[0.78125rem] text-muted">JPG, PNG, WEBP or HEIC · up to 15 MB each · at least 4 photos. We resize photos on your phone before uploading to save data.</p>
       <p className="sr-only" aria-live="polite">{announce}</p>
 
       <ul className="flex flex-col gap-3">
@@ -96,17 +96,17 @@ export function PhotoStep({ orgId, listingId, unitLabel, initial, onBack, onNext
             <div className="relative h-[84px] w-[112px] shrink-0 overflow-hidden rounded-[10px] bg-cool">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {p.url ? <img src={p.url} alt="" className="size-full object-cover" /> : null}
-              {p.is_cover ? <span className="absolute top-1 left-1 rounded-[6px] bg-ink px-1.5 py-0.5 text-[11px] font-semibold text-white">Cover</span> : null}
+              {p.is_cover ? <span className="absolute top-1 left-1 rounded-[6px] bg-ink px-1.5 py-0.5 text-[0.6875rem] font-semibold text-white">Cover</span> : null}
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-2">
               <div className="flex items-center justify-between gap-2">
-                <p className="text-[14px] font-semibold">{i + 1} · Uploaded</p>
+                <p className="text-[0.875rem] font-semibold">{i + 1} · Uploaded</p>
                 <div className="flex gap-1">
                   <button type="button" aria-label={`Move photo ${i + 1} earlier`} disabled={i === 0} onClick={() => move(i, -1)} className="grid size-10 place-items-center rounded-full border border-line disabled:opacity-40"><Icon name="arrowUp" size={16} /></button>
                   <button type="button" aria-label={`Move photo ${i + 1} later`} disabled={i === photos.length - 1} onClick={() => move(i, 1)} className="grid size-10 place-items-center rounded-full border border-line disabled:opacity-40"><Icon name="arrowDown" size={16} /></button>
                 </div>
               </div>
-              <label className="flex items-center gap-2 text-[13px]">
+              <label className="flex items-center gap-2 text-[0.8125rem]">
                 <span className="sr-only">Photo type</span>
                 <select value={p.media_label} onChange={(e) => setPhotos(photos.map((x) => (x.id === p.id ? { ...x, media_label: e.target.value as WizardPhoto["media_label"] } : x)))} className="min-h-10 rounded-[10px] border border-line bg-surface px-2">
                   <option value="actual_unit">This unit</option>
@@ -114,7 +114,7 @@ export function PhotoStep({ orgId, listingId, unitLabel, initial, onBack, onNext
                   <option value="sample">Sample (similar unit)</option>
                 </select>
               </label>
-              <div className="flex flex-wrap gap-3 text-[13.5px] font-semibold">
+              <div className="flex flex-wrap gap-3 text-[0.84375rem] font-semibold">
                 {!p.is_cover ? <button type="button" onClick={() => makeCover(p.id)} className="underline">Make cover</button> : null}
                 <button type="button" className="underline" onClick={async () => { const r = await removePhoto(orgId, listingId, p.id); if (r.ok) setPhotos(photos.filter((x) => x.id !== p.id).map((x, k) => ({ ...x, position: k }))); else setMessage({ tone: "error", text: r.message }); }}>Remove</button>
               </div>
@@ -128,10 +128,10 @@ export function PhotoStep({ orgId, listingId, unitLabel, initial, onBack, onNext
               <img src={p.preview} alt="" className="size-full object-cover opacity-60" />
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-1" aria-live="polite">
-              <p className="truncate text-[14px] font-semibold">{p.name}</p>
-              <p className={cx("text-[13px]", p.state === "failed" ? "font-semibold text-error" : "text-muted")}>{p.state === "failed" ? `Upload failed. ${p.error ?? ""}` : "Uploading…"}</p>
+              <p className="truncate text-[0.875rem] font-semibold">{p.name}</p>
+              <p className={cx("text-[0.8125rem]", p.state === "failed" ? "font-semibold text-error" : "text-muted")}>{p.state === "failed" ? `Upload failed. ${p.error ?? ""}` : "Uploading…"}</p>
               {p.state === "failed" ? (
-                <div className="flex gap-3 text-[13.5px] font-semibold">
+                <div className="flex gap-3 text-[0.84375rem] font-semibold">
                   <button type="button" className="underline" onClick={() => void upload(p.file, p.key)}>Retry</button>
                   <button type="button" className="underline" onClick={() => setPending(pending.filter((x) => x.key !== p.key))}>Remove</button>
                 </div>
@@ -141,9 +141,9 @@ export function PhotoStep({ orgId, listingId, unitLabel, initial, onBack, onNext
         ))}
       </ul>
       {photos.length === 0 && pending.length === 0 ? (
-        <p className="rounded-[16px] border border-dashed border-line bg-surface p-6 text-center text-[14px] text-muted">No photos yet. Start with the main room, then the bathroom, kitchen and entrance.</p>
+        <p className="rounded-[16px] border border-dashed border-line bg-surface p-6 text-center text-[0.875rem] text-muted">No photos yet. Start with the main room, then the bathroom, kitchen and entrance.</p>
       ) : null}
-      <p className="text-[13px] text-muted" aria-live="polite">
+      <p className="text-[0.8125rem] text-muted" aria-live="polite">
         {photos.length} uploaded{uploading ? ` · ${uploading} uploading` : ""}{failed ? ` · ${failed} failed` : ""}. Uploaded photos are kept if you leave.
       </p>
       {photos.some((p) => p.media_label === "sample") ? <Notice tone="waiting">Sample photos are labelled &quot;Sample photo, not this unit&quot; for tenants.</Notice> : null}

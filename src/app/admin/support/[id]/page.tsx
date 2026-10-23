@@ -31,17 +31,17 @@ export default async function AdminTicketPage({ params }: PageProps<"/admin/supp
       <BackLink href="/admin/support">Support</BackLink>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="font-mono text-[12px] text-muted">{t.ref} · {categoryLabel(t.category)} · opened {formatDateTime(t.created_at)}</p>
-          <h1 className="mt-1 font-display text-[28px] font-bold">{t.subject}</h1>
-          <p className="text-[14px] text-muted">From {person?.full_name || "a user"} ({person?.email}) · {assignee ? `assigned to ${assignee.full_name}` : "unassigned"}</p>
+          <p className="font-mono text-[0.75rem] text-muted">{t.ref} · {categoryLabel(t.category)} · opened {formatDateTime(t.created_at)}</p>
+          <h1 className="mt-1 font-display text-[1.75rem] font-bold">{t.subject}</h1>
+          <p className="text-[0.875rem] text-muted">From {person?.full_name || "a user"} ({person?.email}) · {assignee ? `assigned to ${assignee.full_name}` : "unassigned"}</p>
         </div>
         <StatusBadge tone={SUPPORT_STATUS[t.status]?.tone ?? "neutral"}>{SUPPORT_STATUS[t.status]?.label ?? t.status}</StatusBadge>
       </div>
       <TicketControls ticketId={t.id} status={t.status} priority={t.priority} assigned={!!t.assignee_id} />
-      <p className="whitespace-pre-line rounded-[14px] border border-line bg-surface p-3 text-[14.5px]">{t.description}</p>
-      {t.context_link ? <p className="text-[13.5px] text-muted">They were on: <span className="font-mono">{t.context_link}</span> (you can open it only if you have access yourself)</p> : null}
+      <p className="whitespace-pre-line rounded-[14px] border border-line bg-surface p-3 text-[0.90625rem]">{t.description}</p>
+      {t.context_link ? <p className="text-[0.84375rem] text-muted">They were on: <span className="font-mono">{t.context_link}</span> (you can open it only if you have access yourself)</p> : null}
       {signed.length ? (
-        <ul className="flex flex-col gap-1 text-[14px]">
+        <ul className="flex flex-col gap-1 text-[0.875rem]">
           {(files ?? []).map((f, i) => (
             <li key={f.id}><a href={signed[i]?.signedUrl ?? "#"} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold underline"><Icon name="file" size={16} /> {f.file_name}</a></li>
           ))}

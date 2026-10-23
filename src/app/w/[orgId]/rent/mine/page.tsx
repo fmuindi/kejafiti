@@ -40,10 +40,10 @@ export default async function MyEntriesPage({ params }: PageProps<"/w/[orgId]/re
           const items = rows.filter((r) => r.grp === g.key);
           return (
             <section key={g.key} id={g.key} aria-labelledby={`h-${g.key}`} className="scroll-mt-20">
-              <h2 id={`h-${g.key}`} className="font-display text-[20px] font-bold">
-                {g.title} <span className="font-mono text-[15px] text-muted">{items.length}</span>
+              <h2 id={`h-${g.key}`} className="font-display text-[1.25rem] font-bold">
+                {g.title} <span className="font-mono text-[0.9375rem] text-muted">{items.length}</span>
               </h2>
-              <p className="text-[13.5px] text-muted">{g.help}</p>
+              <p className="text-[0.84375rem] text-muted">{g.help}</p>
               {items.length ? (
                 <ul className="mt-2 flex flex-col divide-y divide-divider overflow-hidden rounded-[16px] border border-line bg-surface">
                   {items.map((r) => {
@@ -55,12 +55,12 @@ export default async function MyEntriesPage({ params }: PageProps<"/w/[orgId]/re
                             <span className="block font-semibold">
                               {r.ref} · Unit {r.unit_label} · {formatMoney(Number(r.amount))}
                             </span>
-                            <span className="block text-[13px] text-muted">
+                            <span className="block text-[0.8125rem] text-muted">
                               {r.property_name} · paid {formatDate(r.paid_on)} · updated {timeAgo(r.updated_at)}
                             </span>
-                            {g.key === "returned" && r.decision_reason ? <span className="mt-1 block text-[13.5px] text-error">&quot;{r.decision_reason}&quot;</span> : null}
+                            {g.key === "returned" && r.decision_reason ? <span className="mt-1 block text-[0.84375rem] text-error">&quot;{r.decision_reason}&quot;</span> : null}
                           </span>
-                          <span className="inline-flex shrink-0 items-center gap-1 text-[14px] font-semibold text-primary">
+                          <span className="inline-flex shrink-0 items-center gap-1 text-[0.875rem] font-semibold text-primary">
                             {g.action} <Icon name="chevronRight" size={16} />
                           </span>
                         </Link>
@@ -69,7 +69,7 @@ export default async function MyEntriesPage({ params }: PageProps<"/w/[orgId]/re
                   })}
                 </ul>
               ) : (
-                <p className="mt-2 rounded-[14px] border border-dashed border-line bg-surface p-3 text-[14px] text-muted">None.</p>
+                <p className="mt-2 rounded-[14px] border border-dashed border-line bg-surface p-3 text-[0.875rem] text-muted">None.</p>
               )}
             </section>
           );

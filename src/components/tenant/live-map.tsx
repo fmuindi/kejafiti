@@ -94,7 +94,7 @@ export default function LiveMap({ lat, lng, label }: { lat: number; lng: number;
       <div className="relative">
         <div ref={el} role="img" aria-label={`Map with ${label} and your location`} className="z-0 h-[52vh] max-h-[460px] min-h-[300px] w-full overflow-hidden rounded-[14px] border border-line" />
         <div className="pointer-events-none absolute inset-x-2 top-2 z-[400] flex justify-center">
-          <p role="status" aria-live="polite" className="pointer-events-auto rounded-full bg-surface px-3.5 py-1.5 text-[14px] font-semibold shadow-md">
+          <p role="status" aria-live="polite" className="pointer-events-auto rounded-full bg-surface px-3.5 py-1.5 text-[0.875rem] font-semibold shadow-md">
             {metres !== null
               ? distanceText(metres)
               : geo === "asking"
@@ -109,7 +109,7 @@ export default function LiveMap({ lat, lng, label }: { lat: number; lng: number;
         {fix ? <Button type="button" size="sm" variant="secondary" onClick={showBoth}>Show me and the home</Button> : null}
         <Button type="button" size="sm" variant="secondary" onClick={showHome}>Centre on the home</Button>
       </div>
-      <figcaption className="text-[12.5px] text-muted">
+      <figcaption className="text-[0.78125rem] text-muted">
         {geo === "denied" ? "To see yourself on the map, allow location for this site in your browser settings. " : null}
         The line is a straight line; use Google Maps for the road route. Your location stays on this phone and isn&apos;t shared.
       </figcaption>

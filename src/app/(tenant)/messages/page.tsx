@@ -37,17 +37,17 @@ export default async function MessagesPage() {
                 <ActivityAvatar name={c.org_name} online={online.has(c.id)} />
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className={cx("truncate", c.unread ? "font-bold" : "font-semibold")}>{c.org_name}</span>
-                  <span className="flex min-w-0 items-center gap-1 text-[13px] text-muted">
+                  <span className="flex min-w-0 items-center gap-1 text-[0.8125rem] text-muted">
                     <Icon name="home" size={14} className="shrink-0" />
                     <span className="truncate">{c.listing_title ?? c.area}</span>
-                    {c.listing_status !== "published" ? <span className="shrink-0 rounded-full bg-error-tint px-1.5 text-[11.5px] font-semibold text-error">Unavailable</span> : null}
+                    {c.listing_status !== "published" ? <span className="shrink-0 rounded-full bg-error-tint px-1.5 text-[0.71875rem] font-semibold text-error">Unavailable</span> : null}
                   </span>
-                  <span className={cx("mt-0.5 truncate text-[14px]", c.unread ? "text-ink" : "text-muted")}>{c.last_message}</span>
+                  <span className={cx("mt-0.5 truncate text-[0.875rem]", c.unread ? "text-ink" : "text-muted")}>{c.last_message}</span>
                 </span>
                 <span className="flex shrink-0 flex-col items-end gap-1.5 self-start">
-                  <span className="text-[12px] text-muted">{timeAgo(c.last_message_at)}</span>
+                  <span className="text-[0.75rem] text-muted">{timeAgo(c.last_message_at)}</span>
                   {c.unread ? (
-                    <span className="min-w-5 rounded-full bg-primary px-1.5 text-center text-[11.5px] leading-5 font-bold text-white">
+                    <span className="min-w-5 rounded-full bg-primary px-1.5 text-center text-[0.71875rem] leading-5 font-bold text-white">
                       {c.unread}
                       <span className="sr-only"> unread</span>
                     </span>

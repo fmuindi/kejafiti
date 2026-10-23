@@ -52,7 +52,7 @@ export default async function AccountPage() {
                 </span>
                 <span>
                   <span className="block font-semibold">{t.label}</span>
-                  <span className={cx("block text-[13px]", t.attention ? "font-semibold text-primary-hover" : "text-muted")}>{t.meta}</span>
+                  <span className={cx("block text-[0.8125rem]", t.attention ? "font-semibold text-primary-hover" : "text-muted")}>{t.meta}</span>
                 </span>
               </Link>
             </li>
@@ -60,7 +60,7 @@ export default async function AccountPage() {
         </ul>
       </nav>
       <section aria-labelledby="ws" className="flex flex-col gap-2">
-        <h2 id="ws" className="flex items-center gap-2 text-[15px] font-semibold text-muted">
+        <h2 id="ws" className="flex items-center gap-2 text-[0.9375rem] font-semibold text-muted">
           <Icon name="building" size={16} /> Properties
         </h2>
         <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
@@ -69,7 +69,7 @@ export default async function AccountPage() {
               <Link href={`/w/${w.org_id}`} className="flex min-h-14 items-center gap-3 px-4 py-2 hover:bg-cool">
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold">{w.org_name}</span>
-                  <span className="text-[13px] text-muted">{ROLE_LABEL[w.role]}</span>
+                  <span className="text-[0.8125rem] text-muted">{ROLE_LABEL[w.role]}</span>
                 </span>
                 <Icon name="arrowRight" size={18} className="text-primary" />
               </Link>
@@ -88,13 +88,13 @@ export default async function AccountPage() {
       </section>
       <UpdateChannels />
       <section aria-labelledby="device" className="flex flex-col gap-2">
-        <h2 id="device" className="flex items-center gap-2 text-[15px] font-semibold text-muted">
+        <h2 id="device" className="flex items-center gap-2 text-[0.9375rem] font-semibold text-muted">
           <Icon name="phone" size={16} /> This device
         </h2>
         <div className="flex flex-wrap items-center gap-2">
           <ClearDeviceData userId={user.id} />
           <SignOutForm userId={user.id}>
-            <button type="submit" className="inline-flex min-h-10 items-center gap-2 rounded-[12px] border-[1.5px] border-ink px-3.5 text-[14px] font-semibold hover:bg-ink hover:text-white">
+            <button type="submit" className="inline-flex min-h-10 items-center gap-2 rounded-[12px] border-[1.5px] border-ink px-3.5 text-[0.875rem] font-semibold hover:bg-ink hover:text-white">
               <Icon name="logout" size={18} /> Sign out
             </button>
           </SignOutForm>

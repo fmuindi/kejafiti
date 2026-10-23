@@ -40,11 +40,11 @@ export function ListingStatusPanel({ orgId, listingId, status, refId, confirmedA
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <StatusBadge tone={s.tone}>{s.text}</StatusBadge>
-          <span className="font-mono text-[13px] text-muted">{refId}</span>
+          <span className="font-mono text-[0.8125rem] text-muted">{refId}</span>
         </div>
-        {status === "published" ? <Link href={`/homes/${refId}`} className="text-[14px] font-semibold text-primary underline">View as tenant</Link> : null}
+        {status === "published" ? <Link href={`/homes/${refId}`} className="text-[0.875rem] font-semibold text-primary underline">View as tenant</Link> : null}
       </div>
-      {status === "published" ? <p className="text-[13.5px] text-muted">Availability last confirmed {formatDate(confirmedAt)}.</p> : null}
+      {status === "published" ? <p className="text-[0.84375rem] text-muted">Availability last confirmed {formatDate(confirmedAt)}.</p> : null}
       {status === "needs_correction" && reviewNote ? <Notice tone="waiting">&quot;{reviewNote}&quot;</Notice> : null}
       {error ? <Notice tone="error" role="alert">{error}</Notice> : null}
       <div className="flex flex-wrap gap-2">
@@ -64,8 +64,8 @@ export function ListingStatusPanel({ orgId, listingId, status, refId, confirmedA
       </div>
       {confirmLet ? (
         <div className="flex flex-col gap-2 rounded-[14px] bg-cool p-3">
-          <p className="text-[14px]">Marking it let removes it from search and cancels open viewing requests (tenants are told). It doesn&apos;t create a tenancy in rent records.</p>
-          <label className="flex flex-col gap-1 text-[13.5px] font-semibold">
+          <p className="text-[0.875rem]">Marking it let removes it from search and cancels open viewing requests (tenants are told). It doesn&apos;t create a tenancy in rent records.</p>
+          <label className="flex flex-col gap-1 text-[0.84375rem] font-semibold">
             Let on
             <TextInput type="date" value={letDate} max={todayEAT()} onChange={(e) => setLetDate(e.target.value)} />
           </label>

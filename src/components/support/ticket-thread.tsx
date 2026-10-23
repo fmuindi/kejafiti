@@ -20,10 +20,10 @@ export function TicketThread({ ticketId, messages, viewer }: { ticketId: string;
       <ol className="flex flex-col gap-2">
         {messages.map((m) =>
           m.side === "system" ? (
-            <li key={m.id} className="text-center text-[12.5px] text-muted">{m.body} · {formatDateTime(m.created_at)}</li>
+            <li key={m.id} className="text-center text-[0.78125rem] text-muted">{m.body} · {formatDateTime(m.created_at)}</li>
           ) : (
-            <li key={m.id} className={cx("max-w-[85%] rounded-[14px] px-3 py-2 text-[14.5px]", m.side === viewer ? "self-end bg-ink text-white" : "self-start border border-line bg-surface")}>
-              <p className="text-[12px] opacity-75">{m.side === "support" ? "nyumbani support" : viewer === "support" ? "Requester" : "You"} · {formatDateTime(m.created_at)}</p>
+            <li key={m.id} className={cx("max-w-[85%] rounded-[14px] px-3 py-2 text-[0.90625rem]", m.side === viewer ? "self-end bg-ink text-white" : "self-start border border-line bg-surface")}>
+              <p className="text-[0.75rem] opacity-75">{m.side === "support" ? "nyumbani support" : viewer === "support" ? "Requester" : "You"} · {formatDateTime(m.created_at)}</p>
               <p className="whitespace-pre-line">{m.body}</p>
             </li>
           ),
@@ -42,9 +42,9 @@ export function TicketThread({ ticketId, messages, viewer }: { ticketId: string;
           });
         }}
       >
-        <label htmlFor="reply" className="text-[14px] font-semibold">{viewer === "support" ? "Reply to the requester" : "Add a reply"}</label>
+        <label htmlFor="reply" className="text-[0.875rem] font-semibold">{viewer === "support" ? "Reply to the requester" : "Add a reply"}</label>
         <TextArea id="reply" rows={3} maxLength={4000} value={body} onChange={(e) => setBody(e.target.value)} />
-        {error ? <p role="alert" className="text-[13.5px] font-semibold text-error">{error}</p> : null}
+        {error ? <p role="alert" className="text-[0.84375rem] font-semibold text-error">{error}</p> : null}
         <Button type="submit" pending={pending} disabled={!body.trim()} className="self-start">Send reply</Button>
       </form>
     </div>

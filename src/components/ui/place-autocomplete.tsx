@@ -139,13 +139,13 @@ export function PlaceAutocomplete({ enabled, value, onChange, onPlace, fallback 
               >
                 <Icon name="pin" size={17} className="mt-0.5 shrink-0 text-muted" />
                 <span className="min-w-0">
-                  <span className="block truncate text-[15px] font-semibold text-ink">{s.main}</span>
-                  {s.secondary ? <span className="block truncate text-[13px] font-normal text-muted">{s.secondary}</span> : null}
+                  <span className="block truncate text-[0.9375rem] font-semibold text-ink">{s.main}</span>
+                  {s.secondary ? <span className="block truncate text-[0.8125rem] font-normal text-muted">{s.secondary}</span> : null}
                 </span>
               </li>
             ))}
           </ul>
-          <p className="border-t border-divider px-3.5 py-1.5 text-right text-[11.5px] text-muted">Suggestions from Google Maps</p>
+          <p className="border-t border-divider px-3.5 py-1.5 text-right text-[0.71875rem] text-muted">Suggestions from Google Maps</p>
         </div>
       ) : null}
     </div>

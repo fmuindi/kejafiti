@@ -38,7 +38,7 @@ export function ResultsLocation({ placesEnabled, q, lat, lng, r, keep }: {
             }}
             onPlace={(p) => setAt(p?.latitude != null && p.longitude != null ? { lat: p.latitude, lng: p.longitude } : null)}
             placeholder="Area, estate, road or landmark"
-            className="min-h-11 w-full bg-transparent text-[15.5px] font-semibold text-ink placeholder:font-normal focus:outline-none"
+            className="min-h-11 w-full bg-transparent text-[0.96875rem] font-semibold text-ink placeholder:font-normal focus:outline-none"
           />
         </div>
         <button type="submit" className={buttonClass("primary", "md")} aria-label="Update location">
@@ -53,7 +53,7 @@ export function ResultsLocation({ placesEnabled, q, lat, lng, r, keep }: {
           {r !== 5 ? <input type="hidden" name="r" value={r} /> : null}
         </>
       ) : null}
-      <p className="text-[12.5px] text-muted" aria-live="polite">
+      <p className="text-[0.78125rem] text-muted" aria-live="polite">
         {at
           ? `Within ${r} km`
           : text

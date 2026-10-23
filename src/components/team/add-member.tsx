@@ -27,14 +27,14 @@ export function AddMemberPanel({ orgId, properties, isOwner }: { orgId: string; 
   if (result) {
     return (
       <aside aria-labelledby="sent" className="flex h-fit flex-col gap-4 rounded-[20px] border border-line bg-surface p-5 xl:sticky xl:top-6">
-        <h2 id="sent" className="font-display text-[22px] font-bold">Invitation created</h2>
+        <h2 id="sent" className="font-display text-[1.375rem] font-bold">Invitation created</h2>
         <Notice tone="success" role="status" title={`${result.name} is invited`}>
           The invitation to {result.email} expires {formatDate(result.expiresAt)}. They sign in with that email and set their own sign-in;
           you never see their password.
         </Notice>
         <div className="flex flex-col gap-2">
-          <p className="text-[14px] font-semibold">Invitation link</p>
-          <p className="rounded-[12px] bg-cool p-3 font-mono text-[12.5px] break-all">{result.link}</p>
+          <p className="text-[0.875rem] font-semibold">Invitation link</p>
+          <p className="rounded-[12px] bg-cool p-3 font-mono text-[0.78125rem] break-all">{result.link}</p>
           <Button
             variant="secondary"
             icon="file"
@@ -49,7 +49,7 @@ export function AddMemberPanel({ orgId, properties, isOwner }: { orgId: string; 
           >
             {copied ? "Copied" : "Copy link"}
           </Button>
-          <p className="text-[12.5px] text-muted">Share it only with {result.name}. It works once, for that email address.</p>
+          <p className="text-[0.78125rem] text-muted">Share it only with {result.name}. It works once, for that email address.</p>
         </div>
         <Button
           onClick={() => {
@@ -68,7 +68,7 @@ export function AddMemberPanel({ orgId, properties, isOwner }: { orgId: string; 
 
   return (
     <aside aria-labelledby="add" className="h-fit rounded-[20px] border border-line bg-surface p-5 xl:sticky xl:top-6">
-      <h2 id="add" className="font-display text-[22px] font-bold">
+      <h2 id="add" className="font-display text-[1.375rem] font-bold">
         Add manager
       </h2>
       <form
@@ -116,7 +116,7 @@ export function AddMemberPanel({ orgId, properties, isOwner }: { orgId: string; 
             </Select>
           </Field>
         </div>
-        <p className="-mt-2 text-[13px] text-muted">{ROLE_HELP[access.role]}</p>
+        <p className="-mt-2 text-[0.8125rem] text-muted">{ROLE_HELP[access.role]}</p>
         <Field label="Invitation email" htmlFor="email" error={errors.email}>
           <TextInput id="email" type="email" autoComplete="off" value={email} onChange={(e) => setEmail(e.target.value)} error={errors.email} placeholder="name@example.co.ke" aria-describedby={describedBy("email", { error: errors.email })} />
         </Field>
@@ -124,7 +124,7 @@ export function AddMemberPanel({ orgId, properties, isOwner }: { orgId: string; 
           <TextInput id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
         </Field>
         <AccessFields value={access} onChange={(v) => { setAccess(v); setReviewing(false); }} properties={properties} isOwner={isOwner} propertyError={errors.property_ids} />
-        <p className="flex items-start gap-2 text-[13px] text-muted">
+        <p className="flex items-start gap-2 text-[0.8125rem] text-muted">
           <Icon name="lock" size={16} className="mt-0.5 shrink-0" />
           {firstName ? `${firstName} sets` : "They set"} their own sign-in. You never see it. The invitation expires in 7 days.
         </p>

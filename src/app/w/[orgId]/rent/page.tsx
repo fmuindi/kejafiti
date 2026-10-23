@@ -23,7 +23,7 @@ export default async function RentIndex({ params }: PageProps<"/w/[orgId]/rent">
       <div>
         <Eyebrow>Rent records · {formatPeriod(period)}</Eyebrow>
         <PageTitle className="mt-1">Choose a property</PageTitle>
-        <p className="mt-2 max-w-2xl text-[14.5px] text-muted">
+        <p className="mt-2 max-w-2xl text-[0.90625rem] text-muted">
           Tenants pay through each property&apos;s existing arrangements. Staff check payments outside nyumbani, then record and
           confirm them here.
         </p>
@@ -51,12 +51,12 @@ export default async function RentIndex({ params }: PageProps<"/w/[orgId]/rent">
               <li key={p.id}>
                 <Link href={`/w/${orgId}/rent/${p.id}`} className="flex flex-col gap-2 rounded-[18px] border border-line bg-surface p-4 hover:border-ink">
                   <span className="flex items-center justify-between">
-                    <span className="font-display text-[19px] font-bold">{p.name}</span>
+                    <span className="font-display text-[1.1875rem] font-bold">{p.name}</span>
                     <Icon name="chevronRight" className="text-muted" />
                   </span>
-                  <span className="text-[13.5px] text-muted">{p.area}</span>
+                  <span className="text-[0.84375rem] text-muted">{p.area}</span>
                   {s ? (
-                    <span className="text-[14px]">
+                    <span className="text-[0.875rem]">
                       <strong>{formatMoney(s.settled)}</strong> confirmed of {formatMoney(s.billed)} billed ·{" "}
                       {formatRate(s.collection_rate)}
                       {s.pending_count ? (

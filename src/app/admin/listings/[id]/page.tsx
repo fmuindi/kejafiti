@@ -33,9 +33,9 @@ export default async function AdminListingPage({ params }: PageProps<"/admin/lis
     <div className="mx-auto flex max-w-[1000px] flex-col gap-5">
       <BackLink href="/admin">Review queue</BackLink>
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="font-display text-[28px] font-bold">{l.title}</h1>
+        <h1 className="font-display text-[1.75rem] font-bold">{l.title}</h1>
         <StatusBadge tone={row.status === "under_review" ? "waiting" : row.status === "published" ? "success" : "neutral"}>{row.status.replace("_", " ")}</StatusBadge>
-        <span className="font-mono text-[13px] text-muted">{row.ref}</span>
+        <span className="font-mono text-[0.8125rem] text-muted">{row.ref}</span>
       </div>
       {flags.length ? (
         <Notice tone="waiting" title="Flags">
@@ -45,20 +45,20 @@ export default async function AdminListingPage({ params }: PageProps<"/admin/lis
       <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
         <div className="flex flex-col gap-4">
           <Gallery photos={photos} title={l.title ?? ""} />
-          <dl className="grid grid-cols-2 gap-2 text-[14px]">
+          <dl className="grid grid-cols-2 gap-2 text-[0.875rem]">
             <div className="rounded-[12px] border border-line bg-surface p-3"><dt className="text-muted">Layout</dt><dd className="font-semibold">{layoutLabel(l.unit)}</dd></div>
             <div className="rounded-[12px] border border-line bg-surface p-3"><dt className="text-muted">Location</dt><dd className="font-semibold">{[l.location.area, l.location.road, l.location.town].filter(Boolean).join(", ")}</dd></div>
             <div className="rounded-[12px] border border-line bg-surface p-3"><dt className="text-muted">Advertiser</dt><dd className="font-semibold">{l.advertiser.name} · {ADVERTISER_ROLE_LABEL[l.advertiser.role]}</dd></div>
             <div className="rounded-[12px] border border-line bg-surface p-3"><dt className="text-muted">Available from</dt><dd className="font-semibold">{formatDate(l.available_from)}</dd></div>
           </dl>
-          <ul className="flex flex-wrap gap-1.5 text-[13px]">
+          <ul className="flex flex-wrap gap-1.5 text-[0.8125rem]">
             {FACTS.map((f) => <li key={f.key} className="rounded-[8px] bg-cool px-2 py-1">{f.label}: <strong>{l.unit.facts?.[f.key] ?? "unknown"}</strong></li>)}
           </ul>
-          {l.description ? <p className="text-[14.5px] whitespace-pre-line">{l.description}</p> : null}
+          {l.description ? <p className="text-[0.90625rem] whitespace-pre-line">{l.description}</p> : null}
         </div>
         <div className="flex flex-col gap-4">
           <CostBreakdown rent={l.rent_amount} depositAmount={l.deposit_amount} depositMonths={l.deposit_months} charges={l.charges} pricePeriod={l.price_period} priceBasis={l.price_basis} />
-          <section className="rounded-[16px] border border-line bg-surface p-4 text-[14px]">
+          <section className="rounded-[16px] border border-line bg-surface p-4 text-[0.875rem]">
             <h2 className="font-semibold">Checks recorded for this advertiser</h2>
             <p className="text-muted">Identity: {l.advertiser.identity_checked_at ? formatDate(l.advertiser.identity_checked_at) : "not checked"} · Authority: {l.advertiser.authority_checked_at ? formatDate(l.advertiser.authority_checked_at) : "not checked"} · Visit: {l.advertiser.property_visited_at ? formatDate(l.advertiser.property_visited_at) : "not visited"}</p>
             <Link href="/admin/onboarding" className="font-semibold text-primary underline">Record checks in onboarding</Link>

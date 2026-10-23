@@ -32,7 +32,7 @@ export default async function HelpPage({ searchParams }: PageProps<"/help">) {
       {user ? <TenantJumps current="/help" /> : null}
       {AI.assistEnabled("help_answer") ? <AskHelp signedIn={!!user} /> : null}
       <section aria-labelledby="faq" className="flex flex-col gap-2">
-        <h2 id="faq" className="text-[13px] font-semibold tracking-[0.4px] text-muted uppercase">Common questions</h2>
+        <h2 id="faq" className="text-[0.8125rem] font-semibold tracking-[0.4px] text-muted uppercase">Common questions</h2>
         <div className="flex flex-col divide-y divide-divider overflow-hidden rounded-[16px] border border-line bg-surface">
           {HELP_ARTICLES.map(({ id, question: q, answer: a }) => (
             <details key={id} id={id} className="group">
@@ -40,21 +40,21 @@ export default async function HelpPage({ searchParams }: PageProps<"/help">) {
                 <span className="flex-1">{q}</span>
                 <Icon name="chevronDown" size={18} className="shrink-0 text-muted transition-transform group-open:rotate-180" />
               </summary>
-              <p className="px-4 pb-3.5 text-[14.5px] text-muted">{a}</p>
+              <p className="px-4 pb-3.5 text-[0.90625rem] text-muted">{a}</p>
             </details>
           ))}
         </div>
       </section>
       {(tickets ?? []).length ? (
         <section aria-labelledby="mine" className="flex flex-col gap-2">
-          <h2 id="mine" className="text-[13px] font-semibold tracking-[0.4px] text-muted uppercase">Your requests</h2>
+          <h2 id="mine" className="text-[0.8125rem] font-semibold tracking-[0.4px] text-muted uppercase">Your requests</h2>
           <ul className="flex flex-col divide-y divide-divider overflow-hidden rounded-[16px] border border-line bg-surface">
             {(tickets ?? []).map((t) => (
               <li key={t.id}>
                 <Link href={`/help/tickets/${t.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-cool">
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-semibold">{t.ref} · {t.subject}</span>
-                    <span className="text-[13px] text-muted">{categoryLabel(t.category)} · {timeAgo(t.updated_at)}</span>
+                    <span className="text-[0.8125rem] text-muted">{categoryLabel(t.category)} · {timeAgo(t.updated_at)}</span>
                   </span>
                   <StatusBadge tone={SUPPORT_STATUS[t.status]?.tone ?? "neutral"}>{SUPPORT_STATUS[t.status]?.label ?? t.status}</StatusBadge>
                   <Icon name="chevronRight" className="text-muted" />
@@ -71,7 +71,7 @@ export default async function HelpPage({ searchParams }: PageProps<"/help">) {
           <Icon name="chevronDown" size={18} className="text-muted transition-transform group-open:rotate-180" />
         </summary>
         <div className="flex flex-col gap-3 border-t border-divider p-4">
-          <ul className="flex flex-col gap-1 text-[13.5px] text-muted">
+          <ul className="flex flex-col gap-1 text-[0.84375rem] text-muted">
             <li className="flex items-center gap-2"><Icon name="flag" size={15} /> Listing problem? Use Report on the listing.</li>
             <li className="flex items-center gap-2"><Icon name="wallet" size={15} /> Rent question? Ask your landlord.</li>
           </ul>
@@ -82,7 +82,7 @@ export default async function HelpPage({ searchParams }: PageProps<"/help">) {
           )}
         </div>
       </details>
-      <p className="text-[13px] text-muted">
+      <p className="text-[0.8125rem] text-muted">
         <Link href="/legal/terms" className="hover:text-ink">Terms</Link> · <Link href="/legal/privacy" className="hover:text-ink">Privacy</Link>
       </p>
     </div>

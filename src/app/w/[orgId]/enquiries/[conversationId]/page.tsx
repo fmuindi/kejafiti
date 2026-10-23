@@ -47,9 +47,9 @@ export default async function EnquiryPage({ params }: PageProps<"/w/[orgId]/enqu
         <div className="flex min-w-0 items-center gap-3">
           <Avatar name={tenant?.full_name || "Tenant"} size={48} />
           <div className="min-w-0">
-            <h1 className="truncate font-display text-[24px] font-bold">{tenant?.full_name || "Tenant"}</h1>
+            <h1 className="truncate font-display text-[1.5rem] font-bold">{tenant?.full_name || "Tenant"}</h1>
             <div><PeerStatus /></div>
-            <Link href={`/homes/${l.ref}`} className="text-[14px] text-muted block hover:underline">Unit {l.units?.label} · {l.title}{l.rent_amount ? ` · KES ${formatAmount(Number(l.rent_amount))}` : ""}</Link>
+            <Link href={`/homes/${l.ref}`} className="text-[0.875rem] text-muted block hover:underline">Unit {l.units?.label} · {l.title}{l.rent_amount ? ` · KES ${formatAmount(Number(l.rent_amount))}` : ""}</Link>
           </div>
         </div>
         <FollowUpControls conversationId={conversationId} stage={c.follow_up} assigned={c.assigned_membership_id} members={(members ?? []) as Array<{ id: string; display_name: string }>} />
@@ -63,7 +63,7 @@ export default async function EnquiryPage({ params }: PageProps<"/w/[orgId]/enqu
           <ViewingResponse viewingId={viewing.id} state={viewing.state} />
         </div>
       ) : null}
-      <p className="text-[12.5px] text-muted">You&apos;re replying as {ws.org_name}. Calls or WhatsApp chats outside nyumbani won&apos;t appear here.</p>
+      <p className="text-[0.78125rem] text-muted">You&apos;re replying as {ws.org_name}. Calls or WhatsApp chats outside nyumbani won&apos;t appear here.</p>
       <Thread userId={user?.id ?? ""} conversationId={conversationId} messages={messages} quickReplies={QUICK} peerName={tenant?.full_name || "The tenant"} />
     </div>
     </LiveConversation>

@@ -57,7 +57,7 @@ export default async function ComparePage({ searchParams }: PageProps<"/saved/co
     return (
       <div className="mx-auto flex max-w-[720px] flex-col gap-4 px-4 pt-5 pb-10">
         <PageHeader icon="swap" title="Compare" />
-        <p className="text-[15px] text-muted">Choose two or three of your saved homes to compare.</p>
+        <p className="text-[0.9375rem] text-muted">Choose two or three of your saved homes to compare.</p>
         <ButtonLink href="/saved" variant="secondary" className="self-start">Back to saved homes</ButtonLink>
       </div>
     );
@@ -67,7 +67,7 @@ export default async function ComparePage({ searchParams }: PageProps<"/saved/co
     <div className="mx-auto flex max-w-[1100px] flex-col gap-4 px-4 pt-5 pb-10">
       <BackLink href="/saved">Saved homes</BackLink>
       <PageHeader icon="swap" title="Compare" />
-      <p className="-mt-2 text-[14px] text-muted">&quot;Unknown&quot; means the advertiser hasn&apos;t confirmed it. Ask before you pay anything.</p>
+      <p className="-mt-2 text-[0.875rem] text-muted">&quot;Unknown&quot; means the advertiser hasn&apos;t confirmed it. Ask before you pay anything.</p>
       {/* Columns side by side from tablet width; stacked per home on phones. */}
       <div className="grid gap-4 md:grid-cols-[repeat(var(--n),minmax(0,1fr))]" style={{ ["--n" as string]: refs.length }}>
         {listings.map(({ ref, l }) => {
@@ -76,7 +76,7 @@ export default async function ComparePage({ searchParams }: PageProps<"/saved/co
           return (
             <section key={ref} aria-labelledby={`cmp-${ref}`} className="flex flex-col gap-3 rounded-[18px] border border-line bg-surface p-4">
               <div className="flex items-start justify-between gap-2">
-                <h2 id={`cmp-${ref}`} className="font-display text-[17px] leading-snug font-bold">
+                <h2 id={`cmp-${ref}`} className="font-display text-[1.0625rem] leading-snug font-bold">
                   <Link href={`/homes/${ref}?back=saved`} className="hover:underline">{l?.title ?? `Home ${ref}`}</Link>
                 </h2>
                 <Link href={withoutRef(ref)} aria-label={`Remove ${l?.title ?? ref} from the comparison`} className="grid size-10 shrink-0 place-items-center rounded-full hover:bg-cool">
@@ -84,7 +84,7 @@ export default async function ComparePage({ searchParams }: PageProps<"/saved/co
                 </Link>
               </div>
               {open ? (
-                <dl className="flex flex-col divide-y divide-divider text-[14px]">
+                <dl className="flex flex-col divide-y divide-divider text-[0.875rem]">
                   {ROWS.map(([label, value]) => (
                     <div key={label} className="flex justify-between gap-3 py-2">
                       <dt className="text-muted">{label}</dt>
@@ -93,7 +93,7 @@ export default async function ComparePage({ searchParams }: PageProps<"/saved/co
                   ))}
                 </dl>
               ) : (
-                <p className="rounded-[12px] bg-error-tint p-3 text-[14px] font-semibold text-error">
+                <p className="rounded-[12px] bg-error-tint p-3 text-[0.875rem] font-semibold text-error">
                   No longer available{l && !isOpenListing(l) && l.let_on ? ` · let on ${formatDate(l.let_on)}` : ""}. It isn&apos;t compared as current stock.
                 </p>
               )}

@@ -23,7 +23,7 @@ export function ActivityList({ items }: { items: Update[] }) {
     <div className="flex flex-col gap-5">
       {groups.map((g) => (
         <section key={g.key} aria-labelledby={`upd-${g.key}`} className="flex flex-col gap-2">
-          <h2 id={`upd-${g.key}`} className="text-[13px] font-semibold tracking-[0.4px] text-muted uppercase">{g.label}</h2>
+          <h2 id={`upd-${g.key}`} className="text-[0.8125rem] font-semibold tracking-[0.4px] text-muted uppercase">{g.label}</h2>
           <ul className="flex flex-col divide-y divide-divider overflow-hidden rounded-[16px] border border-line bg-surface">
             {g.items.map((n) => {
               const icon = n.kind.startsWith("viewing") ? "calendar" : ICON[n.category];
@@ -37,11 +37,11 @@ export function ActivityList({ items }: { items: Update[] }) {
                       {!n.read_at ? <span className="sr-only">Unread: </span> : null}
                       {n.title}
                     </span>
-                    {n.body ? <span className="line-clamp-2 text-[13.5px] text-muted">{n.body}</span> : null}
-                    {n.restricted ? <span className="text-[13px] text-muted">Hidden: you no longer have access.</span> : null}
+                    {n.body ? <span className="line-clamp-2 text-[0.84375rem] text-muted">{n.body}</span> : null}
+                    {n.restricted ? <span className="text-[0.8125rem] text-muted">Hidden: you no longer have access.</span> : null}
                   </span>
                   <span className="flex shrink-0 flex-col items-end gap-2 self-stretch">
-                    <span className="text-[12px] text-muted">{timeAgo(n.created_at)}</span>
+                    <span className="text-[0.75rem] text-muted">{timeAgo(n.created_at)}</span>
                     {n.link ? <Icon name="chevronRight" size={16} className="mt-auto text-muted" /> : null}
                   </span>
                 </>

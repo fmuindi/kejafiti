@@ -62,8 +62,8 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <Eyebrow>{property.name}</Eyebrow>
-          <h1 className="mt-1 font-display text-[30px] font-bold">Unit {unit.label}</h1>
-          <p className="text-[14.5px] text-muted">
+          <h1 className="mt-1 font-display text-[1.875rem] font-bold">Unit {unit.label}</h1>
+          <p className="text-[0.90625rem] text-muted">
             {OCCUPANCY[unit.occupancy as Occupancy]}
             {unit.occupancy_date ? ` · since ${formatDate(unit.occupancy_date)}` : ""}
           </p>
@@ -80,17 +80,17 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
           <Card className="p-4">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="font-display text-[20px] font-bold">{tenant?.full_name}</p>
-                <p className="text-[14px] text-muted">
+                <p className="font-display text-[1.25rem] font-bold">{tenant?.full_name}</p>
+                <p className="text-[0.875rem] text-muted">
                   Tenancy since {formatDate(current.start_date)} · {rate ? `${formatMoney(Number(rate.amount))} / month` : "rent not set"} · due day {current.due_day}
                 </p>
-                {tenant?.phone || tenant?.email ? <p className="text-[13.5px] text-muted">{[tenant.phone, tenant.email].filter(Boolean).join(" · ")}</p> : null}
-                {current.deposit_held ? <p className="text-[13.5px] text-muted">Deposit held: {formatMoney(Number(current.deposit_held))} (tracked separately from rent)</p> : null}
+                {tenant?.phone || tenant?.email ? <p className="text-[0.84375rem] text-muted">{[tenant.phone, tenant.email].filter(Boolean).join(" · ")}</p> : null}
+                {current.deposit_held ? <p className="text-[0.84375rem] text-muted">Deposit held: {formatMoney(Number(current.deposit_held))} (tracked separately from rent)</p> : null}
               </div>
               <div className="text-right">
-                <p className="text-[12.5px] text-muted">{balance < 0 ? "Tenant credit" : "Balance owed"}</p>
-                <p className={`font-display text-[26px] font-extrabold ${balance > 0 ? "text-error" : "text-success"}`}>{formatMoney(Math.abs(balance))}</p>
-                <p className="text-[12px] text-muted">Confirmed records only</p>
+                <p className="text-[0.78125rem] text-muted">{balance < 0 ? "Tenant credit" : "Balance owed"}</p>
+                <p className={`font-display text-[1.625rem] font-extrabold ${balance > 0 ? "text-error" : "text-success"}`}>{formatMoney(Math.abs(balance))}</p>
+                <p className="text-[0.75rem] text-muted">Confirmed records only</p>
               </div>
             </div>
             {ws.can_manage_tenancies ? <TenancyActions orgId={orgId} propertyId={propertyId} tenancyId={current.id} currentRent={rate ? Number(rate.amount) : null} /> : null}
@@ -98,21 +98,21 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
 
           <section aria-labelledby="stmt">
             <div className="flex items-baseline justify-between">
-              <h2 id="stmt" className="font-display text-[18px] font-bold">Tenant statement</h2>
-              <a href={`/api/export/statement?tenancy=${current.id}`} className="text-[14px] font-semibold text-primary underline">
+              <h2 id="stmt" className="font-display text-[1.125rem] font-bold">Tenant statement</h2>
+              <a href={`/api/export/statement?tenancy=${current.id}`} className="text-[0.875rem] font-semibold text-primary underline">
                 Download CSV
               </a>
             </div>
             {statement.length === 0 ? (
-              <p className="mt-2 rounded-[14px] border border-dashed border-line bg-surface p-4 text-[14px] text-muted">
+              <p className="mt-2 rounded-[14px] border border-dashed border-line bg-surface p-4 text-[0.875rem] text-muted">
                 No charges or payments yet. Create this period&apos;s rent charges from the Charges page.
               </p>
             ) : (
               <div className="mt-2 overflow-x-auto rounded-[16px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Tenancy statement (scrolls sideways)">
-                <table className="w-full min-w-[560px] text-[14px]">
+                <table className="w-full min-w-[560px] text-[0.875rem]">
                   <caption className="sr-only">Statement lines with running balance</caption>
                   <thead>
-                    <tr className="border-b border-line text-left font-mono text-[12px] text-muted">
+                    <tr className="border-b border-line text-left font-mono text-[0.75rem] text-muted">
                       <th scope="col" className="px-3 py-2 font-medium">Date</th>
                       <th scope="col" className="px-3 py-2 font-medium">Description</th>
                       <th scope="col" className="px-3 py-2 text-right font-medium">Charge</th>
@@ -124,7 +124,7 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
                     {statement.map((l, i) => (
                       <tr key={i} className="border-b border-divider last:border-0">
                         <td className="px-3 py-2 whitespace-nowrap">{formatDate(l.line_date)}</td>
-                        <td className="px-3 py-2">{l.description}{l.ref ? <span className="font-mono text-[12px] text-muted"> · {l.ref}</span> : null}</td>
+                        <td className="px-3 py-2">{l.description}{l.ref ? <span className="font-mono text-[0.75rem] text-muted"> · {l.ref}</span> : null}</td>
                         <td className="px-3 py-2 text-right font-mono">{Number(l.charge) ? formatAmount(Number(l.charge)) : ""}</td>
                         <td className="px-3 py-2 text-right font-mono">{Number(l.payment) ? formatAmount(Number(l.payment)) : ""}</td>
                         <td className="px-3 py-2 text-right font-mono font-medium">{formatAmount(Number(l.balance))}</td>
@@ -138,13 +138,13 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
 
           {ws.can_correct && charges.length ? (
             <section aria-labelledby="charges">
-              <h2 id="charges" className="font-display text-[18px] font-bold">Charges</h2>
+              <h2 id="charges" className="font-display text-[1.125rem] font-bold">Charges</h2>
               <ul className="mt-2 flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
                 {charges.map((c) => (
                   <li key={c.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
                     <span>
                       <span className="font-semibold">{c.category === "rent" ? `${formatPeriod(c.periodStart)} rent` : c.description ?? "Charge"}</span>
-                      <span className="block text-[13px] text-muted">
+                      <span className="block text-[0.8125rem] text-muted">
                         {formatMoney(c.net)} · confirmed {formatAmount(c.confirmed)} · due {formatDate(c.dueDate)}
                         {c.dueDate < today && c.net - c.confirmed > 0 ? " · overdue" : ""}
                       </span>
@@ -158,14 +158,14 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
 
           {entries.length ? (
             <section aria-labelledby="entries">
-              <h2 id="entries" className="font-display text-[18px] font-bold">Payment entries</h2>
+              <h2 id="entries" className="font-display text-[1.125rem] font-bold">Payment entries</h2>
               <ul className="mt-2 flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
                 {entries.map((e) => (
                   <li key={e.id}>
                     <Link href={`${base}/entries/${e.id}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-cool">
                       <span>
-                        <span className="font-mono text-[13px]">{e.ref}</span> · {formatMoney(Number(e.amount))}
-                        <span className="block text-[13px] text-muted">Paid {formatDate(e.paid_on)}</span>
+                        <span className="font-mono text-[0.8125rem]">{e.ref}</span> · {formatMoney(Number(e.amount))}
+                        <span className="block text-[0.8125rem] text-muted">Paid {formatDate(e.paid_on)}</span>
                       </span>
                       <EntryStatusBadge status={e.status} />
                     </Link>
@@ -185,11 +185,11 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
 
       {former.length ? (
         <section aria-labelledby="former">
-          <h2 id="former" className="font-display text-[18px] font-bold">Former tenancies</h2>
-          <p className="text-[13.5px] text-muted">Arrears stay with the tenancy they belong to; they never move to the next tenant.</p>
+          <h2 id="former" className="font-display text-[1.125rem] font-bold">Former tenancies</h2>
+          <p className="text-[0.84375rem] text-muted">Arrears stay with the tenancy they belong to; they never move to the next tenant.</p>
           <ul className="mt-2 flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
             {former.map((t, i) => (
-              <li key={t.id} className="flex justify-between gap-3 px-4 py-3 text-[14px]">
+              <li key={t.id} className="flex justify-between gap-3 px-4 py-3 text-[0.875rem]">
                 <span>
                   <span className="font-semibold">{(t.tenants as unknown as { full_name: string } | null)?.full_name}</span>
                   <span className="block text-muted">{formatDate(t.start_date)} – {formatDate(t.end_date)}{t.ended_reason ? ` · ${t.ended_reason}` : ""}</span>

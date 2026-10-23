@@ -87,7 +87,7 @@ export default async function RecordPaymentPage({ params, searchParams }: PagePr
         <Link href={`${base}?period=${period.slice(0, 7)}`} className="inline-flex min-h-11 items-center gap-1 font-semibold" aria-label="Back to the rent register">
           <Icon name="x" /> <span className="sr-only md:not-sr-only">Close</span>
         </Link>
-        <h1 className="font-display text-[20px] font-bold">{entry ? `Edit ${entry.ref}` : "Record payment"}</h1>
+        <h1 className="font-display text-[1.25rem] font-bold">{entry ? `Edit ${entry.ref}` : "Record payment"}</h1>
         <span className="w-11" />
       </div>
       {entry?.status === "returned" && entry.decision_reason ? (

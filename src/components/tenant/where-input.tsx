@@ -65,10 +65,10 @@ export function WhereInput({ placesEnabled }: { placesEnabled: boolean }) {
         onPlace={(p) => setAt(p?.latitude != null && p.longitude != null ? { lat: p.latitude, lng: p.longitude } : null)}
         fallback={POPULAR}
         placeholder="Area, estate, road or landmark"
-        className={`w-full bg-transparent text-[17px] font-semibold text-ink placeholder:font-normal focus:outline-none ${demo ? "placeholder:text-transparent" : "placeholder:text-[#8c959b]"}`}
+        className={`w-full bg-transparent text-[1.0625rem] font-semibold text-ink placeholder:font-normal focus:outline-none ${demo ? "placeholder:text-transparent" : "placeholder:text-[#8c959b]"}`}
       />
       {demo ? (
-        <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0 flex max-w-full items-center overflow-hidden text-[17px] whitespace-nowrap text-[#8c959b]">
+        <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0 flex max-w-full items-center overflow-hidden text-[1.0625rem] whitespace-nowrap text-[#8c959b]">
           {example}
           <span className="ml-px inline-block h-[1.1em] w-[2px] animate-[caret-blink_1s_steps(1)_infinite] bg-primary" />
         </span>

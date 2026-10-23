@@ -28,19 +28,19 @@ export function Field({
 }) {
   return (
     <div className={cx("flex flex-col gap-1.5", className)}>
-      <label htmlFor={htmlFor} className="text-[14px] font-semibold">
+      <label htmlFor={htmlFor} className="text-[0.875rem] font-semibold">
         {label}
         {optional ? <span className="font-normal text-muted"> (optional)</span> : null}
       </label>
       {children}
       {error ? (
-        <p id={`${htmlFor}-error`} className="flex items-start gap-1.5 text-[13.5px] font-semibold text-error">
+        <p id={`${htmlFor}-error`} className="flex items-start gap-1.5 text-[0.84375rem] font-semibold text-error">
           <Icon name="alert" size={15} strokeWidth={2.2} className="mt-0.5 shrink-0" />
           {error}
         </p>
       ) : null}
       {hint ? (
-        <p id={`${htmlFor}-hint`} className="text-[13px] text-muted">
+        <p id={`${htmlFor}-hint`} className="text-[0.8125rem] text-muted">
           {hint}
         </p>
       ) : null}
@@ -55,7 +55,7 @@ export function describedBy(id: string, opts: { error?: string; hint?: ReactNode
 
 // focus-within: date and time inputs focus an inner segment, so :focus alone shows no ring.
 const inputBase =
-  "w-full min-h-[50px] rounded-[12px] border bg-surface px-3.5 text-[16px] text-ink placeholder:text-[#8c959b] focus:outline-none focus:ring-2 focus:ring-deep/40 focus-within:ring-2 focus-within:ring-deep/40";
+  "w-full min-h-[50px] rounded-[12px] border bg-surface px-3.5 text-[1rem] text-ink placeholder:text-[#8c959b] focus:outline-none focus:ring-2 focus:ring-deep/40 focus-within:ring-2 focus-within:ring-deep/40";
 
 export function TextInput({
   error,
@@ -110,7 +110,7 @@ export function MoneyInput({
         className,
       )}
     >
-      <span aria-hidden="true" className="border-r border-divider px-3.5 text-[14px] text-muted">
+      <span aria-hidden="true" className="border-r border-divider px-3.5 text-[0.875rem] text-muted">
         {currency}
       </span>
       <input
@@ -118,9 +118,9 @@ export function MoneyInput({
         inputMode="decimal"
         autoComplete="off"
         aria-invalid={error ? true : undefined}
-        className="min-w-0 flex-1 bg-transparent px-3 font-display text-[19px] font-semibold text-ink focus:outline-none"
+        className="min-w-0 flex-1 bg-transparent px-3 font-display text-[1.1875rem] font-semibold text-ink focus:outline-none"
       />
-      {suffix ? <span className="pr-3.5 text-[14px] text-muted">{suffix}</span> : null}
+      {suffix ? <span className="pr-3.5 text-[0.875rem] text-muted">{suffix}</span> : null}
     </div>
   );
 }
@@ -150,7 +150,7 @@ export function ChoiceChips({
   const id = useId();
   return (
     <fieldset className="flex flex-col gap-2" aria-describedby={error ? `${id}-err` : undefined}>
-      <legend className="mb-1.5 text-[14px] font-semibold">
+      <legend className="mb-1.5 text-[0.875rem] font-semibold">
         {legend}
         {optional ? <span className="font-normal text-muted"> (optional)</span> : null}
       </legend>
@@ -166,18 +166,18 @@ export function ChoiceChips({
               defaultChecked={defaultValue === undefined ? undefined : defaultValue === o.value}
               onChange={() => onChange?.(o.value)}
             />
-            <span className="inline-flex min-h-11 items-center rounded-full border-[1.5px] border-line bg-surface px-4 text-[14.5px] font-semibold text-ink peer-checked:border-ink peer-checked:bg-ink peer-checked:text-white peer-focus-visible:outline-3 peer-focus-visible:outline-deep peer-focus-visible:outline-offset-2">
+            <span className="inline-flex min-h-11 items-center rounded-full border-[1.5px] border-line bg-surface px-4 text-[0.90625rem] font-semibold text-ink peer-checked:border-ink peer-checked:bg-ink peer-checked:text-white peer-focus-visible:outline-3 peer-focus-visible:outline-deep peer-focus-visible:outline-offset-2">
               {o.label}
             </span>
           </label>
         ))}
       </div>
       {error ? (
-        <p id={`${id}-err`} className="text-[13.5px] font-semibold text-error">
+        <p id={`${id}-err`} className="text-[0.84375rem] font-semibold text-error">
           {error}
         </p>
       ) : null}
-      {hint ? <p className="text-[13px] text-muted">{hint}</p> : null}
+      {hint ? <p className="text-[0.8125rem] text-muted">{hint}</p> : null}
     </fieldset>
   );
 }
@@ -197,9 +197,9 @@ export function Checkbox({
         {...props}
         className="mt-0.5 size-[22px] shrink-0 cursor-pointer rounded-[6px] accent-primary"
       />
-      <span className="text-[14.5px] leading-snug">
+      <span className="text-[0.90625rem] leading-snug">
         <span className="font-semibold">{label}</span>
-        {description ? <span className="mt-0.5 block text-[13px] font-normal text-muted">{description}</span> : null}
+        {description ? <span className="mt-0.5 block text-[0.8125rem] font-normal text-muted">{description}</span> : null}
       </span>
     </label>
   );
@@ -218,7 +218,7 @@ export function ErrorSummary({ errors, message }: { errors: FieldErrors; message
       ref={ref}
       tabIndex={-1}
       role="alert"
-      className="rounded-[14px] border-[1.5px] border-error bg-error-tint p-4 text-[14px] focus:outline-none"
+      className="rounded-[14px] border-[1.5px] border-error bg-error-tint p-4 text-[0.875rem] focus:outline-none"
     >
       <p className="font-semibold text-error">{message ?? "Check the highlighted fields."}</p>
       {entries.length > 0 ? (

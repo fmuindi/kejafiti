@@ -51,13 +51,13 @@ export function BulkConfirm({ orgId, entries }: { orgId: string; entries: Array<
         ))}
       </ul>
       {chosen.length ? (
-        <p className="rounded-[12px] bg-cool p-3 text-[14px]">
+        <p className="rounded-[12px] bg-cool p-3 text-[0.875rem]">
           <strong>{chosen.length}</strong> unit{chosen.length === 1 ? "" : "s"} · total <strong>{formatMoney(total)}</strong> · periods:{" "}
           {[...new Set(chosen.flatMap((c) => c.periods))].join(", ") || "credit"}
         </p>
       ) : null}
       <Checkbox checked={ack} onChange={(e) => setAck(e.target.checked)} label="I have checked each of these payments using our property's external records and confirm the entries are accurate." />
-      {error ? <p role="alert" className="text-[14px] font-semibold text-error">{error}</p> : null}
+      {error ? <p role="alert" className="text-[0.875rem] font-semibold text-error">{error}</p> : null}
       {results ? (
         <Notice tone={results.every((r) => r.ok) ? "success" : "waiting"} role="status" title={`${results.filter((r) => r.ok).length} confirmed, ${results.filter((r) => !r.ok).length} not confirmed`}>
           <ul className="list-disc pl-5">

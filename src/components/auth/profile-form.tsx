@@ -17,8 +17,8 @@ export function ProfileForm({ name, email }: { name: string; email: string }) {
       <div className="flex items-center gap-3.5">
         <Avatar name={saved || email} size={56} />
         <div className="min-w-0 flex-1">
-          <p className="truncate font-display text-[20px] font-bold">{saved || "Add your name"}</p>
-          <p className="truncate text-[14px] text-muted">{email}</p>
+          <p className="truncate font-display text-[1.25rem] font-bold">{saved || "Add your name"}</p>
+          <p className="truncate text-[0.875rem] text-muted">{email}</p>
         </div>
         {!editing ? (
           <Button type="button" size="sm" variant="secondary" icon="edit" onClick={() => setEditing(true)}>
@@ -46,7 +46,7 @@ export function ProfileForm({ name, email }: { name: string; email: string }) {
           <div className="flex items-center gap-2">
             <Button type="submit" size="sm" icon="check" pending={pending}>Save</Button>
             <Button type="button" size="sm" variant="quiet" onClick={() => { setValue(saved); setEditing(false); setError(null); }}>Cancel</Button>
-            {error ? <span role="alert" className="text-[13.5px] font-semibold text-error">{error}</span> : null}
+            {error ? <span role="alert" className="text-[0.84375rem] font-semibold text-error">{error}</span> : null}
           </div>
         </form>
       ) : null}

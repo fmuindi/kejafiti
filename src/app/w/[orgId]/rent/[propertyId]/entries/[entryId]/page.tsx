@@ -84,8 +84,8 @@ export default async function EntryPage({ params }: PageProps<"/w/[orgId]/rent/[
           <Eyebrow>
             {e.ref} · Unit {unit}
           </Eyebrow>
-          <h1 className="mt-1 font-display text-[28px] font-bold">{formatMoney(Number(e.amount))}</h1>
-          <p className="text-[14.5px] text-muted">
+          <h1 className="mt-1 font-display text-[1.75rem] font-bold">{formatMoney(Number(e.amount))}</h1>
+          <p className="text-[0.90625rem] text-muted">
             {tenant} · {e.kind === "opening_credit" ? "Opening credit" : `paid ${formatDate(e.paid_on)}`}
           </p>
         </div>
@@ -124,9 +124,9 @@ export default async function EntryPage({ params }: PageProps<"/w/[orgId]/rent/[
       ) : null}
 
       <Card className="p-4">
-        <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-[14.5px]">
+        <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-[0.90625rem]">
           <dt className="text-muted">Method</dt>
-          <dd>{e.method ? METHOD_LABEL[e.method] : "Not given"} <span className="text-[12.5px] text-muted">(records only; no account connected)</span></dd>
+          <dd>{e.method ? METHOD_LABEL[e.method] : "Not given"} <span className="text-[0.78125rem] text-muted">(records only; no account connected)</span></dd>
           <dt className="text-muted">Reference</dt>
           <dd className="font-mono">{e.reference ?? "Not given"}</dd>
           <dt className="text-muted">Recorded</dt>
@@ -150,7 +150,7 @@ export default async function EntryPage({ params }: PageProps<"/w/[orgId]/rent/[
       </Card>
 
       <section aria-labelledby="alloc">
-        <h2 id="alloc" className="font-display text-[18px] font-bold">
+        <h2 id="alloc" className="font-display text-[1.125rem] font-bold">
           {e.status === "confirmed" || e.status === "reversed" ? "Posted allocations" : "Proposed allocation (not counted until confirmed)"}
         </h2>
         <ul className="mt-2 flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
@@ -158,7 +158,7 @@ export default async function EntryPage({ params }: PageProps<"/w/[orgId]/rent/[
             ? (allocs ?? []).map((a) => {
                 const c = a.rent_charges as unknown as { category: string; period_start: string; description: string | null } | null;
                 return (
-                  <li key={a.id} className="flex justify-between px-4 py-2.5 text-[14.5px]">
+                  <li key={a.id} className="flex justify-between px-4 py-2.5 text-[0.90625rem]">
                     <span>
                       {c?.category === "rent" ? `${formatPeriod(c.period_start)} rent` : c?.description ?? "Charge"}
                       {a.reverses_allocation_id ? <span className="text-muted"> · reversal</span> : null}
@@ -168,13 +168,13 @@ export default async function EntryPage({ params }: PageProps<"/w/[orgId]/rent/[
                 );
               })
             : ((e.proposed_allocations as Array<{ charge_id: string; amount: number }>) ?? []).map((a) => (
-                <li key={a.charge_id} className="flex justify-between px-4 py-2.5 text-[14.5px]">
+                <li key={a.charge_id} className="flex justify-between px-4 py-2.5 text-[0.90625rem]">
                   <span>Charge</span>
                   <span className="font-mono">{formatAmount(Number(a.amount))}</span>
                 </li>
               ))}
           {unallocated > 0 ? (
-            <li className="flex justify-between px-4 py-2.5 text-[14.5px] font-semibold">
+            <li className="flex justify-between px-4 py-2.5 text-[0.90625rem] font-semibold">
               <span>Kept as tenant credit</span>
               <span className="font-mono">{formatAmount(unallocated)}</span>
             </li>
@@ -184,7 +184,7 @@ export default async function EntryPage({ params }: PageProps<"/w/[orgId]/rent/[
 
       {(atts ?? []).filter((a) => !a.removed_at).length ? (
         <section aria-labelledby="ev">
-          <h2 id="ev" className="font-display text-[18px] font-bold">Evidence supplied by staff</h2>
+          <h2 id="ev" className="font-display text-[1.125rem] font-bold">Evidence supplied by staff</h2>
           <ul className="mt-2 flex flex-col gap-2">
             {(atts ?? []).filter((a) => !a.removed_at).map((a) => (
               <li key={a.id} className="flex items-center gap-3 rounded-[14px] border border-line bg-surface p-3">
@@ -195,7 +195,7 @@ export default async function EntryPage({ params }: PageProps<"/w/[orgId]/rent/[
                   ) : (
                     <span className="font-semibold">{a.file_name}</span>
                   )}
-                  <span className="block text-[12.5px] text-muted">Uploaded by {name(a.uploaded_by)} · {formatDateTime(a.created_at)} · not proof of payment</span>
+                  <span className="block text-[0.78125rem] text-muted">Uploaded by {name(a.uploaded_by)} · {formatDateTime(a.created_at)} · not proof of payment</span>
                 </span>
               </li>
             ))}
@@ -204,16 +204,16 @@ export default async function EntryPage({ params }: PageProps<"/w/[orgId]/rent/[
       ) : null}
 
       <section aria-labelledby="hist">
-        <h2 id="hist" className="font-display text-[18px] font-bold">History</h2>
+        <h2 id="hist" className="font-display text-[1.125rem] font-bold">History</h2>
         <ol className="mt-2 flex flex-col gap-0 border-l-2 border-line pl-4">
           {(events ?? []).map((ev) => (
             <li key={ev.id} className="relative pb-3">
               <span className="absolute top-1.5 -left-[22px] size-2.5 rounded-full bg-deep" aria-hidden="true" />
-              <p className="text-[14.5px] font-semibold">{ACTION_LABEL[ev.action] ?? ev.action}</p>
-              <p className="text-[13px] text-muted">
+              <p className="text-[0.90625rem] font-semibold">{ACTION_LABEL[ev.action] ?? ev.action}</p>
+              <p className="text-[0.8125rem] text-muted">
                 {name(ev.actor_id)} · {formatDateTime(ev.created_at)}
               </p>
-              {ev.reason ? <p className="text-[13.5px]">&quot;{ev.reason}&quot;</p> : null}
+              {ev.reason ? <p className="text-[0.84375rem]">&quot;{ev.reason}&quot;</p> : null}
             </li>
           ))}
         </ol>

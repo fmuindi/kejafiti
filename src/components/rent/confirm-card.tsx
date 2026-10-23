@@ -73,7 +73,7 @@ export function ConfirmCard({ orgId, entry }: { orgId: string; entry: InboxEntry
   const first = entry.lines[0];
   return (
     <article aria-labelledby={`e-${entry.id}`} className="flex flex-col gap-4 rounded-[20px] border border-line bg-surface p-4">
-      <p className="text-[13px] text-muted">
+      <p className="text-[0.8125rem] text-muted">
         Submitted by <strong className="text-ink">{entry.submittedBy}</strong> · {entry.submittedAgo} · {entry.propertyName}
       </p>
       <div className="flex items-start justify-between gap-3">
@@ -81,11 +81,11 @@ export function ConfirmCard({ orgId, entry }: { orgId: string; entry: InboxEntry
           <h2 id={`e-${entry.id}`} className="font-semibold">
             <span className="font-mono">{entry.unitLabel}</span> · {entry.tenantName}
           </h2>
-          <p className="text-[13.5px] text-muted">{entry.lines.map((l) => l.label).join(", ") || "Kept as tenant credit"}</p>
+          <p className="text-[0.84375rem] text-muted">{entry.lines.map((l) => l.label).join(", ") || "Kept as tenant credit"}</p>
         </div>
-        <p className="font-display text-[24px] font-extrabold whitespace-nowrap">{formatMoney(entry.amount)}</p>
+        <p className="font-display text-[1.5rem] font-extrabold whitespace-nowrap">{formatMoney(entry.amount)}</p>
       </div>
-      <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-[14px]">
+      <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-[0.875rem]">
         <dt className="text-muted">Paid on</dt>
         <dd className="font-semibold">{formatDate(entry.paidOn)}</dd>
         <dt className="text-muted">Method</dt>
@@ -115,33 +115,33 @@ export function ConfirmCard({ orgId, entry }: { orgId: string; entry: InboxEntry
                     a.name
                   )}
                 </p>
-                <p className="text-[12.5px] text-muted">From {entry.submittedBy} · {formatDateTime(a.at)}. Supplied by staff. It is not proof of payment.</p>
+                <p className="text-[0.78125rem] text-muted">From {entry.submittedBy} · {formatDateTime(a.at)}. Supplied by staff. It is not proof of payment.</p>
               </div>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="text-[13px] text-muted">No evidence attached.</p>
+        <p className="text-[0.8125rem] text-muted">No evidence attached.</p>
       )}
 
       {entry.lines.length ? (
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-[14px] bg-cool p-3 text-[14px]">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-[14px] bg-cool p-3 text-[0.875rem]">
           <div>
-            <p className="text-[12.5px] text-muted">Now</p>
+            <p className="text-[0.78125rem] text-muted">Now</p>
             <p className="font-semibold">{formatAmount(first.before)} unpaid</p>
           </div>
           <Icon name="arrowRight" className="text-muted" />
           <div>
-            <p className="text-[12.5px] text-muted">After confirming</p>
+            <p className="text-[0.78125rem] text-muted">After confirming</p>
             <p className="font-semibold">{first.after <= 0 ? "Paid" : `${formatAmount(first.after)} left · Partial`}</p>
           </div>
-          {entry.lines.length > 1 ? <p className="col-span-3 text-[12.5px] text-muted">Also applies to {entry.lines.slice(1).map((l) => `${l.label} (${formatAmount(l.amount)})`).join(", ")}.</p> : null}
-          {entry.credit > 0 ? <p className="col-span-3 text-[12.5px] text-muted">{formatMoney(entry.credit)} will be kept as tenant credit.</p> : null}
+          {entry.lines.length > 1 ? <p className="col-span-3 text-[0.78125rem] text-muted">Also applies to {entry.lines.slice(1).map((l) => `${l.label} (${formatAmount(l.amount)})`).join(", ")}.</p> : null}
+          {entry.credit > 0 ? <p className="col-span-3 text-[0.78125rem] text-muted">{formatMoney(entry.credit)} will be kept as tenant credit.</p> : null}
         </div>
       ) : null}
 
       {error ? (
-        <p role="alert" className="text-[14px] font-semibold text-error">
+        <p role="alert" className="text-[0.875rem] font-semibold text-error">
           {error}
         </p>
       ) : null}

@@ -29,13 +29,13 @@ export default async function WorkspaceAccountPage({ params }: PageProps<"/w/[or
       <ProfileForm name={profile?.full_name ?? ""} email={profile?.email ?? ""} />
       <section aria-labelledby="access" className="rounded-[18px] border border-line bg-surface p-4">
         <h2 id="access" className="font-semibold">Your access in {ws.org_name}</h2>
-        <p className="text-[14px] text-muted">{ROLE_LABEL[ws.role]} · {ws.all_properties ? "all properties" : `${ws.property_ids.length} assigned propert${ws.property_ids.length === 1 ? "y" : "ies"}`}</p>
-        <ul className="mt-2 grid gap-1 text-[14px] sm:grid-cols-2">
+        <p className="text-[0.875rem] text-muted">{ROLE_LABEL[ws.role]} · {ws.all_properties ? "all properties" : `${ws.property_ids.length} assigned propert${ws.property_ids.length === 1 ? "y" : "ies"}`}</p>
+        <ul className="mt-2 grid gap-1 text-[0.875rem] sm:grid-cols-2">
           {perms.map(([on, label]) => (
             <li key={label} className={on ? "" : "text-muted line-through"}>{on ? "✓ " : ""}{label}</li>
           ))}
         </ul>
-        <p className="mt-2 text-[12.5px] text-muted">Only the workspace owner can change this.</p>
+        <p className="mt-2 text-[0.78125rem] text-muted">Only the workspace owner can change this.</p>
       </section>
       {all.length > 1 ? (
         <section className="flex flex-col gap-2">
@@ -47,7 +47,7 @@ export default async function WorkspaceAccountPage({ params }: PageProps<"/w/[or
       ) : null}
       <Link href="/help" className="inline-flex min-h-11 items-center gap-2 font-semibold"><Icon name="info" size={18} /> Help and support</Link>
       <Link href="/" className="inline-flex min-h-11 items-center gap-2 font-semibold"><Icon name="search" size={18} /> Browse homes</Link>
-      <p className="-mt-3 text-[13px] text-muted">Same account. Browsing homes doesn&apos;t change your workspace access.</p>
+      <p className="-mt-3 text-[0.8125rem] text-muted">Same account. Browsing homes doesn&apos;t change your workspace access.</p>
       <SignOutForm userId={signedInUserId}>
         <button type="submit" className="inline-flex min-h-11 items-center gap-2 rounded-[12px] border-[1.5px] border-ink px-4 font-semibold"><Icon name="logout" size={18} /> Sign out</button>
       </SignOutForm>

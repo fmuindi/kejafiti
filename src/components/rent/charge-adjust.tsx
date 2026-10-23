@@ -35,11 +35,11 @@ export function ChargeAdjust({ orgId, propertyId, chargeId, max }: { orgId: stri
         })
       }
     >
-      <label className="flex flex-col gap-1 text-[13px] font-semibold">
+      <label className="flex flex-col gap-1 text-[0.8125rem] font-semibold">
         Reduce by
         <MoneyInput name="reduce" className="min-h-11" />
       </label>
-      <label className="flex flex-col gap-1 text-[13px] font-semibold">
+      <label className="flex flex-col gap-1 text-[0.8125rem] font-semibold">
         Reason
         <TextInput name="reason" required minLength={3} maxLength={200} className="min-h-11" />
       </label>
@@ -49,7 +49,7 @@ export function ChargeAdjust({ orgId, propertyId, chargeId, max }: { orgId: stri
       <Button type="button" size="sm" variant="quiet" onClick={() => setOpen(false)}>
         Cancel
       </Button>
-      {error ? <p role="alert" className="text-[13px] font-semibold text-error">{error}</p> : null}
+      {error ? <p role="alert" className="text-[0.8125rem] font-semibold text-error">{error}</p> : null}
     </form>
   );
 }

@@ -25,11 +25,11 @@ export default async function SupportQueue({ searchParams }: PageProps<"/admin/s
   const rows = [...(data ?? [])].sort((a, b) => rank[a.priority] - rank[b.priority]);
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="font-display text-[34px] font-bold tracking-[-1px]">Support</h1>
-      <p className="-mt-2 text-[14px] text-muted">Requests contain only what people wrote or attached. Support gives no access to their conversations or rent records.</p>
+      <h1 className="font-display text-[2.125rem] font-bold tracking-[-1px]">Support</h1>
+      <p className="-mt-2 text-[0.875rem] text-muted">Requests contain only what people wrote or attached. Support gives no access to their conversations or rent records.</p>
       <nav aria-label="Support views" className="flex gap-2 border-b border-line">
         {TABS.map((t) => (
-          <Link key={t.key} href={`/admin/support?tab=${t.key}`} aria-current={t.key === tab.key ? "page" : undefined} className={cx("-mb-px border-b-2 px-3 py-2.5 text-[15px] font-semibold", t.key === tab.key ? "border-primary text-ink" : "border-transparent text-muted")}>{t.label}</Link>
+          <Link key={t.key} href={`/admin/support?tab=${t.key}`} aria-current={t.key === tab.key ? "page" : undefined} className={cx("-mb-px border-b-2 px-3 py-2.5 text-[0.9375rem] font-semibold", t.key === tab.key ? "border-primary text-ink" : "border-transparent text-muted")}>{t.label}</Link>
         ))}
       </nav>
       {rows.length === 0 ? (
@@ -41,7 +41,7 @@ export default async function SupportQueue({ searchParams }: PageProps<"/admin/s
               <Link href={`/admin/support/${t.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-cool">
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold">{t.priority === "high" ? "High · " : ""}{t.ref} · {t.subject}</span>
-                  <span className="text-[13px] text-muted">{categoryLabel(t.category)} · opened {timeAgo(t.created_at)}{t.assignee_id ? "" : " · unassigned"}</span>
+                  <span className="text-[0.8125rem] text-muted">{categoryLabel(t.category)} · opened {timeAgo(t.created_at)}{t.assignee_id ? "" : " · unassigned"}</span>
                 </span>
                 <StatusBadge tone={SUPPORT_STATUS[t.status]?.tone ?? "neutral"}>{SUPPORT_STATUS[t.status]?.label ?? t.status}</StatusBadge>
               </Link>

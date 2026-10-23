@@ -41,13 +41,14 @@ body {
   background: var(--color-cream);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: 15px;
+  /* rem, not px, so the browser's text-size setting applies (the same 15px at default). */
+  font-size: 0.9375rem;
   line-height: 1.45;
 }
 
 @media (min-width: 768px) {
   body {
-    font-size: 16px;
+    font-size: 1rem;
   }
 }
 

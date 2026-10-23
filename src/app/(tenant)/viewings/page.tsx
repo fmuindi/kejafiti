@@ -66,7 +66,7 @@ export default async function TenantViewingsPage() {
               <div className="flex items-start gap-3.5">
                 <DateTile at={when} tone={s.tone === "success" ? "success" : s.tone === "waiting" ? "waiting" : "neutral"} />
                 <div className="min-w-0 flex-1">
-                  <p className="font-display text-[19px] leading-tight font-bold">
+                  <p className="font-display text-[1.1875rem] leading-tight font-bold">
                     {p.weekday} · {p.time}
                   </p>
                   <ListingLink v={v} />
@@ -74,12 +74,12 @@ export default async function TenantViewingsPage() {
                 <StatusBadge tone={s.tone}>{s.label.split(" · ")[0]}</StatusBadge>
               </div>
               {NEXT[v.state] ? (
-                <p className={needsTenant(v.state) ? "flex items-center gap-2 text-[14px] font-semibold text-waiting-strong" : "flex items-center gap-2 text-[14px] text-muted"}>
+                <p className={needsTenant(v.state) ? "flex items-center gap-2 text-[0.875rem] font-semibold text-waiting-strong" : "flex items-center gap-2 text-[0.875rem] text-muted"}>
                   <Icon name={needsTenant(v.state) ? "alert" : "clock"} size={16} /> {NEXT[v.state]}
                 </p>
               ) : null}
               {v.state === "confirmed" && v.meeting_instructions ? (
-                <p className="flex items-start gap-2 text-[14px]">
+                <p className="flex items-start gap-2 text-[0.875rem]">
                   <Icon name="info" size={16} className="mt-0.5 shrink-0 text-deep" /> {v.meeting_instructions}
                 </p>
               ) : null}
@@ -91,7 +91,7 @@ export default async function TenantViewingsPage() {
       </ul>
       {changes.length ? (
         <section aria-labelledby="changes" className="flex flex-col gap-2">
-          <h2 id="changes" className="flex items-center gap-2 text-[15px] font-semibold text-muted">
+          <h2 id="changes" className="flex items-center gap-2 text-[0.9375rem] font-semibold text-muted">
             <Icon name="alert" size={16} /> Saved homes now let
           </h2>
           <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
@@ -99,7 +99,7 @@ export default async function TenantViewingsPage() {
               <li key={l.listing_id}>
                 <Link href={`/homes/${l.ref}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-cool">
                   <span className="truncate font-semibold">{l.title ?? `Home in ${l.area}`}</span>
-                  <span className="shrink-0 text-[13px] text-error">{l.let_on ? `Let ${formatDate(l.let_on, { year: false })}` : "Unavailable"}</span>
+                  <span className="shrink-0 text-[0.8125rem] text-error">{l.let_on ? `Let ${formatDate(l.let_on, { year: false })}` : "Unavailable"}</span>
                 </Link>
               </li>
             ))}
@@ -114,7 +114,7 @@ export default async function TenantViewingsPage() {
           </summary>
           <ul className="flex flex-col divide-y divide-divider border-t border-divider">
             {past.map((v) => (
-              <li key={v.id} className="flex flex-col px-4 py-3 text-[14px]">
+              <li key={v.id} className="flex flex-col px-4 py-3 text-[0.875rem]">
                 <span className="font-semibold">{v.listing_title ?? `Home in ${v.area}`}</span>
                 <span className="text-muted">
                   {formatAppointment(v.confirmed_start ?? v.requested_start)} · {(TENANT_LABEL[v.state] ?? TENANT_LABEL.unknown).label}
@@ -133,7 +133,7 @@ export default async function TenantViewingsPage() {
 function ListingLink({ v }: { v: { listing_ref: string; listing_title: string | null; listing_status: string; area: string; org_name: string } }) {
   const title = v.listing_title ?? `Home in ${v.area}`;
   return (
-    <p className="mt-0.5 flex min-w-0 flex-col text-[14px]">
+    <p className="mt-0.5 flex min-w-0 flex-col text-[0.875rem]">
       {v.listing_ref ? (
         <Link href={`/homes/${v.listing_ref}`} className="truncate hover:underline">
           {title}
@@ -141,7 +141,7 @@ function ListingLink({ v }: { v: { listing_ref: string; listing_title: string | 
       ) : (
         <span className="truncate">{title}</span>
       )}
-      <span className="truncate text-[13px] text-muted">
+      <span className="truncate text-[0.8125rem] text-muted">
         {v.org_name} · {v.area}
         {v.listing_status !== "published" ? <span className="font-semibold text-error"> · unavailable</span> : null}
       </span>

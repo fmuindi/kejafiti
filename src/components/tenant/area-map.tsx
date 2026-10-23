@@ -24,7 +24,7 @@ export function AreaMap({ lat, lng, label }: { lat: number | null; lng: number |
   return (
     <figure className="flex flex-col gap-1.5">
       <iframe title={`Map of the approximate area: ${label}`} src={src} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="aspect-[16/10] w-full rounded-[14px] border border-line" />
-      <figcaption className="text-[12.5px] text-muted">Approximate area only (within about 1 km). The exact address is shared after a viewing is confirmed.</figcaption>
+      <figcaption className="text-[0.78125rem] text-muted">Approximate area only (within about 1 km). The exact address is shared after a viewing is confirmed.</figcaption>
     </figure>
   );
 }
