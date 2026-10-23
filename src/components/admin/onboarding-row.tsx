@@ -31,15 +31,15 @@ export function OnboardingRow({ org }: { org: Org }) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="font-semibold">{org.name} · {org.kind === "agency" ? "agency" : "landlord"}</p>
-          <p className="text-[13px] text-muted">{org.owner_name} · {org.owner_email}{org.owner_phone ? ` · ${org.owner_phone}` : ""} · registered {timeAgo(org.created_at)}</p>
-          <p className="text-[13px] text-muted">{org.property_count} properties · {org.listing_count} listings{org.assignee_name ? ` · owner: ${org.assignee_name}` : " · unassigned"}</p>
+          <p className="text-[0.8125rem] text-muted">{org.owner_name} · {org.owner_email}{org.owner_phone ? ` · ${org.owner_phone}` : ""} · registered {timeAgo(org.created_at)}</p>
+          <p className="text-[0.8125rem] text-muted">{org.property_count} properties · {org.listing_count} listings{org.assignee_name ? ` · owner: ${org.assignee_name}` : " · unassigned"}</p>
         </div>
         <StatusBadge tone={TONE[org.onboarding_status] ?? "neutral"}>{org.onboarding_status.replace("_", " ")}</StatusBadge>
       </div>
-      <p className="text-[13.5px]">
+      <p className="text-[0.84375rem]">
         Identity checked: <strong>{org.identity_checked_at ? formatDate(org.identity_checked_at) : "no"}</strong> · Authority to advertise checked: <strong>{org.authority_checked_at ? formatDate(org.authority_checked_at) : "no"}</strong>
       </p>
-      <label className="flex flex-col gap-1 text-[13px] font-semibold">
+      <label className="flex flex-col gap-1 text-[0.8125rem] font-semibold">
         Internal note
         <TextInput value={note} onChange={(e) => setNote(e.target.value)} maxLength={500} />
       </label>
@@ -50,7 +50,7 @@ export function OnboardingRow({ org }: { org: Org }) {
         <Button size="sm" pending={pending} onClick={() => act({ status: "approved" })}>Approve</Button>
         <Button size="sm" variant="quiet" pending={pending} onClick={() => act({ status: "changes_needed" })}>Changes needed</Button>
       </div>
-      {msg ? <p role="status" className="text-[13px] font-semibold">{msg}</p> : null}
+      {msg ? <p role="status" className="text-[0.8125rem] font-semibold">{msg}</p> : null}
     </article>
   );
 }

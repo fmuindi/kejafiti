@@ -31,9 +31,9 @@ export function AccessFields({
   return (
     <>
       <fieldset id="property_ids" className="flex flex-col gap-2">
-        <legend className="mb-1 text-[14px] font-semibold">Properties</legend>
+        <legend className="mb-1 text-[0.875rem] font-semibold">Properties</legend>
         {value.role === "agency_admin" ? (
-          <p className="text-[13.5px] text-muted">Agency admins work across all properties.</p>
+          <p className="text-[0.84375rem] text-muted">Agency admins work across all properties.</p>
         ) : (
           <>
             <Checkbox checked={value.all_properties} onChange={(e) => set({ all_properties: e.target.checked })} label="All properties, including ones added later" />
@@ -47,13 +47,13 @@ export function AccessFields({
                   />
                 ))
               : null}
-            {properties.length === 0 ? <p className="text-[13.5px] text-muted">Add a property first.</p> : null}
+            {properties.length === 0 ? <p className="text-[0.84375rem] text-muted">Add a property first.</p> : null}
           </>
         )}
-        {propertyError ? <p className="text-[13.5px] font-semibold text-error">{propertyError}</p> : null}
+        {propertyError ? <p className="text-[0.84375rem] font-semibold text-error">{propertyError}</p> : null}
       </fieldset>
       <fieldset className="flex flex-col gap-3">
-        <legend className="mb-1 text-[14px] font-semibold">What they can do</legend>
+        <legend className="mb-1 text-[0.875rem] font-semibold">What they can do</legend>
         <Checkbox disabled={viewer} checked={value.can_enter_payments} onChange={(e) => set({ can_enter_payments: e.target.checked })} label="Enter payments and attach receipts" />
         <div className="rounded-[12px] border border-[#f0d9ad] bg-waiting-tint/50 p-3">
           <Checkbox
@@ -105,14 +105,14 @@ export function AuthoritySummary({ value, before, properties, name }: { value: A
   const has = (a: AccessState, k: keyof AccessState) => a.role === "agency_admin" || !!a[k];
   return (
     <section aria-labelledby="authority" className="flex flex-col gap-3 rounded-[16px] border-[1.5px] border-ink bg-surface p-4">
-      <h3 id="authority" className="font-display text-[18px] font-bold">{name || "They"} will be able to</h3>
+      <h3 id="authority" className="font-display text-[1.125rem] font-bold">{name || "They"} will be able to</h3>
       <div>
-        <p className={`text-[14px] font-semibold ${scopeChanged ? "text-primary" : ""}`}>{scopeChanged ? "Changed · " : ""}Properties</p>
-        <p className="text-[14px]">
+        <p className={`text-[0.875rem] font-semibold ${scopeChanged ? "text-primary" : ""}`}>{scopeChanged ? "Changed · " : ""}Properties</p>
+        <p className="text-[0.875rem]">
           {everywhere ? <>Every property, <strong>including ones you add later</strong></> : names.length ? names.join(", ") : "No properties yet"}
         </p>
       </div>
-      <ul className="flex flex-col gap-1 text-[14px]">
+      <ul className="flex flex-col gap-1 text-[0.875rem]">
         {POWERS.map(([k, label]) => {
           const on = has(value, k);
           const was = before ? has(before, k) : on;
@@ -130,7 +130,7 @@ export function AuthoritySummary({ value, before, properties, name }: { value: A
           <span className="sr-only">{value.role === "agency_admin" ? "Yes: " : "No: "}</span>Invite and manage staff
         </li>
       </ul>
-      {has(value, "can_confirm") ? <p className="text-[13px] text-muted">Their confirmation is final. You won&apos;t be asked to approve it again.</p> : null}
+      {has(value, "can_confirm") ? <p className="text-[0.8125rem] text-muted">Their confirmation is final. You won&apos;t be asked to approve it again.</p> : null}
     </section>
   );
 }

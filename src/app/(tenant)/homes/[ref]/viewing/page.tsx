@@ -20,8 +20,8 @@ export default async function ViewingPage({ params, searchParams }: PageProps<"/
   return (
     <div className="mx-auto flex max-w-[560px] flex-col gap-4 px-4 pt-5 pb-10">
       <BackLink href={`/homes/${ref}`}>The home</BackLink>
-      <h1 className="font-display text-[26px] font-bold">Request a viewing</h1>
-      <p className="text-[14px] text-muted">
+      <h1 className="font-display text-[1.625rem] font-bold">Request a viewing</h1>
+      <p className="text-[0.875rem] text-muted">
         {l.title} · KES {formatAmount(l.rent_amount)} · with {l.advertiser?.name}
       </p>
       <ViewingRequestForm

@@ -9,7 +9,7 @@ import { googleDirectionsUrl, type Place } from "@/lib/directions";
 // Leaflet needs the browser, and only people who open the map should download it.
 const LiveMap = dynamic(() => import("./live-map"), {
   ssr: false,
-  loading: () => <div className="grid h-[300px] place-items-center rounded-[14px] border border-line bg-cool text-[14px] text-muted">Loading map…</div>,
+  loading: () => <div className="grid h-[300px] place-items-center rounded-[14px] border border-line bg-cool text-[0.875rem] text-muted">Loading map…</div>,
 });
 
 /** Where the confirmed viewing is, with directions: Google Maps, or the live map in the app. */
@@ -24,7 +24,7 @@ export function ViewingDirections({ place, landmark }: { place: Place; landmark:
         <Icon name="pin" size={18} className="mt-0.5 shrink-0 text-primary" />
         <span>
           <span className="block font-semibold">{address}</span>
-          {landmark ? <span className="block text-[13.5px] text-muted">{landmark}</span> : null}
+          {landmark ? <span className="block text-[0.84375rem] text-muted">{landmark}</span> : null}
         </span>
       </p>
       <div className="flex flex-wrap gap-2">

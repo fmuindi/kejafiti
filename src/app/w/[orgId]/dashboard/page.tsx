@@ -67,40 +67,40 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
       <Notice tone="info">Tenants pay through each property&apos;s own arrangements. Figures here are records your staff entered and confirmed.</Notice>
       <div>
         <Eyebrow>Rent records</Eyebrow>
-        <h1 className="mt-1 font-display text-[30px] leading-none font-bold tracking-[-1px] md:text-[40px]">
+        <h1 className="mt-1 font-display text-[1.875rem] leading-none font-bold tracking-[-1px] md:text-[2.5rem]">
           {property?.name ?? "All properties"} · {formatPeriod(period).split(" ")[0]}
         </h1>
       </div>
 
       <form className="flex flex-wrap items-end gap-2" aria-label="Dashboard filters">
-        <label className="flex flex-col gap-1 text-[13px] text-muted">
+        <label className="flex flex-col gap-1 text-[0.8125rem] text-muted">
           Property
-          <select name="property" defaultValue={propertyId ?? ""} className="min-h-11 rounded-[12px] border border-line bg-surface px-3 text-[14.5px] font-semibold text-ink">
+          <select name="property" defaultValue={propertyId ?? ""} className="min-h-11 rounded-[12px] border border-line bg-surface px-3 text-[0.90625rem] font-semibold text-ink">
             {properties.length > 1 ? <option value="">All properties</option> : null}
             {properties.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-[13px] text-muted">
+        <label className="flex flex-col gap-1 text-[0.8125rem] text-muted">
           Period
-          <select name="period" defaultValue={periodParam(period)} className="min-h-11 rounded-[12px] border border-line bg-surface px-3 text-[14.5px] font-semibold text-ink">
+          <select name="period" defaultValue={periodParam(period)} className="min-h-11 rounded-[12px] border border-line bg-surface px-3 text-[0.90625rem] font-semibold text-ink">
             {periods.map((p) => <option key={p} value={periodParam(p)}>{formatPeriod(p)}</option>)}
           </select>
         </label>
         <input type="hidden" name="view" value={view === "paid" ? "paid" : ""} />
-        <button type="submit" className="min-h-11 rounded-[12px] bg-ink px-4 text-[14.5px] font-semibold text-white">Apply</button>
+        <button type="submit" className="min-h-11 rounded-[12px] bg-ink px-4 text-[0.90625rem] font-semibold text-white">Apply</button>
         <div role="group" aria-label="Basis" className="ml-auto flex rounded-[12px] bg-cool p-1">
-          <Link href={q({ view: undefined })} aria-current={view === "period" ? "true" : undefined} className={cx("rounded-[10px] px-3 py-2 text-[14px] font-semibold", view === "period" ? "bg-surface shadow-[0_0_0_1px_#ccc]" : "text-muted")}>By rent period</Link>
-          <Link href={q({ view: "paid" })} aria-current={view === "paid" ? "true" : undefined} className={cx("rounded-[10px] px-3 py-2 text-[14px] font-semibold", view === "paid" ? "bg-surface shadow-[0_0_0_1px_#ccc]" : "text-muted")}>By payment date</Link>
+          <Link href={q({ view: undefined })} aria-current={view === "period" ? "true" : undefined} className={cx("rounded-[10px] px-3 py-2 text-[0.875rem] font-semibold", view === "period" ? "bg-surface shadow-[0_0_0_1px_#ccc]" : "text-muted")}>By rent period</Link>
+          <Link href={q({ view: "paid" })} aria-current={view === "paid" ? "true" : undefined} className={cx("rounded-[10px] px-3 py-2 text-[0.875rem] font-semibold", view === "paid" ? "bg-surface shadow-[0_0_0_1px_#ccc]" : "text-muted")}>By payment date</Link>
         </div>
         {(ws.can_export || ws.role === "owner" || ws.role === "agency_admin") && propertyId ? (
-          <a href={`/api/export/register?property=${propertyId}&period=${periodParam(period)}`} className="inline-flex min-h-11 items-center gap-1.5 rounded-[12px] border-[1.5px] border-ink px-4 text-[14.5px] font-semibold">
+          <a href={`/api/export/register?property=${propertyId}&period=${periodParam(period)}`} className="inline-flex min-h-11 items-center gap-1.5 rounded-[12px] border-[1.5px] border-ink px-4 text-[0.90625rem] font-semibold">
             <Icon name="download" size={16} /> Export
           </a>
         ) : null}
       </form>
 
       {s ? (
-        <p className="inline-flex items-center gap-1.5 text-[13px] text-muted">
+        <p className="inline-flex items-center gap-1.5 text-[0.8125rem] text-muted">
           <Icon name="check" size={15} className="text-success" />
           Confirmed by property staff · Records last changed {changedAt ? formatDateTime(changedAt) : "never"} · Pending entries are not counted
         </p>
@@ -108,15 +108,15 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
 
       {view === "paid" ? (
         <section aria-labelledby="bypaid" className="flex flex-col gap-3">
-          <h2 id="bypaid" className="font-display text-[20px] font-bold">Confirmed payments dated in {formatPeriod(period)}</h2>
-          <p className="text-[14px] text-muted">
+          <h2 id="bypaid" className="font-display text-[1.25rem] font-bold">Confirmed payments dated in {formatPeriod(period)}</h2>
+          <p className="text-[0.875rem] text-muted">
             This view counts payments by the date the tenant paid, whatever period they settle. It is a different question from rent-period collection
             and the two are never mixed. Total: <strong className="text-ink">{formatMoney(sumAmounts(payRows.map((r) => Number(r.amount))))}</strong> across {payRows.length} payment{payRows.length === 1 ? "" : "s"}.
           </p>
           <div className="overflow-x-auto rounded-[16px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Confirmed payments by date (scrolls sideways)">
-            <table className="w-full min-w-[640px] text-[14px]">
+            <table className="w-full min-w-[640px] text-[0.875rem]">
               <thead>
-                <tr className="border-b border-line text-left font-mono text-[12px] text-muted">
+                <tr className="border-b border-line text-left font-mono text-[0.75rem] text-muted">
                   {["Paid on", "Unit", "Tenant", "Amount", "Recorded by", "Confirmed by"].map((h) => <th key={h} scope="col" className="px-3 py-2 font-medium">{h}</th>)}
                 </tr>
               </thead>
@@ -148,12 +148,12 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
               [`Occupancy · ${s.occupied} of ${s.lettable}`, s.lettable ? `${Math.round((s.occupied / s.lettable) * 100)}%` : "N/A", ""],
             ].map(([label, value, tone]) => (
               <div key={label} className="p-4">
-                <dd className={cx("font-display text-[26px] font-bold", tone)}>{value}</dd>
-                <dt className="text-[13px] text-muted">{label}</dt>
+                <dd className={cx("font-display text-[1.625rem] font-bold", tone)}>{value}</dd>
+                <dt className="text-[0.8125rem] text-muted">{label}</dt>
               </div>
             ))}
           </dl>
-          <p className="-mt-4 text-[12.5px] text-muted">All amounts in KSh.{s.unavailable ? ` ${s.unavailable} unavailable unit${s.unavailable === 1 ? " is" : "s are"} excluded from the lettable base.` : ""}</p>
+          <p className="-mt-4 text-[0.78125rem] text-muted">All amounts in KSh.{s.unavailable ? ` ${s.unavailable} unavailable unit${s.unavailable === 1 ? " is" : "s are"} excluded from the lettable base.` : ""}</p>
 
           <div className="grid gap-6 xl:grid-cols-[1.4fr_1fr]">
             <section className="rounded-[18px] border border-line bg-surface p-4">
@@ -162,8 +162,8 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
             {propertyId ? (
               <section aria-labelledby="grid" className="rounded-[18px] border border-line bg-surface p-4">
                 <div className="flex items-baseline justify-between">
-                  <h2 id="grid" className="font-display text-[18px] font-bold">Units this period</h2>
-                  <Link href={`/w/${orgId}/rent/${propertyId}?period=${periodParam(period)}`} className="inline-flex min-h-11 items-center text-[14px] font-semibold text-primary">Open register</Link>
+                  <h2 id="grid" className="font-display text-[1.125rem] font-bold">Units this period</h2>
+                  <Link href={`/w/${orgId}/rent/${propertyId}?period=${periodParam(period)}`} className="inline-flex min-h-11 items-center text-[0.875rem] font-semibold text-primary">Open register</Link>
                 </div>
                 <ul className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5">
                   {register.rows.filter((r) => r.tenancy_status !== "ended").map((r) => {
@@ -171,24 +171,24 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
                     return (
                       <li key={`${r.unit_id}-${r.tenancy_id}`}>
                         <Link href={`/w/${orgId}/rent/${propertyId}/units/${r.unit_id}?period=${periodParam(period)}`} className={cx("flex min-h-[64px] flex-col justify-between rounded-[12px] p-2.5", TILE[st.tone])}>
-                          <span className="font-mono text-[13px] font-medium">{r.unit_label}</span>
-                          <span className="text-[12.5px] font-semibold">{st.label}{r.pending_count ? " + pending" : ""}</span>
+                          <span className="font-mono text-[0.8125rem] font-medium">{r.unit_label}</span>
+                          <span className="text-[0.78125rem] font-semibold">{st.label}{r.pending_count ? " + pending" : ""}</span>
                         </Link>
                       </li>
                     );
                   })}
                 </ul>
-                <p className="mt-3 text-[12.5px] text-muted">Each status has a word, not only a colour. Vacant units never show as arrears.</p>
+                <p className="mt-3 text-[0.78125rem] text-muted">Each status has a word, not only a colour. Vacant units never show as arrears.</p>
               </section>
             ) : null}
           </div>
 
           <div className="grid gap-6 lg:grid-cols-3">
             <section aria-labelledby="age" className="rounded-[18px] border border-line bg-surface p-4">
-              <h2 id="age" className="font-display text-[18px] font-bold">Arrears by age</h2>
+              <h2 id="age" className="font-display text-[1.125rem] font-bold">Arrears by age</h2>
               <ul className="mt-2 divide-y divide-divider">
                 {((ageing.data ?? []) as Array<{ bucket: string; units: number; amount: number }>).map((a) => (
-                  <li key={a.bucket} className="flex justify-between gap-3 py-2.5 text-[14px]">
+                  <li key={a.bucket} className="flex justify-between gap-3 py-2.5 text-[0.875rem]">
                     <span>{AGE_LABEL[a.bucket]}{a.units ? ` · ${a.units} ${a.bucket === "former" ? "tenanc" + (a.units === 1 ? "y" : "ies") : "unit" + (a.units === 1 ? "" : "s")}` : ""}</span>
                     <span className="font-mono">{formatAmount(Number(a.amount))}</span>
                   </li>
@@ -196,19 +196,19 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
               </ul>
             </section>
             <section aria-labelledby="staff" className="rounded-[18px] border border-line bg-surface p-4">
-              <h2 id="staff" className="font-display text-[18px] font-bold">Staff activity this month</h2>
+              <h2 id="staff" className="font-display text-[1.125rem] font-bold">Staff activity this month</h2>
               <ul className="mt-2 divide-y divide-divider">
                 {((staff.data ?? []) as Array<{ actor_name: string; created: number; submitted: number; confirmed: number; returned: number; reversed: number }>).map((a) => (
-                  <li key={a.actor_name} className="flex justify-between gap-3 py-2.5 text-[14px]">
+                  <li key={a.actor_name} className="flex justify-between gap-3 py-2.5 text-[0.875rem]">
                     <span className="font-semibold">{a.actor_name}</span>
                     <span className="text-muted">
                       {[a.confirmed && `${a.confirmed} confirmed`, a.submitted && `${a.submitted} submitted`, a.returned && `${a.returned} returned`, a.reversed && `${a.reversed} corrected`].filter(Boolean).join(" · ") || `${a.created} entered`}
                     </span>
                   </li>
                 ))}
-                {(staff.data ?? []).length === 0 ? <li className="py-2.5 text-[14px] text-muted">No activity recorded this month.</li> : null}
+                {(staff.data ?? []).length === 0 ? <li className="py-2.5 text-[0.875rem] text-muted">No activity recorded this month.</li> : null}
                 {(corrections ?? []).map((c) => (
-                  <li key={c.id} className="py-2.5 text-[13.5px]">
+                  <li key={c.id} className="py-2.5 text-[0.84375rem]">
                     <span className="font-semibold">Correction · {(c.payment_entries as unknown as { ref: string; units: { label: string } | null } | null)?.units?.label}</span>
                     <span className="block text-muted">{formatDate(c.created_at)} · &quot;{c.reason}&quot;. Original kept.</span>
                   </li>
@@ -216,19 +216,19 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
               </ul>
             </section>
             <section aria-labelledby="rep" className="flex flex-col gap-3 rounded-[18px] border border-line bg-surface p-4">
-              <h2 id="rep" className="font-display text-[18px] font-bold">Monthly report</h2>
+              <h2 id="rep" className="font-display text-[1.125rem] font-bold">Monthly report</h2>
               {propertyId ? (
                 <>
-                  <p className="text-[14px]">
+                  <p className="text-[0.875rem]">
                     {formatPeriod(period)} · {finalVersions.length ? `final v${finalVersions[0].version}` : "draft"}
                   </p>
-                  <p className="text-[13px] text-muted">Built from confirmed records. A manager finalizes it once pending entries are resolved; earlier versions are kept.</p>
+                  <p className="text-[0.8125rem] text-muted">Built from confirmed records. A manager finalizes it once pending entries are resolved; earlier versions are kept.</p>
                   <Link href={`/w/${orgId}/reports?property=${propertyId}&period=${periodParam(period)}`} className="inline-flex min-h-11 items-center font-semibold text-primary underline">
                     {finalVersions.length ? "Open report versions" : "Preview draft"}
                   </Link>
                 </>
               ) : (
-                <p className="text-[14px] text-muted">Choose a property to prepare its monthly report.</p>
+                <p className="text-[0.875rem] text-muted">Choose a property to prepare its monthly report.</p>
               )}
             </section>
           </div>

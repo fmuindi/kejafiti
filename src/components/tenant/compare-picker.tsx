@@ -16,7 +16,7 @@ export function ComparePicker({ homes }: { homes: Array<{ ref: string; label: st
       <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2.5 px-4 font-semibold">
         <span aria-hidden="true" className="grid size-8 place-items-center rounded-full bg-cool text-deep"><Icon name="swap" size={16} /></span>
         Compare side by side
-        <span className="text-[13px] font-normal text-muted">Pick 2–3</span>
+        <span className="text-[0.8125rem] font-normal text-muted">Pick 2–3</span>
         <Icon name="chevronDown" size={18} className="ml-auto text-muted transition-transform group-open:rotate-180" />
       </summary>
       <form action="/saved/compare" className="flex flex-col gap-2 border-t border-divider p-4">

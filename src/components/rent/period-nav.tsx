@@ -15,7 +15,7 @@ export function PeriodNav({ period, hrefFor, note }: { period: string; hrefFor: 
           <span className="sr-only">Rent period: </span>
           {formatPeriod(period)} rent
         </p>
-        {note ? <p className="text-[12.5px] text-muted">{note}</p> : null}
+        {note ? <p className="text-[0.78125rem] text-muted">{note}</p> : null}
       </div>
       {canNext ? (
         <Link href={hrefFor(next)} aria-label={`Next period, ${formatPeriod(next)}`} className="grid size-11 place-items-center rounded-full hover:bg-cool">

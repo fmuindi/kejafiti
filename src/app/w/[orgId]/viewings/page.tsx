@@ -42,17 +42,17 @@ export default async function AgendaPage({ params }: PageProps<"/w/[orgId]/viewi
       ) : (
         [...days.entries()].map(([day, items]) => (
           <section key={day} aria-label={formatDayDate(day)}>
-            <h2 className="mb-2 font-display text-[18px] font-bold">{formatDayDate(day)}</h2>
+            <h2 className="mb-2 font-display text-[1.125rem] font-bold">{formatDayDate(day)}</h2>
             <ul className="flex flex-col divide-y divide-divider rounded-[18px] border border-line bg-surface">
               {items.map((v) => {
                 const l = v.listings as unknown as { title: string | null; units: { label: string } | null } | null;
                 return (
                   <li key={v.id} className="flex flex-col gap-2 px-4 py-3">
                     <div className="flex items-center gap-4">
-                      <span className="font-mono text-[15px]">{formatTime(v.confirmed_start ?? v.requested_start)}</span>
+                      <span className="font-mono text-[0.9375rem]">{formatTime(v.confirmed_start ?? v.requested_start)}</span>
                       <span className="min-w-0 flex-1">
                         <Link href={v.conversation_id ? `/w/${orgId}/enquiries/${v.conversation_id}` : "#"} className="font-semibold hover:underline">Unit {l?.units?.label} · {(v.properties as unknown as { name: string } | null)?.name}</Link>
-                        <span className="block truncate text-[13px] text-muted">{l?.title}</span>
+                        <span className="block truncate text-[0.8125rem] text-muted">{l?.title}</span>
                       </span>
                       <StatusBadge tone={STAFF_LABEL[v.state]?.tone ?? "neutral"}>{STAFF_LABEL[v.state]?.label ?? v.state}</StatusBadge>
                     </div>

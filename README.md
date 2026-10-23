@@ -115,9 +115,10 @@ insert into public.app_settings (key, value) values ('admin_alert_email', 'you@e
 |---|---|
 | `npm run dev` / `build` / `start` | Next.js on port 3200 |
 | `npm run typecheck`, `npm run lint` | TypeScript and ESLint |
-| `npm test` | Unit tests (money, allocation preview, cost totals, search URL state, CSV safety) |
+| `npm test` | Unit tests (money, allocation preview, cost totals, search URL state, CSV safety, spreadsheet import, alerts, emails, CSP) |
 | `npm run test:db` | pgTAP database tests (`supabase/tests`): permissions, rent calculations, workflows |
 | `npm run test:integration` | Real-API isolation tests against the local stack (PostgREST + Storage with real sessions) |
+| `npm run test:e2e` | Playwright browser tests against the local stack and demo seed (`npm run seed:demo` and `npm run build` first). Sign-in uses the real email-code flow via Mailpit. |
 | `npm run db:reset` | Rebuild the local database from migrations |
 | `npm run db:types` | Regenerate `src/lib/database.types.ts` after schema changes |
 | `npm run seed:demo` | Local demo data (refuses non-local URLs) |
@@ -126,7 +127,7 @@ insert into public.app_settings (key, value) values ('admin_alert_email', 'you@e
 
 ## 3. Tests: what is proven
 
-Run `npm run test:db && npm test && npm run test:integration`. Last run: **210 + 36 + 6 passing**. The 20-improvement implementation and its verification are recorded in [docs/IMPLEMENTATION_HANDOFF.md](docs/IMPLEMENTATION_HANDOFF.md).
+Run `npm run test:db && npm test && npm run test:integration && npm run test:e2e`. Last run: **309 + 104 + 6 + 5 passing**. The 20-improvement implementation and its verification are recorded in [docs/IMPLEMENTATION_HANDOFF.md](docs/IMPLEMENTATION_HANDOFF.md).
 
 From the blueprint's acceptance tests:
 
@@ -152,8 +153,16 @@ From the blueprint's acceptance tests:
   satisfies a must-have unless included, drafts are invisible to the public, enquiries reuse one conversation, viewing
   requests start as Requested, and marking a home let cancels open viewings.
 
-Browser checks were done in the running app: email-code sign-in, rent register, record payment (with allocation
-preview), confirmation inbox, entry history and reversal, overview and dashboard.
+- **Optional email**: per-category opt-out, one email per burst on a thread, admin notices not doubled.
+- **Saved-search alerts**: only homes published since the last alert, never twice, only the job can run them.
+- **Tenant self-view**: link accepted only by the invited email, neighbours' records and staff notes stay hidden,
+  removing access hides everything again.
+- **Listing edits**: wording, contact or photo changes to a live listing are held for review; price and dates stay live.
+- **Spreadsheet import**: dry runs change nothing, imports are all or nothing, every failing row is reported.
+
+Browser tests (`tests/e2e`, run in CI): search and listing under the Content Security Policy, robots/sitemap/manifest
+and share images, layouts at 200% text size, a tenant's saved-search alert arriving by email, and a landlord
+importing units and sharing a tenancy that the tenant then opens.
 
 ---
 
@@ -172,9 +181,10 @@ preview), confirmation inbox, entry history and reversal, overview and dashboard
      (the migration does this automatically when the extension is already enabled).
    - Make yourself a platform admin (SQL above).
 2. **App hosting**: any Node 20+ host. Vercel works (`npm run build`); so does a self-hosted Node process (`npm run build && npm start`) on an existing EC2 or Lightsail instance behind Caddy or Nginx with TLS. Set the environment variables above.
-3. **Delivery worker**: call `POST /api/jobs/deliver` with `Authorization: Bearer $CRON_SECRET` every 2–5 minutes
-   (Vercel Cron, an external cron, or `pg_cron` + `pg_net`). Server actions also trigger a best-effort send right
-   away when email is configured.
+3. **Scheduled jobs**: call `POST /api/jobs/deliver` with `Authorization: Bearer $CRON_SECRET` every 2–5 minutes
+   (Vercel Cron, an external cron, or `pg_cron` + `pg_net`). Each run checks saved searches that are due (instant:
+   every couple of minutes; daily: once after 07:00 Nairobi time), then sends queued email. Server actions also
+   trigger a best-effort send right away when email is configured.
    Admin → Deliveries shows queue health: due, overdue (due for longer than `delivery_expected_delay_minutes`,
    default 15), stuck, failed and held. Messages older than `delivery_max_age_hours` (default 48) are held instead
    of sent automatically, so enabling a provider never replays an old backlog; an admin sends or cancels each one.
@@ -215,6 +225,24 @@ Operating cost at launch: Supabase Pro (from USD 25/month) plus app hosting (USD
 - **Admin**: listing review queue with flags (possible duplicate, unconfirmed charge, sample photos), publish or
   send back with a note, onboarding (assign, record identity and authority checks, approve), listing reports,
   delivery tasks with retry, users and audit log. A registration alert is written for every new account.
+- **Re-review of live edits**: changing a published listing's wording, contact details, viewing instructions or
+  house rules, or adding a photo, hides it until an admin approves; the reviewer sees each changed field with its
+  last approved value. Price, charges, facts and dates update straight away.
+- **Notifications**: everything arrives in the app; each person chooses which categories are also emailed
+  (Account → Email me about). Bursts on one thread email once while unread.
+- **Saved-search alerts**: each saved search alerts instantly, daily or not at all (set in Saved), in the app and
+  by email.
+- **Tenant self-view**: staff with tenancy permission send a tenant a one-time link (unit page → Tenant's online
+  access); the tenant sees their tenancy, balance and statement under My rent (confirmed records only, never staff
+  notes). Access can be removed at any time.
+- **Spreadsheet import**: units and tenancies from a CSV file or cells pasted from Excel or Google Sheets (property
+  page), with a template, a row-by-row check against the real rules, and an all-or-nothing import.
+- **Help and support desk** with tickets and replies; **map**: approximate area map on listings and a live map with
+  the tenant's own position for a confirmed viewing; distance search around a picked place.
+- **Search engines and sharing**: sitemap, robots, listing share images (photo, rent, move-in total), and an
+  installable web app (manifest and icons).
+- **Security headers**: a per-request nonce Content Security Policy (`src/lib/csp.ts`), plus frame, referrer and
+  permissions policies.
 
 ### Not built yet (no mock versions exist in the app)
 
@@ -222,18 +250,12 @@ Operating cost at launch: Supabase Pro (from USD 25/month) plus app hosting (USD
   scope excluded payment integrations; this needs a decision before it's built.
 - **SMS, WhatsApp and web push** channels: the outbox supports them, but no provider is wired, and SMS tasks are
   never created. Phone sign-in needs an SMS provider in Supabase Auth.
-- **Saved-search alerts** (matching-home digests) and **notification preference settings**: filters are saved,
-  but no alerts are sent.
-- **Map view**, "Use my location", PostGIS distance search and a curated estate directory (search is text and area
-  matching for now).
-- **Tenant self-view** of their own tenancy: RLS policies exist, but there's no UI for linking a tenant login.
-- **Helpdesk / support cases**, admin outreach composer, listing-report outcome emails to users.
-- Spreadsheet import of units and tenancies, optional expenses module, deposit refunds and applications, report
-  sign-off, review holds and dispute notes on entries, server-generated PDF files (reports use the browser's
-  print-to-PDF from the immutable snapshot).
-- Moderation of edits to already-published listings (edits go live without re-review).
-- Real-device, screen-reader and performance testing (Core Web Vitals) still need to be done. Desktop browser checks
-  so far were limited by the preview environment.
+- **Search results map view** and a curated estate directory (search is text, area and distance around a picked place).
+- Admin outreach composer, listing-report outcome emails to users.
+- Excel `.xlsx` upload (the import reads CSV and pasted cells), optional expenses module, deposit refunds and
+  applications, report sign-off, review holds and dispute notes on entries, server-generated PDF files (reports use
+  the browser's print-to-PDF from the immutable snapshot).
+- Real-device, screen-reader and performance testing (Core Web Vitals) still need to be done.
 
 ### Assumptions to confirm
 

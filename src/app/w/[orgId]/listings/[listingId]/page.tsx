@@ -110,9 +110,11 @@ export default async function ListingWizardPage({ params, searchParams }: PagePr
       {editable ? (
         <Wizard data={data} step={step} focus={typeof sp.focus === "string" ? sp.focus : undefined} fromReview={sp.from === "review"} />
       ) : (
-        <Notice tone="info" title={l.status === "under_review" ? "Waiting for review" : "This listing is closed"}>
+        <Notice tone="info" title={l.status === "under_review" ? (l.pending_edit ? "Your changes are being checked" : "Waiting for review") : "This listing is closed"}>
           {l.status === "under_review"
-            ? "Our team checks new listings before they go live, usually within a working day. You'll get a notification."
+            ? l.pending_edit
+              ? "Changes to wording, contact details or photos are checked before they go live, usually within a working day. The listing is hidden from search until then. You'll get a notification."
+              : "Our team checks new listings before they go live, usually within a working day. You'll get a notification."
             : "Start a new listing for this unit when it's vacant again."}
         </Notice>
       )}

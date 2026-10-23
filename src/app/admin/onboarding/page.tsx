@@ -15,7 +15,7 @@ export default async function OnboardingPage() {
   const { data, error } = await supabase.rpc("admin_onboarding_queue");
   return (
     <div className="flex flex-col gap-5">
-      <h1 className="font-display text-[34px] font-bold tracking-[-1px]">Landlord onboarding</h1>
+      <h1 className="font-display text-[2.125rem] font-bold tracking-[-1px]">Landlord onboarding</h1>
       {error ? <p role="alert" className="text-error">Couldn&apos;t load the queue.</p> : (data ?? []).length === 0 ? (
         <EmptyState title="No workspaces yet" icon="building">New landlord and agent workspaces appear here.</EmptyState>
       ) : (

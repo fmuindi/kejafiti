@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AddUnitsForm } from "@/components/workspace/add-units";
+import { ImportUnits } from "@/components/workspace/import-units";
 import { UnitsTable, type UnitRow } from "@/components/workspace/units-table";
 import { PropertyForm } from "@/components/workspace/property-form";
 import { Icon } from "@/components/ui/icon";
@@ -51,14 +52,14 @@ export default async function PropertyPage({ params }: PageProps<"/w/[orgId]/pro
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <Eyebrow>{STYLE_LABEL[p.building_style ?? ""] ?? "Property"}</Eyebrow>
-          <h1 className="mt-1 font-display text-[30px] leading-none font-bold tracking-[-1px] md:text-[40px]">{p.name}</h1>
-          <p className="mt-2 text-[14.5px] text-muted">{[p.road, p.area, p.town].filter(Boolean).join(", ")}</p>
+          <h1 className="mt-1 font-display text-[1.875rem] leading-none font-bold tracking-[-1px] md:text-[2.5rem]">{p.name}</h1>
+          <p className="mt-2 text-[0.90625rem] text-muted">{[p.road, p.area, p.town].filter(Boolean).join(", ")}</p>
         </div>
         <dl className="flex gap-6">
           {[["Units", rows.length], ["Vacant", vacant], ["Published", published], ["Open enquiries", open]].map(([k, v]) => (
             <div key={k as string}>
-              <dd className={`font-display text-[26px] font-bold ${k === "Open enquiries" && Number(v) > 0 ? "text-waiting" : ""}`}>{v}</dd>
-              <dt className="text-[12.5px] text-muted">{k}</dt>
+              <dd className={`font-display text-[1.625rem] font-bold ${k === "Open enquiries" && Number(v) > 0 ? "text-waiting" : ""}`}>{v}</dd>
+              <dt className="text-[0.78125rem] text-muted">{k}</dt>
             </div>
           ))}
         </dl>
@@ -69,6 +70,7 @@ export default async function PropertyPage({ params }: PageProps<"/w/[orgId]/pro
       </div>
       <UnitsTable orgId={orgId} propertyId={propertyId} rows={rows} canListings={ws.can_manage_listings} canTenancies={ws.can_manage_tenancies} />
       {ws.can_manage_tenancies || ws.can_manage_listings ? <AddUnitsForm orgId={orgId} propertyId={propertyId} /> : null}
+      {ws.can_manage_tenancies ? <ImportUnits orgId={orgId} propertyId={propertyId} /> : null}
       {admin ? (
         <details className="rounded-[18px] border border-line bg-surface p-4">
           <summary className="cursor-pointer font-semibold"><Icon name="edit" size={16} className="mr-1 inline" /> Edit property details</summary>

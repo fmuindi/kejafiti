@@ -15,11 +15,11 @@ export default async function AuditPage() {
   const who = (id: string | null) => (id ? people?.find((p) => p.id === id)?.full_name || people?.find((p) => p.id === id)?.email || "user" : "system");
   return (
     <div className="flex flex-col gap-5">
-      <h1 className="font-display text-[34px] font-bold tracking-[-1px]">Audit log</h1>
-      <p className="text-[14px] text-muted">Permission changes, corrections, exports and reviews. Records are append-only.</p>
+      <h1 className="font-display text-[2.125rem] font-bold tracking-[-1px]">Audit log</h1>
+      <p className="text-[0.875rem] text-muted">Permission changes, corrections, exports and reviews. Records are append-only.</p>
       <ul className="flex flex-col divide-y divide-divider rounded-[18px] border border-line bg-surface">
         {(data ?? []).map((a) => (
-          <li key={a.id} className="flex flex-wrap justify-between gap-3 px-4 py-3 text-[14px]">
+          <li key={a.id} className="flex flex-wrap justify-between gap-3 px-4 py-3 text-[0.875rem]">
             <span><strong>{a.action.replaceAll("_", " ")}</strong> · {a.target_type} · by {who(a.actor_id)}</span>
             <span className="text-muted">{formatDateTime(a.created_at)}</span>
           </li>

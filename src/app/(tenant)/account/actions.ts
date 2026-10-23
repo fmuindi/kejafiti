@@ -15,3 +15,15 @@ export async function updateProfileName(name: string): Promise<ActionResult> {
   revalidatePath("/", "layout");
   return { ok: true };
 }
+
+const EMAIL_CATEGORIES = new Set(["rent", "enquiries", "team", "listings", "reports", "support", "alerts", "other"]);
+
+/** Saves which update categories should NOT be emailed (the rest are). */
+export async function updateEmailSettings(off: string[]): Promise<ActionResult> {
+  const user = await requireUser("/account");
+  const emailOff = [...new Set(off)].filter((c) => EMAIL_CATEGORIES.has(c));
+  const supabase = await createClient();
+  const { error } = await supabase.from("notification_settings").upsert({ user_id: user.id, email_off: emailOff });
+  if (error) return fail(error);
+  return { ok: true };
+}

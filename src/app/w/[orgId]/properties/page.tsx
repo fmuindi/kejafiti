@@ -23,7 +23,7 @@ export default async function PropertiesPage({ params, searchParams }: PageProps
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <PageHeader icon="building" title="Properties" />
-          <p className="mt-1 text-[14.5px] text-muted">Buildings and their units. Listings and rent records use the same units.</p>
+          <p className="mt-1 text-[0.90625rem] text-muted">Buildings and their units. Listings and rent records use the same units.</p>
         </div>
         <div className="flex gap-2">
           {isOrgAdmin(ws) ? <ButtonLink href={`/w/${orgId}/properties/new`} variant="secondary" icon="plus">Add property</ButtonLink> : null}
@@ -33,7 +33,7 @@ export default async function PropertiesPage({ params, searchParams }: PageProps
       <form role="search" className="flex min-h-[50px] items-center gap-2 rounded-[12px] border border-input bg-surface px-3 focus-within:ring-2 focus-within:ring-deep/40">
         <Icon name="search" className="text-muted" />
         <label htmlFor="q" className="sr-only">Search property or area</label>
-        <input id="q" name="q" defaultValue={q} placeholder="Search property or area" className="min-w-0 flex-1 bg-transparent text-[16px] focus:outline-none" />
+        <input id="q" name="q" defaultValue={q} placeholder="Search property or area" className="min-w-0 flex-1 bg-transparent text-[1rem] focus:outline-none" />
       </form>
       {error ? (
         <p role="alert" className="text-error">We couldn&apos;t load your properties. Reload to try again.</p>
@@ -51,11 +51,11 @@ export default async function PropertiesPage({ params, searchParams }: PageProps
             return (
               <li key={p.id}>
                 <Link href={`/w/${orgId}/properties/${p.id}`} className="flex flex-col gap-1.5 rounded-[18px] border border-line bg-surface p-4 hover:border-ink">
-                  <span className="flex items-center justify-between font-display text-[19px] font-bold">
+                  <span className="flex items-center justify-between font-display text-[1.1875rem] font-bold">
                     {p.name} <Icon name="chevronRight" className="text-muted" />
                   </span>
-                  <span className="text-[13.5px] text-muted">{[p.area, p.road].filter(Boolean).join(", ")}</span>
-                  <span className="text-[14px]">
+                  <span className="text-[0.84375rem] text-muted">{[p.area, p.road].filter(Boolean).join(", ")}</span>
+                  <span className="text-[0.875rem]">
                     {units.length} unit{units.length === 1 ? "" : "s"} · {vacant} vacant · {published} published
                   </span>
                 </Link>

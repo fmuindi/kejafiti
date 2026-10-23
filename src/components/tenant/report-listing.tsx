@@ -22,19 +22,19 @@ export function ReportListing({ refId, signedIn }: { refId: string; signedIn: bo
 
   if (!signedIn) {
     return (
-      <Link href={`/sign-in?next=${encodeURIComponent(`/homes/${refId}`)}&reason=report`} className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-ink underline">
+      <Link href={`/sign-in?next=${encodeURIComponent(`/homes/${refId}`)}&reason=report`} className="inline-flex min-h-11 items-center gap-1.5 text-[0.875rem] font-semibold text-ink underline">
         <Icon name="flag" size={16} /> Report a problem with this listing
       </Link>
     );
   }
   return (
     <>
-      <button type="button" onClick={() => ref.current?.showModal()} className="inline-flex min-h-11 items-center gap-1.5 self-start text-[14px] font-semibold underline">
+      <button type="button" onClick={() => ref.current?.showModal()} className="inline-flex min-h-11 items-center gap-1.5 self-start text-[0.875rem] font-semibold underline">
         <Icon name="flag" size={16} /> Report a problem with this listing
       </button>
       <dialog ref={ref} aria-labelledby="report-title" className="m-auto w-[min(440px,92vw)] rounded-[22px] bg-surface p-0 backdrop:bg-ink/40">
         <div className="flex flex-col gap-4 p-5">
-          <h2 id="report-title" className="font-display text-[20px] font-bold">
+          <h2 id="report-title" className="font-display text-[1.25rem] font-bold">
             Report a problem
           </h2>
           {state?.ok ? (
@@ -49,22 +49,22 @@ export function ReportListing({ refId, signedIn }: { refId: string; signedIn: bo
           ) : (
             <form action={action} className="flex flex-col gap-3">
               <fieldset className="flex flex-col gap-2">
-                <legend className="mb-1 text-[14px] font-semibold">What&apos;s wrong?</legend>
+                <legend className="mb-1 text-[0.875rem] font-semibold">What&apos;s wrong?</legend>
                 {REASONS.map(([value, label]) => (
                   <label key={value} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[12px] border border-line px-3">
                     <input type="radio" name="reason" value={value} className="size-5 accent-primary" required />
-                    <span className="text-[14.5px]">{label}</span>
+                    <span className="text-[0.90625rem]">{label}</span>
                   </label>
                 ))}
               </fieldset>
               <label className="flex flex-col gap-1.5">
-                <span className="text-[14px] font-semibold">
+                <span className="text-[0.875rem] font-semibold">
                   Details <span className="font-normal text-muted">(optional)</span>
                 </span>
                 <textarea name="details" maxLength={2000} className="min-h-[90px] rounded-[12px] border border-input p-3" />
               </label>
               {state && !state.ok ? (
-                <p role="alert" className="text-[14px] font-semibold text-error">
+                <p role="alert" className="text-[0.875rem] font-semibold text-error">
                   {state.message}
                 </p>
               ) : null}

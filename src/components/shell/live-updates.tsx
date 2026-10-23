@@ -64,8 +64,8 @@ export function LiveUpdates({ userId }: { userId: string }) {
           {/* A plain link, so a prefetch can never mark the update read. */}
           <a href={`/updates/open/${t.id}`} className="min-w-0 flex-1" onClick={() => setToasts((x) => x.filter((y) => y.id !== t.id))}>
             <span className="block font-semibold">{t.title}</span>
-            {t.body ? <span className="mt-0.5 line-clamp-2 block text-[13.5px] text-muted">{t.body}</span> : null}
-            {t.link ? <span className="mt-1 inline-block text-[13.5px] font-semibold text-primary">Open</span> : null}
+            {t.body ? <span className="mt-0.5 line-clamp-2 block text-[0.84375rem] text-muted">{t.body}</span> : null}
+            {t.link ? <span className="mt-1 inline-block text-[0.84375rem] font-semibold text-primary">Open</span> : null}
           </a>
           <button type="button" aria-label="Dismiss" onClick={() => setToasts((x) => x.filter((y) => y.id !== t.id))} className="grid size-8 shrink-0 place-items-center rounded-full text-muted hover:bg-cool hover:text-ink">
             <Icon name="x" size={16} />

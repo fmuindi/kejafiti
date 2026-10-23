@@ -288,12 +288,12 @@ export function VoiceSearch({ currentQuery = "", serverVoice }: { currentQuery?:
               {working ? <Spinner /> : <MicIcon size={30} />}
             </span>
           </div>
-          <p role="status" aria-live="polite" className="font-display text-[19px] font-bold">{title}</p>
+          <p role="status" aria-live="polite" className="font-display text-[1.1875rem] font-bold">{title}</p>
           {listening ? (
-            <p className="-mt-2 text-[14px] text-muted">{refine ? "Say what to change, like “make it 25k”." : "Say what you're looking for, like “bedsitter in Ruaka under 15k”."}</p>
+            <p className="-mt-2 text-[0.875rem] text-muted">{refine ? "Say what to change, like “make it 25k”." : "Say what you're looking for, like “bedsitter in Ruaka under 15k”."}</p>
           ) : null}
-          {words && (phase === "searching" || phase === "question") ? <p className="-mt-2 text-[14px] text-muted">&ldquo;{words}&rdquo;</p> : null}
-          {phase === "error" && message ? <p role="alert" className="-mt-1 text-[14.5px] font-semibold text-error">{message}</p> : null}
+          {words && (phase === "searching" || phase === "question") ? <p className="-mt-2 text-[0.875rem] text-muted">&ldquo;{words}&rdquo;</p> : null}
+          {phase === "error" && message ? <p role="alert" className="-mt-1 text-[0.90625rem] font-semibold text-error">{message}</p> : null}
           {listening ? (
             <Button type="button" data-autofocus onClick={finish} className="w-full">Done</Button>
           ) : null}

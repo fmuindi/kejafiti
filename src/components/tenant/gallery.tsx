@@ -8,7 +8,8 @@ export function Gallery({
   photos,
   title,
 }: {
-  photos: Array<{ url: string; label: string; alt: string | null }>;
+  /** `thumbUrl` is the 640px copy made at upload; phones use it instead of the 1600px original. */
+  photos: Array<{ url: string; thumbUrl?: string; label: string; alt: string | null }>;
   title: string;
 }) {
   const [i, setI] = useState(0);
@@ -16,7 +17,7 @@ export function Gallery({
   if (photos.length === 0) {
     return (
       <div className="grid aspect-[4/3] place-items-center bg-cool text-muted md:rounded-[20px]">
-        <span className="flex flex-col items-center gap-2 text-[14px]">
+        <span className="flex flex-col items-center gap-2 text-[0.875rem]">
           <Icon name="image" size={28} /> No photos yet
         </span>
       </div>
@@ -39,10 +40,27 @@ export function Gallery({
         setTouchX(null);
       }}
     >
+      {/* Signed Storage URLs change per request, so the Next image optimizer would never hit
+          its cache; the upload already made both sizes, and srcset picks between them. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={p.url} alt={p.alt ?? `${labelText}, photo ${i + 1} of ${photos.length}`} className="size-full object-cover" />
+      <img
+        key={p.url}
+        src={p.url}
+        srcSet={srcSet(p)}
+        sizes="(min-width: 768px) 720px, 100vw"
+        alt={p.alt ?? `${labelText}, photo ${i + 1} of ${photos.length}`}
+        // The first photo is usually the largest thing on screen: fetch it first.
+        fetchPriority={i === 0 ? "high" : "auto"}
+        decoding="async"
+        className="size-full object-cover"
+      />
+      {photos.length > 1 ? (
+        // Warm the next photo so "Next" shows it without a blank frame.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={photos[(i + 1) % photos.length].url} srcSet={srcSet(photos[(i + 1) % photos.length])} sizes="(min-width: 768px) 720px, 100vw" alt="" aria-hidden="true" loading="lazy" decoding="async" className="pointer-events-none absolute size-px opacity-0" />
+      ) : null}
       <span
-        className={`absolute bottom-3 left-3 rounded-[8px] px-2.5 py-1 text-[12.5px] font-semibold ${p.label === "sample" ? "bg-waiting-tint text-waiting-strong" : "bg-ink/85 text-white"}`}
+        className={`absolute bottom-3 left-3 rounded-[8px] px-2.5 py-1 text-[0.78125rem] font-semibold ${p.label === "sample" ? "bg-waiting-tint text-waiting-strong" : "bg-ink/85 text-white"}`}
         aria-live="polite"
       >
         {labelText} · photo {i + 1} of {photos.length}
@@ -59,4 +77,8 @@ export function Gallery({
       ) : null}
     </div>
   );
+}
+
+function srcSet(p: { url: string; thumbUrl?: string }) {
+  return p.thumbUrl ? `${p.thumbUrl} 640w, ${p.url} 1600w` : undefined;
 }

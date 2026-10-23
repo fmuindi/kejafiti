@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Mono, Instrument_Sans } from "next/font/google";
 import localFont from "next/font/local";
+import { connection } from "next/server";
+import { SITE_URL } from "@/lib/env";
 import "./globals.css";
 
 // Cabinet Grotesk (Fontshare, ITF Free Font License) is not on Google Fonts, so it is self-hosted.
@@ -21,6 +23,10 @@ export const metadata: Metadata = {
   description:
     "Search Kenyan rentals with rent, charges and move-in totals shown up front. Landlords and agents list vacancies and keep simple rent records.",
   applicationName: "nyumbani",
+  metadataBase: new URL(SITE_URL),
+  openGraph: { siteName: "nyumbani", locale: "en_KE", type: "website" },
+  twitter: { card: "summary_large_image" },
+  appleWebApp: { capable: true, title: "nyumbani", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {
@@ -30,7 +36,10 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Every page renders per request: the Content Security Policy nonce (src/proxy.ts) can
+  // only be stamped on scripts at request time, and a prerendered page's scripts would be blocked.
+  await connection();
   return (
     <html lang="en-KE" className={`${cabinet.variable} ${instrument.variable} ${dmMono.variable}`}>
       <body className="min-h-dvh antialiased">

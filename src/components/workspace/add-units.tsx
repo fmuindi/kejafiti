@@ -17,7 +17,7 @@ export function AddUnitsForm({ orgId, propertyId }: { orgId: string; propertyId:
   const [pending, start] = useTransition();
   return (
     <section aria-labelledby="add-units" className="rounded-[18px] border border-line bg-surface p-4">
-      <h2 id="add-units" className="font-display text-[18px] font-bold">Add units</h2>
+      <h2 id="add-units" className="font-display text-[1.125rem] font-bold">Add units</h2>
       <form
         className="mt-3 grid gap-3 sm:grid-cols-[1.4fr_1fr_0.6fr_1fr_auto] sm:items-end"
         onSubmit={(e) => {

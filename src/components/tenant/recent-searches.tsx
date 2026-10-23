@@ -58,7 +58,7 @@ export function RecentSearches() {
   if (items.length === 0) return null;
   return (
     <section aria-labelledby="recent">
-      <h2 id="recent" className="font-display text-[18px] font-bold">
+      <h2 id="recent" className="font-display text-[1.125rem] font-bold">
         Pick up where you left off
       </h2>
       <ul className="mt-3 flex flex-col gap-2">
@@ -75,7 +75,7 @@ export function RecentSearches() {
           </li>
         ))}
       </ul>
-      <p className="mt-2 text-[12.5px] text-muted">Saved on this device only. On a shared phone, clear them in Account.</p>
+      <p className="mt-2 text-[0.78125rem] text-muted">Saved on this device only. On a shared phone, clear them in Account.</p>
     </section>
   );
 }

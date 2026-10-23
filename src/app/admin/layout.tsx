@@ -20,20 +20,20 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
       <aside className="flex flex-col gap-4 bg-ink px-4 py-5 text-white md:sticky md:top-0 md:h-dvh">
         <Link href="/admin" className="flex items-center gap-2">
           <span className="rounded-[8px] bg-white px-1.5 py-1"><Logo withWord={false} /></span>
-          <span className="font-display text-[19px] font-bold">nyumbani</span>
-          <span className="font-mono text-[11px] text-[#ff8fa6]">ADMIN</span>
+          <span className="font-display text-[1.1875rem] font-bold">nyumbani</span>
+          <span className="font-mono text-[0.6875rem] text-[#ff8fa6]">ADMIN</span>
         </Link>
         <AdminNav counts={c} />
         {/* IMP-06/08: updates, the public site and sign-out are reachable from the admin centre too. */}
-        <div className="mt-auto flex flex-col gap-1 border-t border-white/15 pt-3 text-[14.5px]">
+        <div className="mt-auto flex flex-col gap-1 border-t border-white/15 pt-3 text-[0.90625rem]">
           <Link href="/updates" className="flex min-h-11 items-center justify-between rounded-[12px] px-3 text-white/85 hover:bg-white/10">
-            Updates {unread ? <span className="font-mono text-[12.5px] text-[#ffd59a]" aria-label={`${unread} unread`}>{unread}</span> : null}
+            Updates {unread ? <span className="font-mono text-[0.78125rem] text-[#ffd59a]" aria-label={`${unread} unread`}>{unread}</span> : null}
           </Link>
           <Link href="/" className="flex min-h-11 items-center rounded-[12px] px-3 text-white/85 hover:bg-white/10">Browse homes</Link>
           <SignOutForm userId={user.id}>
             <button type="submit" className="flex min-h-11 w-full items-center rounded-[12px] px-3 text-left text-white/85 hover:bg-white/10">Sign out</button>
           </SignOutForm>
-          <p className="px-3 pt-2 text-[12.5px] text-white/70">Signed in as {profile?.full_name || profile?.email} · Platform admin</p>
+          <p className="px-3 pt-2 text-[0.78125rem] text-white/70">Signed in as {profile?.full_name || profile?.email} · Platform admin</p>
         </div>
       </aside>
       <main id="main" className="min-w-0 px-4 py-6 md:px-8">{children}</main>

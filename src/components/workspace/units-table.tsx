@@ -44,10 +44,10 @@ export function UnitsTable({ orgId, propertyId, rows, canListings, canTenancies 
   return (
     <section aria-labelledby="units" className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id="units" className="font-display text-[20px] font-bold">Units</h2>
+        <h2 id="units" className="font-display text-[1.25rem] font-bold">Units</h2>
         {canListings && chosen.length ? (
           <div className="flex flex-wrap items-center gap-2 rounded-[12px] bg-ink p-1.5 text-white">
-            <span className="px-2 text-[14px] font-semibold">{chosen.length} selected</span>
+            <span className="px-2 text-[0.875rem] font-semibold">{chosen.length} selected</span>
             <Button size="sm" variant="secondary" pending={pending} onClick={() => start(async () => {
               const r = await confirmStillAvailable(orgId, chosen.map((c) => c.listing!.id));
               setResult(r.ok ? `${r.data.filter((x) => x.ok).length} of ${chosen.length} confirmed still available` : r.message);
@@ -65,13 +65,13 @@ export function UnitsTable({ orgId, propertyId, rows, canListings, canTenancies 
       </div>
       {result ? <Notice tone="success" role="status">{result}</Notice> : null}
       {rows.length === 0 ? (
-        <p className="rounded-[16px] border border-dashed border-line bg-surface p-6 text-center text-[14px] text-muted">No units yet. Add them below.</p>
+        <p className="rounded-[16px] border border-dashed border-line bg-surface p-6 text-center text-[0.875rem] text-muted">No units yet. Add them below.</p>
       ) : (
         <div className="overflow-x-auto rounded-[16px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Units (scrolls sideways)">
-          <table className="w-full min-w-[720px] text-[14.5px]">
+          <table className="w-full min-w-[720px] text-[0.90625rem]">
             <caption className="sr-only">Units, occupancy and listing status</caption>
             <thead>
-              <tr className="border-b border-line text-left font-mono text-[12px] tracking-[0.4px] text-muted uppercase">
+              <tr className="border-b border-line text-left font-mono text-[0.75rem] tracking-[0.4px] text-muted uppercase">
                 <th scope="col" className="w-10 px-3 py-2.5"><span className="sr-only">Select</span></th>
                 <th scope="col" className="px-3 py-2.5 font-medium">Unit</th>
                 <th scope="col" className="px-3 py-2.5 font-medium">Layout</th>
@@ -104,7 +104,7 @@ export function UnitsTable({ orgId, propertyId, rows, canListings, canTenancies 
                       {r.listing?.confirmedAt ? `${formatDate(r.listing.confirmedAt, { year: false })}${stale ? " · reconfirm" : ""}` : "—"}
                     </td>
                     <td className="px-3 py-3">
-                      <div className="flex flex-wrap gap-3 text-[13.5px] font-semibold">
+                      <div className="flex flex-wrap gap-3 text-[0.84375rem] font-semibold">
                         {r.listing && canListings ? (
                           <Link href={`/w/${orgId}/listings/${r.listing.id}`} className="text-primary underline">
                             {r.listing.status === "draft" ? "Finish draft" : r.listing.status === "needs_correction" ? "Fix listing" : "Listing"}

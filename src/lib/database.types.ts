@@ -469,14 +469,14 @@ isOneToOne: false
                   ]
                 },"listings": {
                   Row: {
-                    "availability_confirmed_at": string | null,"availability_confirmed_by": string | null,"available_from": string | null,"contact_call": boolean,"contact_phone": string | null,"contact_whatsapp": boolean,"created_at": string,"created_by": string | null,"deposit_amount": number | null,"deposit_months": number | null,"description": string | null,"fixed_monthly_total": number | null,"flags": NonNullable<Json>,"furnishing": string | null,"house_rules": string | null,"id": string,"let_on": string | null,"move_in_total": number | null,"org_id": string,"price_basis": string,"price_period": string,"property_id": string,"published_at": string | null,"ref": string,"rent_amount": number | null,"review_note": string | null,"reviewed_at": string | null,"reviewed_by": string | null,"sponsored_until": string | null,"status": string,"student": boolean,"submitted_at": string | null,"title": string | null,"totals_complete": boolean,"unit_id": string,"updated_at": string,"viewing_instructions": string | null,"wizard_step": number
+                    "availability_confirmed_at": string | null,"availability_confirmed_by": string | null,"available_from": string | null,"contact_call": boolean,"contact_phone": string | null,"contact_whatsapp": boolean,"created_at": string,"created_by": string | null,"deposit_amount": number | null,"deposit_months": number | null,"description": string | null,"fixed_monthly_total": number | null,"flags": NonNullable<Json>,"furnishing": string | null,"house_rules": string | null,"id": string,"let_on": string | null,"move_in_total": number | null,"org_id": string,"pending_edit": Json | null,"price_basis": string,"price_period": string,"property_id": string,"published_at": string | null,"ref": string,"rent_amount": number | null,"review_note": string | null,"reviewed_at": string | null,"reviewed_by": string | null,"sponsored_until": string | null,"status": string,"student": boolean,"submitted_at": string | null,"title": string | null,"totals_complete": boolean,"unit_id": string,"updated_at": string,"viewing_instructions": string | null,"wizard_step": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "availability_confirmed_at"?: string | null,"availability_confirmed_by"?: string | null,"available_from"?: string | null,"contact_call"?: boolean,"contact_phone"?: string | null,"contact_whatsapp"?: boolean,"created_at"?: string,"created_by"?: string | null,"deposit_amount"?: number | null,"deposit_months"?: number | null,"description"?: string | null,"fixed_monthly_total"?: number | null,"flags"?: NonNullable<Json>,"furnishing"?: string | null,"house_rules"?: string | null,"id"?: string,"let_on"?: string | null,"move_in_total"?: number | null,"org_id": string,"price_basis"?: string,"price_period"?: string,"property_id": string,"published_at"?: string | null,"ref"?: string,"rent_amount"?: number | null,"review_note"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"sponsored_until"?: string | null,"status"?: string,"student"?: boolean,"submitted_at"?: string | null,"title"?: string | null,"totals_complete"?: boolean,"unit_id": string,"updated_at"?: string,"viewing_instructions"?: string | null,"wizard_step"?: number
+                    "availability_confirmed_at"?: string | null,"availability_confirmed_by"?: string | null,"available_from"?: string | null,"contact_call"?: boolean,"contact_phone"?: string | null,"contact_whatsapp"?: boolean,"created_at"?: string,"created_by"?: string | null,"deposit_amount"?: number | null,"deposit_months"?: number | null,"description"?: string | null,"fixed_monthly_total"?: number | null,"flags"?: NonNullable<Json>,"furnishing"?: string | null,"house_rules"?: string | null,"id"?: string,"let_on"?: string | null,"move_in_total"?: number | null,"org_id": string,"pending_edit"?: Json | null,"price_basis"?: string,"price_period"?: string,"property_id": string,"published_at"?: string | null,"ref"?: string,"rent_amount"?: number | null,"review_note"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"sponsored_until"?: string | null,"status"?: string,"student"?: boolean,"submitted_at"?: string | null,"title"?: string | null,"totals_complete"?: boolean,"unit_id": string,"updated_at"?: string,"viewing_instructions"?: string | null,"wizard_step"?: number
                   }
                   Update: {
-                    "availability_confirmed_at"?: string | null,"availability_confirmed_by"?: string | null,"available_from"?: string | null,"contact_call"?: boolean,"contact_phone"?: string | null,"contact_whatsapp"?: boolean,"created_at"?: string,"created_by"?: string | null,"deposit_amount"?: number | null,"deposit_months"?: number | null,"description"?: string | null,"fixed_monthly_total"?: number | null,"flags"?: NonNullable<Json>,"furnishing"?: string | null,"house_rules"?: string | null,"id"?: string,"let_on"?: string | null,"move_in_total"?: number | null,"org_id"?: string,"price_basis"?: string,"price_period"?: string,"property_id"?: string,"published_at"?: string | null,"ref"?: string,"rent_amount"?: number | null,"review_note"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"sponsored_until"?: string | null,"status"?: string,"student"?: boolean,"submitted_at"?: string | null,"title"?: string | null,"totals_complete"?: boolean,"unit_id"?: string,"updated_at"?: string,"viewing_instructions"?: string | null,"wizard_step"?: number
+                    "availability_confirmed_at"?: string | null,"availability_confirmed_by"?: string | null,"available_from"?: string | null,"contact_call"?: boolean,"contact_phone"?: string | null,"contact_whatsapp"?: boolean,"created_at"?: string,"created_by"?: string | null,"deposit_amount"?: number | null,"deposit_months"?: number | null,"description"?: string | null,"fixed_monthly_total"?: number | null,"flags"?: NonNullable<Json>,"furnishing"?: string | null,"house_rules"?: string | null,"id"?: string,"let_on"?: string | null,"move_in_total"?: number | null,"org_id"?: string,"pending_edit"?: Json | null,"price_basis"?: string,"price_period"?: string,"property_id"?: string,"published_at"?: string | null,"ref"?: string,"rent_amount"?: number | null,"review_note"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"sponsored_until"?: string | null,"status"?: string,"student"?: boolean,"submitted_at"?: string | null,"title"?: string | null,"totals_complete"?: boolean,"unit_id"?: string,"updated_at"?: string,"viewing_instructions"?: string | null,"wizard_step"?: number
                   }
                   Relationships: [
                     {
@@ -603,6 +603,26 @@ isOneToOne: false
       foreignKeyName: "messages_sender_id_fkey"
       columns: ["sender_id"]
 isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"notification_settings": {
+                  Row: {
+                    "email_off": (string)[],"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "email_off"?: (string)[],"updated_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "email_off"?: (string)[],"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "notification_settings_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: true
       referencedRelation: "profiles"
       referencedColumns: ["id"]
     }
@@ -903,14 +923,14 @@ isOneToOne: false
                   ]
                 },"saved_searches": {
                   Row: {
-                    "alert_frequency": string,"created_at": string,"id": string,"label": string,"last_seen_at": string,"params": NonNullable<Json>,"user_id": string
+                    "alert_frequency": string,"created_at": string,"id": string,"label": string,"last_alerted_at": string,"last_checked_at": string | null,"last_seen_at": string,"params": NonNullable<Json>,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "alert_frequency"?: string,"created_at"?: string,"id"?: string,"label": string,"last_seen_at"?: string,"params": NonNullable<Json>,"user_id": string
+                    "alert_frequency"?: string,"created_at"?: string,"id"?: string,"label": string,"last_alerted_at"?: string,"last_checked_at"?: string | null,"last_seen_at"?: string,"params": NonNullable<Json>,"user_id": string
                   }
                   Update: {
-                    "alert_frequency"?: string,"created_at"?: string,"id"?: string,"label"?: string,"last_seen_at"?: string,"params"?: NonNullable<Json>,"user_id"?: string
+                    "alert_frequency"?: string,"created_at"?: string,"id"?: string,"label"?: string,"last_alerted_at"?: string,"last_checked_at"?: string | null,"last_seen_at"?: string,"params"?: NonNullable<Json>,"user_id"?: string
                   }
                   Relationships: [
                     {
@@ -1071,17 +1091,23 @@ isOneToOne: false
                   ]
                 },"tenants": {
                   Row: {
-                    "created_at": string,"created_by": string | null,"email": string | null,"full_name": string,"id": string,"notes": string | null,"org_id": string,"phone": string | null,"updated_at": string,"user_id": string | null
+                    "access_email": string | null,"access_expires_at": string | null,"access_invited_by": string | null,"access_token_hash": string | null,"created_at": string,"created_by": string | null,"email": string | null,"full_name": string,"id": string,"notes": string | null,"org_id": string,"phone": string | null,"updated_at": string,"user_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"created_by"?: string | null,"email"?: string | null,"full_name": string,"id"?: string,"notes"?: string | null,"org_id": string,"phone"?: string | null,"updated_at"?: string,"user_id"?: string | null
+                    "access_email"?: string | null,"access_expires_at"?: string | null,"access_invited_by"?: string | null,"access_token_hash"?: string | null,"created_at"?: string,"created_by"?: string | null,"email"?: string | null,"full_name": string,"id"?: string,"notes"?: string | null,"org_id": string,"phone"?: string | null,"updated_at"?: string,"user_id"?: string | null
                   }
                   Update: {
-                    "created_at"?: string,"created_by"?: string | null,"email"?: string | null,"full_name"?: string,"id"?: string,"notes"?: string | null,"org_id"?: string,"phone"?: string | null,"updated_at"?: string,"user_id"?: string | null
+                    "access_email"?: string | null,"access_expires_at"?: string | null,"access_invited_by"?: string | null,"access_token_hash"?: string | null,"created_at"?: string,"created_by"?: string | null,"email"?: string | null,"full_name"?: string,"id"?: string,"notes"?: string | null,"org_id"?: string,"phone"?: string | null,"updated_at"?: string,"user_id"?: string | null
                   }
                   Relationships: [
                     {
+      foreignKeyName: "tenants_access_invited_by_fkey"
+      columns: ["access_invited_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
       foreignKeyName: "tenants_created_by_fkey"
       columns: ["created_by"]
 isOneToOne: false
@@ -1256,6 +1282,9 @@ isOneToOne: false
             "accept_invitation":
 { Args: { "p_token": string }; Returns: string
                            },
+"accept_tenant_access":
+{ Args: { "p_token": string }; Returns: string
+                           },
 "adjust_charge":
 { Args: { "p_charge": string,"p_reason": string,"p_reduce_by": number }; Returns: undefined
                            },
@@ -1354,6 +1383,11 @@ isOneToOne: false
         isOneToOne: false
         isSetofReturn: true
       } },
+"claim_saved_search_checks":
+{ Args: { "p_limit"?: number }; Returns: {
+              "checked_at": string,"id": string,"query": string,"since": string,"user_id": string
+            }[]
+                           },
 "confirm_entries":
 { Args: { "p_acknowledged": boolean,"p_entries": (string)[] }; Returns: Json
                            },
@@ -1395,11 +1429,17 @@ isOneToOne: false
 "get_listing":
 { Args: { "p_ref": string }; Returns: Json
                            },
+"import_units":
+{ Args: { "p_commit"?: boolean,"p_property": string,"p_rows": Json }; Returns: Json
+                           },
 "invitation_preview":
 { Args: { "p_token": string }; Returns: Json
                            },
 "invite_member":
 { Args: { "p": Json,"p_org": string }; Returns: Json
+                           },
+"invite_tenant_access":
+{ Args: { "p_email": string,"p_tenant": string }; Returns: Json
                            },
 "listing_problem_items":
 { Args: { "p_listing": string }; Returns: Json
@@ -1431,6 +1471,11 @@ isOneToOne: false
               "area": string,"let_on": string,"listing_id": string,"note": string,"ref": string,"saved_at": string,"status": string,"title": string
             }[]
                            },
+"my_tenancies":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "area": string,"balance": number,"current_rent": number,"due_day": number,"end_date": string,"org_name": string,"property_name": string,"start_date": string,"status": string,"tenancy_id": string,"unit_label": string
+            }[]
+                           },
 "my_viewings":
 { Args: Record<PropertyKey, never>; Returns: {
               "area": string,"cancel_reason": string,"confirmed_start": string,"conversation_id": string,"decline_reason": string,"id": string,"let_on": string,"listing_ref": string,"listing_status": string,"listing_title": string,"meeting_instructions": string,"org_name": string,"proposed_start": string,"requested_start": string,"state": string,"status": string
@@ -1455,6 +1500,9 @@ isOneToOne: false
 { Args: { "p_period": string,"p_property": string }; Returns: {
               "already_exists": boolean,"amount": number,"due_date": string,"tenancy_id": string,"tenant_name": string,"unit_id": string,"unit_label": string
             }[]
+                           },
+"record_saved_search_alert":
+{ Args: { "p_homes": Json,"p_search": string,"p_through": string }; Returns: undefined
                            },
 "records_changed_at":
 { Args: { "p_org": string,"p_property"?: string }; Returns: string
@@ -1504,6 +1552,9 @@ isOneToOne: false
 "reverse_entry":
 { Args: { "p_entry": string,"p_reason": string }; Returns: Json
                            },
+"revoke_tenant_access":
+{ Args: { "p_tenant": string }; Returns: undefined
+                           },
 "save_payment_entry":
 { Args: { "p": Json }; Returns: Json
                            },
@@ -1547,6 +1598,9 @@ isOneToOne: false
 { Args: { "p_tenancy": string }; Returns: {
               "balance": number,"charge": number,"description": string,"kind": string,"line_date": string,"payment": number,"ref": string
             }[]
+                           },
+"tenant_access_preview":
+{ Args: { "p_token": string }; Returns: Json
                            },
 "tenant_viewing_action":
 { Args: { "p_action": string,"p_reason"?: string,"p_time"?: string,"p_viewing": string }; Returns: undefined

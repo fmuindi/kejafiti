@@ -47,6 +47,15 @@ export async function saveSearch(label: string, query: string, frequency: "insta
   return { ok: true };
 }
 
+export async function setSavedSearchAlert(id: string, frequency: "instant" | "daily" | "off"): Promise<ActionResult> {
+  if (!["instant", "daily", "off"].includes(frequency)) return { ok: false, message: "Choose how often to hear about new homes." };
+  const supabase = await createClient();
+  const { error } = await supabase.from("saved_searches").update({ alert_frequency: frequency }).eq("id", id);
+  if (error) return fail(error);
+  revalidatePath("/saved");
+  return { ok: true };
+}
+
 export async function deleteSavedSearch(id: string): Promise<ActionResult> {
   const supabase = await createClient();
   const { error } = await supabase.from("saved_searches").delete().eq("id", id);

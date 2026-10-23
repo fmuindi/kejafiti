@@ -21,7 +21,7 @@ export function ClearDeviceData({ userId }: { userId: string }) {
       >
         Clear searches and drafts
       </Button>
-      {done ? <span role="status" className="text-[13.5px] font-semibold text-success">Cleared</span> : null}
+      {done ? <span role="status" className="text-[0.84375rem] font-semibold text-success">Cleared</span> : null}
     </div>
   );
 }

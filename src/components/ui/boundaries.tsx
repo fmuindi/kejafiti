@@ -20,8 +20,8 @@ export function PageError({ error, reset, home = "/" }: { error: Error & { diges
   }, [error]);
   return (
     <div role="alert" className="mx-auto flex max-w-[520px] flex-col items-start gap-4 px-4 py-12">
-      <h1 className="font-display text-[28px] font-bold">This page didn&apos;t load</h1>
-      <p className="text-[15px] text-muted">
+      <h1 className="font-display text-[1.75rem] font-bold">This page didn&apos;t load</h1>
+      <p className="text-[0.9375rem] text-muted">
         Check your connection and try again. Nothing you already saved was lost.{error.digest ? ` Reference: ${error.digest}` : ""}
       </p>
       <div className="flex gap-2">

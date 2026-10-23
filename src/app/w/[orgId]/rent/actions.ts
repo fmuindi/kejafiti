@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
+import { emailConfigured, kickDelivery } from "@/lib/delivery";
+import { SITE_URL } from "@/lib/env";
 import { fail, type ActionResult } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/server";
 
@@ -229,6 +231,30 @@ export async function setAutoCharges(orgId: string, propertyId: string, enabled:
   await requireUser(`/w/${orgId}/rent/${propertyId}`);
   const supabase = await createClient();
   const { error } = await supabase.from("properties").update({ auto_charges: enabled }).eq("id", propertyId);
+  if (error) return fail(error);
+  revalidateRent(orgId, propertyId);
+  return { ok: true };
+}
+
+// Tenant self-view. The invitation link is returned once so staff can also share it directly
+// (e.g. by WhatsApp) when email is off; only its hash is stored.
+export async function inviteTenantAccess(orgId: string, propertyId: string, tenantId: string, email: string): Promise<ActionResult<{ link: string; expiresAt: string; emailQueued: boolean }>> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}`);
+  if (!uuid.safeParse(tenantId).success) return { ok: false, message: "This tenant record wasn't found." };
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("invite_tenant_access", { p_tenant: tenantId, p_email: email });
+  if (error) return fail(error);
+  const r = data as unknown as { token: string; expires_at: string };
+  await kickDelivery();
+  revalidateRent(orgId, propertyId);
+  return { ok: true, data: { link: `${SITE_URL}/tenant-invite/${r.token}`, expiresAt: r.expires_at, emailQueued: emailConfigured() } };
+}
+
+export async function revokeTenantAccess(orgId: string, propertyId: string, tenantId: string): Promise<ActionResult> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}`);
+  if (!uuid.safeParse(tenantId).success) return { ok: false, message: "This tenant record wasn't found." };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("revoke_tenant_access", { p_tenant: tenantId });
   if (error) return fail(error);
   revalidateRent(orgId, propertyId);
   return { ok: true };

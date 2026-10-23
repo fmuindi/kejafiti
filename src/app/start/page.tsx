@@ -15,15 +15,15 @@ export default async function StartPage() {
         <Logo />
       </Link>
       <div>
-        <h1 className="font-display text-[32px] leading-[1.05] font-bold tracking-[-1px]">Set up your landlord or agent workspace</h1>
-        <p className="mt-2 text-[15px] text-muted">
+        <h1 className="font-display text-[2rem] leading-[1.05] font-bold tracking-[-1px]">Set up your landlord or agent workspace</h1>
+        <p className="mt-2 text-[0.9375rem] text-muted">
           Listing is free for one vacancy. You can also keep rent records with your team. Tenants keep paying the way they already do;
           nyumbani never collects rent.
         </p>
       </div>
       {workspaces.length ? (
         <section aria-labelledby="existing" className="flex flex-col gap-2">
-          <h2 id="existing" className="text-[14px] font-semibold text-muted">Your workspaces</h2>
+          <h2 id="existing" className="text-[0.875rem] font-semibold text-muted">Your workspaces</h2>
           {workspaces.map((w) => (
             <Link key={w.org_id} href={`/w/${w.org_id}`} className="flex min-h-[56px] items-center justify-between rounded-[16px] border border-line bg-surface px-4 font-semibold hover:border-ink">
               {w.org_name}
@@ -33,7 +33,7 @@ export default async function StartPage() {
         </section>
       ) : null}
       <StartWorkspaceForm />
-      <p className="text-[12.5px] text-muted">
+      <p className="text-[0.78125rem] text-muted">
         Our team reviews new landlord and agent accounts before listings go live. Creating a workspace doesn&apos;t publish anything.
       </p>
     </main>

@@ -117,7 +117,7 @@ export function PeerStatus({ className }: { className?: string }) {
   const label = live && now ? peerLabel(live.peer, now) : null;
   if (!label) return null;
   return (
-    <span className={cx("inline-flex items-center gap-1.5 text-[13px]", label.tone === "away" ? "text-muted" : "font-semibold text-success", className)}>
+    <span className={cx("inline-flex items-center gap-1.5 text-[0.8125rem]", label.tone === "away" ? "text-muted" : "font-semibold text-success", className)}>
       {label.tone !== "away" ? <span aria-hidden="true" className="size-2 rounded-full bg-success" /> : null}
       {label.text}
     </span>

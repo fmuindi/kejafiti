@@ -30,20 +30,20 @@ export default async function TicketPage({ params, searchParams }: PageProps<"/h
       {isNew ? <Notice tone="success" role="status" title={`Request ${t.ref} sent`}>Support will reply here, and you&apos;ll see it in Updates.</Notice> : null}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="font-mono text-[12px] text-muted">{t.ref} · {categoryLabel(t.category)} · opened {formatDateTime(t.created_at)}</p>
+          <p className="font-mono text-[0.75rem] text-muted">{t.ref} · {categoryLabel(t.category)} · opened {formatDateTime(t.created_at)}</p>
           <PageTitle className="mt-1">{t.subject}</PageTitle>
         </div>
         <StatusBadge tone={SUPPORT_STATUS[t.status]?.tone ?? "neutral"}>{SUPPORT_STATUS[t.status]?.label ?? t.status}</StatusBadge>
       </div>
-      <p className="whitespace-pre-line rounded-[14px] border border-line bg-surface p-3 text-[14.5px]">{t.description}</p>
+      <p className="whitespace-pre-line rounded-[14px] border border-line bg-surface p-3 text-[0.90625rem]">{t.description}</p>
       {signed.length ? (
-        <ul className="flex flex-col gap-1 text-[14px]">
+        <ul className="flex flex-col gap-1 text-[0.875rem]">
           {(files ?? []).map((f, i) => (
             <li key={f.id}><a href={signed[i]?.signedUrl ?? "#"} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold underline"><Icon name="file" size={16} /> {f.file_name}</a></li>
           ))}
         </ul>
       ) : null}
-      {t.status === "resolved" ? <p className="text-[13.5px] text-muted">Resolved. Replying reopens the request.</p> : null}
+      {t.status === "resolved" ? <p className="text-[0.84375rem] text-muted">Resolved. Replying reopens the request.</p> : null}
       <TicketThread ticketId={t.id} messages={messages ?? []} viewer="user" />
     </div>
   );

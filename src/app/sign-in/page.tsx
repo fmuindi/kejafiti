@@ -42,13 +42,13 @@ export default async function SignInPage({ searchParams }: PageProps<"/sign-in">
       <Link href="/" aria-label="nyumbani home" className="self-start">
         <Logo />
       </Link>
-      <h1 className="mt-8 font-display text-[32px] leading-[1.05] font-bold tracking-[-1px]">{copy.title}</h1>
-      <p className="mt-2 text-[15px] text-muted">{copy.body}</p>
+      <h1 className="mt-8 font-display text-[2rem] leading-[1.05] font-bold tracking-[-1px]">{copy.title}</h1>
+      <p className="mt-2 text-[0.9375rem] text-muted">{copy.body}</p>
       <SignInForm next={next} phoneEnabled={PHONE_AUTH_ENABLED} />
-      <Link href={next === "/" || next === "/auth/continue" ? "/" : "/search"} className="mt-4 inline-flex min-h-11 items-center justify-center text-center text-[15px] font-semibold underline">
+      <Link href={next === "/" || next === "/auth/continue" ? "/" : "/search"} className="mt-4 inline-flex min-h-11 items-center justify-center text-center text-[0.9375rem] font-semibold underline">
         Keep browsing without an account
       </Link>
-      <p className="mt-auto pt-10 text-[12.5px] text-muted">
+      <p className="mt-auto pt-10 text-[0.78125rem] text-muted">
         By continuing you agree to the <Link href="/legal/terms" className="underline">Terms</Link> and{" "}
         <Link href="/legal/privacy" className="underline">Privacy notice</Link>. On a shared phone, sign out when you&apos;re done.
       </p>

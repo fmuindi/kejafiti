@@ -12,7 +12,7 @@ export function BackLink({ href, children, className }: { href: string; children
   return (
     <Link
       href={href}
-      className={cx("no-print group inline-flex min-h-11 items-center gap-2 self-start rounded-full pr-2 text-[15px] font-semibold text-ink hover:text-primary", className)}
+      className={cx("no-print group inline-flex min-h-11 items-center gap-2 self-start rounded-full pr-2 text-[0.9375rem] font-semibold text-ink hover:text-primary", className)}
     >
       <span aria-hidden="true" className="grid size-9 place-items-center rounded-full border border-line bg-surface transition-colors group-hover:border-primary">
         <Icon name="chevronLeft" size={18} />

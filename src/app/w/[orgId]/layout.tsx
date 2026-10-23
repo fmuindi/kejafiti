@@ -80,13 +80,13 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
           <Logo />
         </Link>
         <div className="mt-5 rounded-[14px] border border-line bg-surface px-3 py-2.5">
-          <p className="truncate text-[14px] font-semibold">{ws.org_name}</p>
-          <p className="text-[12.5px] text-muted">{ROLE_LABEL[ws.role]}</p>
+          <p className="truncate text-[0.875rem] font-semibold">{ws.org_name}</p>
+          <p className="text-[0.78125rem] text-muted">{ROLE_LABEL[ws.role]}</p>
         </div>
         <nav aria-label="Workspace" className="mt-4">
           <SidebarLinks items={sidebar} />
         </nav>
-        <div className="mt-auto flex flex-col gap-1 border-t border-line pt-3 text-[14px]">
+        <div className="mt-auto flex flex-col gap-1 border-t border-line pt-3 text-[0.875rem]">
           {all.length > 1 ? (
             <details className="rounded-[12px] px-3 py-2">
               <summary className="cursor-pointer font-semibold">Switch workspace</summary>
@@ -105,7 +105,7 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
             <Avatar name={me} size={32} />
             <span className="min-w-0">
               <span className="block truncate font-semibold">{me}</span>
-              <span className="block text-[12px] text-muted">Your account</span>
+              <span className="block text-[0.75rem] text-muted">Your account</span>
             </span>
           </Link>
           <HelpLink className="flex min-h-11 items-center gap-2 rounded-[12px] px-3 hover:bg-surface">
@@ -126,8 +126,8 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
           <Link href={base} className="flex min-w-0 items-center gap-2">
             <Logo withWord={false} />
             <span className="min-w-0">
-              <span className="block truncate text-[14px] font-semibold">{ws.org_name}</span>
-              <span className="block text-[12px] text-muted">{ROLE_LABEL[ws.role]}</span>
+              <span className="block truncate text-[0.875rem] font-semibold">{ws.org_name}</span>
+              <span className="block text-[0.75rem] text-muted">{ROLE_LABEL[ws.role]}</span>
             </span>
           </Link>
           <UpdatesBell count={unreadUpdates} href={`${base}/activity`} />
