@@ -15,12 +15,23 @@ import { BackLink } from "@/components/shell/back-link";
 
 export const metadata: Metadata = { title: "Review listing" };
 
+const EDIT_LABEL: Record<string, string> = {
+  title: "Title",
+  description: "Description",
+  contact_phone: "Phone",
+  contact_call: "Calls allowed",
+  contact_whatsapp: "WhatsApp allowed",
+  viewing_instructions: "Viewing instructions",
+  house_rules: "House rules",
+  photos_added: "Photos",
+};
+
 export default async function AdminListingPage({ params }: PageProps<"/admin/listings/[id]">) {
   // Layouts and pages render in parallel, so every admin page checks for itself.
   await requirePlatformAdmin("/admin");
   const { id } = await params;
   const supabase = await createClient();
-  const { data: row } = await supabase.from("listings").select("ref, status, flags, submitted_at, org_id").eq("id", id).maybeSingle();
+  const { data: row } = await supabase.from("listings").select("ref, status, flags, submitted_at, org_id, pending_edit").eq("id", id).maybeSingle();
   if (!row) notFound();
   const { data } = await supabase.rpc("get_listing", { p_ref: row.ref });
   const l = data as unknown as PublicListing;
@@ -28,6 +39,7 @@ export default async function AdminListingPage({ params }: PageProps<"/admin/lis
   const urls = await signListingPhotos(supabase, l.photos.map((p) => p.path));
   const photos = l.photos.map((p) => ({ url: urls.get(p.path) ?? "", label: p.label, alt: p.alt })).filter((p) => p.url);
   const flags = (row.flags as string[]) ?? [];
+  const edit = row.pending_edit as Record<string, unknown> | null;
 
   return (
     <div className="mx-auto flex max-w-[1000px] flex-col gap-5">
@@ -37,6 +49,19 @@ export default async function AdminListingPage({ params }: PageProps<"/admin/lis
         <StatusBadge tone={row.status === "under_review" ? "waiting" : row.status === "published" ? "success" : "neutral"}>{row.status.replace("_", " ")}</StatusBadge>
         <span className="font-mono text-[0.8125rem] text-muted">{row.ref}</span>
       </div>
+      {edit ? (
+        <Notice tone="waiting" title="Edited after it was published">
+          <p>The listing is hidden until you approve these changes. Before the edit:</p>
+          <dl className="mt-2 flex flex-col gap-1.5">
+            {Object.entries(edit).map(([k, v]) => (
+              <div key={k} className="flex flex-col sm:flex-row sm:gap-2">
+                <dt className="shrink-0 font-semibold">{EDIT_LABEL[k] ?? k}:</dt>
+                <dd className="whitespace-pre-line">{k === "photos_added" ? `${v} new photo${v === 1 ? "" : "s"} (shown in the gallery)` : v === null || v === "" ? "(empty)" : String(v)}</dd>
+              </div>
+            ))}
+          </dl>
+        </Notice>
+      ) : null}
       {flags.length ? (
         <Notice tone="waiting" title="Flags">
           <ul className="list-disc pl-5">{flags.map((f) => <li key={f}>{f}</li>)}</ul>

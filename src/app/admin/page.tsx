@@ -32,6 +32,10 @@ export default async function AdminReviewPage() {
   ].filter(Boolean) as string[];
   const provider = emailProvider();
   const c = (counts ?? {}) as Record<string, number>;
+  // Live listings held for an edit (re-review) look like new submissions in the queue; mark them.
+  const ids = (queue ?? []).map((l) => l.id);
+  const { data: held } = ids.length ? await supabase.from("listings").select("id").in("id", ids).not("pending_edit", "is", null) : { data: [] };
+  const edited = new Set((held ?? []).map((h) => h.id));
   const newOrgs = (orgs ?? []).filter((o) => o.onboarding_status === "new").slice(0, 4);
 
   return (
@@ -61,7 +65,7 @@ export default async function AdminReviewPage() {
                 {(queue ?? []).map((l) => (
                   <tr key={l.id} className="border-b border-divider last:border-0">
                     <td className="px-4 py-3">
-                      <p className="font-semibold">{l.title} · {l.area}</p>
+                      <p className="font-semibold">{l.title} · {l.area}{edited.has(l.id) ? <span className="ml-2 rounded-full bg-waiting-tint px-2 py-0.5 text-[0.75rem] text-waiting-strong">Edited after publishing</span> : null}</p>
                       <p className="font-mono text-[0.78125rem] text-muted">{l.ref} · KES {formatAmount(Number(l.rent_amount))}{PRICE_BASIS_LABEL[l.price_basis] ? ` ${PRICE_BASIS_LABEL[l.price_basis]}` : ""}</p>
                     </td>
                     <td className="px-4 py-3">

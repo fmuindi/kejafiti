@@ -134,6 +134,12 @@ export function Wizard({ data, step, focus, fromReview = false }: { data: Wizard
 
   return (
     <div className="flex flex-col gap-5">
+      {data.status === "published" ? (
+        <Notice tone="info" title="This listing is live">
+          Rent, charges, features and dates update straight away. Changes to the title, description, contact details, viewing
+          instructions or house rules, and new photos, are checked first; the listing is hidden from search until they are.
+        </Notice>
+      ) : null}
       {data.status === "needs_correction" && data.reviewNote ? (
         <Notice tone="waiting" title="Our team asked for a correction">&quot;{data.reviewNote}&quot; Fix it, then submit again.</Notice>
       ) : null}
