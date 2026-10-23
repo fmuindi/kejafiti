@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AddUnitsForm } from "@/components/workspace/add-units";
+import { ImportUnits } from "@/components/workspace/import-units";
 import { UnitsTable, type UnitRow } from "@/components/workspace/units-table";
 import { PropertyForm } from "@/components/workspace/property-form";
 import { Icon } from "@/components/ui/icon";
@@ -69,6 +70,7 @@ export default async function PropertyPage({ params }: PageProps<"/w/[orgId]/pro
       </div>
       <UnitsTable orgId={orgId} propertyId={propertyId} rows={rows} canListings={ws.can_manage_listings} canTenancies={ws.can_manage_tenancies} />
       {ws.can_manage_tenancies || ws.can_manage_listings ? <AddUnitsForm orgId={orgId} propertyId={propertyId} /> : null}
+      {ws.can_manage_tenancies ? <ImportUnits orgId={orgId} propertyId={propertyId} /> : null}
       {admin ? (
         <details className="rounded-[18px] border border-line bg-surface p-4">
           <summary className="cursor-pointer font-semibold"><Icon name="edit" size={16} className="mr-1 inline" /> Edit property details</summary>

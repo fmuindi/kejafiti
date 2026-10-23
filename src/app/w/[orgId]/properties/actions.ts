@@ -100,3 +100,26 @@ export async function bulkPause(orgId: string, listingIds: string[]): Promise<Ac
   revalidatePath(`/w/${orgId}`, "layout");
   return { ok: true, data: { ok, failed } };
 }
+
+const cellText = z.string().trim().max(200).optional();
+const importRowSchema = z.object({
+  row: z.number().int().positive(),
+  label: z.string().trim().min(1).max(40),
+  layout: z.enum(["single_room", "double_room", "multiroom", "bedsitter_studio", "bedroom_home"]).optional(),
+  bedrooms: cellText, default_rent: cellText, tenant_name: z.string().trim().max(120).optional(), tenant_phone: cellText,
+  tenant_email: cellText, start_date: cellText, rent_amount: cellText, due_day: cellText, deposit_held: cellText,
+  opening_balance: cellText, opening_balance_note: cellText,
+});
+export type ImportResult = { errors: Array<{ row: number; message: string }>; units_created: number; tenancies_created: number; rows: number; committed: boolean };
+
+/** Checks (commit = false) or imports (commit = true) parsed spreadsheet rows. All or nothing. */
+export async function importUnits(orgId: string, propertyId: string, rows: unknown, commit: boolean): Promise<ActionResult<ImportResult>> {
+  await requireUser(`/w/${orgId}/properties/${propertyId}`);
+  const parsed = z.array(importRowSchema).max(500).safeParse(rows);
+  if (!parsed.success) return { ok: false, message: "Some rows couldn't be read. Check the file and try again." };
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("import_units", { p_property: propertyId, p_rows: parsed.data, p_commit: commit });
+  if (error) return fail(error);
+  if (commit) revalidatePath(`/w/${orgId}`, "layout");
+  return { ok: true, data: data as unknown as ImportResult };
+}
