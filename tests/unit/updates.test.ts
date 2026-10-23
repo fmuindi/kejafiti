@@ -6,6 +6,11 @@ vi.mock("@/lib/supabase/server", () => ({}));
 const { categoryOf, safeInternalLink } = await import("@/lib/updates");
 
 describe("updates (IMP-08)", () => {
+  it("matches the database's categories, which decide the optional emails", () => {
+    // Same kinds and answers as supabase/tests/12_notification_email_and_alerts.test.sql.
+    const kinds = ["entry_submitted", "message", "viewing_confirmed", "invite_accepted", "listing_report", "support_reply", "saved_search_alert", "registration", "status"];
+    expect(kinds.map(categoryOf)).toEqual(["rent", "enquiries", "enquiries", "team", "listings", "support", "alerts", "admin", "other"]);
+  });
   it("groups every notification kind the database sends", () => {
     expect(categoryOf("entry_submitted")).toBe("rent");
     expect(categoryOf("entry_return")).toBe("rent");

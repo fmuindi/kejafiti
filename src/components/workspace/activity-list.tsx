@@ -10,6 +10,7 @@ const ICON: Record<CategoryKey, IconName> = {
   listings: "home",
   reports: "file",
   support: "info",
+  alerts: "search",
   admin: "lock",
   other: "bell",
 };

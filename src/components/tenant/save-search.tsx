@@ -5,8 +5,8 @@ import { useState, useTransition } from "react";
 import { saveSearch } from "@/app/(tenant)/actions";
 import { Icon } from "@/components/ui/icon";
 
-// Saving a search stores the filters and an alert preference. Alerts are recorded in the
-// in-app inbox; email/SMS digests need the delivery worker and a provider configured.
+// Saving a search stores the filters with a daily alert: new matching homes arrive in Updates
+// and, unless the person turned it off in Account, by email. Saved can change the pace.
 export function SaveSearchButton({ label, query, signedIn }: { label: string; query: string; signedIn: boolean }) {
   const router = useRouter();
   const [pending, start] = useTransition();

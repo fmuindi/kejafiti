@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ComparePicker } from "@/components/tenant/compare-picker";
 import { DeleteSavedSearch } from "@/components/tenant/delete-saved-search";
+import { SearchAlertSelect } from "@/components/tenant/search-alert-select";
 import { ListingCard, type SearchRow } from "@/components/tenant/listing-card";
 import { PageHeader } from "@/components/shell/page-header";
 import { TenantJumps } from "@/components/shell/tenant-jumps";
@@ -69,15 +70,17 @@ export default async function SavedPage() {
         <section aria-labelledby="ss" className="flex flex-col gap-2">
           <h2 id="ss" className="flex items-center gap-2 text-[0.9375rem] font-semibold text-muted"><Icon name="search" size={16} /> Searches</h2>
           <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+            {/* On a phone the alert picker wraps under the search name instead of squeezing it. */}
             {searches.map((s) => (
-              <li key={s.id} className="flex items-center gap-2 pr-2">
-                <Link href={`/search?${(s.params as { query?: string }).query ?? ""}`} className="flex min-h-14 min-w-0 flex-1 items-center gap-3 px-4 py-2.5 hover:bg-cool">
+              <li key={s.id} className="flex flex-wrap items-center gap-x-2 pr-2 pb-2 sm:flex-nowrap sm:pb-0">
+                <Link href={`/search?${(s.params as { query?: string }).query ?? ""}`} className="flex min-h-14 min-w-0 flex-1 basis-full items-center gap-3 px-4 py-2.5 hover:bg-cool sm:basis-auto">
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-semibold">{s.label}</span>
                     <span className="text-[0.78125rem] text-muted">Saved {formatDate(s.created_at, { year: false })}</span>
                   </span>
                   <Icon name="arrowRight" size={18} className="shrink-0 text-primary" />
                 </Link>
+                <SearchAlertSelect id={s.id} value={s.alert_frequency as "instant" | "daily" | "off"} label={s.label} />
                 <DeleteSavedSearch id={s.id} />
               </li>
             ))}
@@ -89,9 +92,9 @@ export default async function SavedPage() {
           <h2 id="sh" className="sr-only">Saved homes</h2>
           <ComparePicker homes={cards.map((c) => ({ ref: c.ref, label: `${c.title ?? c.area} · KES ${(c.fixed_monthly_total ?? c.rent_amount).toLocaleString("en-KE")}` }))} />
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {cards.map((c) => (
+            {cards.map((c, i) => (
               <li key={c.ref}>
-                <ListingCard row={c} photoUrl={c.cover_path ? photos.get(c.cover_path) : undefined} saved signedIn returnTo="/saved" back="saved" />
+                <ListingCard row={c} photoUrl={c.cover_path ? photos.get(c.cover_path) : undefined} saved signedIn returnTo="/saved" back="saved" eager={i === 0} />
               </li>
             ))}
           </ul>

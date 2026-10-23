@@ -14,11 +14,14 @@ export const CATEGORIES = [
   { key: "listings", label: "Listings" },
   { key: "reports", label: "Reports" },
   { key: "support", label: "Support" },
+  { key: "alerts", label: "Home alerts" },
   { key: "admin", label: "Platform admin" },
   { key: "other", label: "Other" },
 ] as const;
 export type CategoryKey = (typeof CATEGORIES)[number]["key"];
 
+// Mirrored by app.notification_category() in the database, which decides the optional emails;
+// tests pin both to the same answers.
 export function categoryOf(kind: string): CategoryKey {
   if (/^(entry|charge|correction|payment|tenancy)/.test(kind)) return "rent";
   if (/^(message|viewing|enquiry)/.test(kind)) return "enquiries";
@@ -26,6 +29,7 @@ export function categoryOf(kind: string): CategoryKey {
   if (/^listing/.test(kind)) return "listings";
   if (/^report/.test(kind)) return "reports";
   if (/^support/.test(kind)) return "support";
+  if (/^saved_search/.test(kind)) return "alerts";
   if (/^(registration|onboarding)/.test(kind)) return "admin";
   return "other";
 }

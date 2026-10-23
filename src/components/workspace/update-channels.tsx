@@ -3,12 +3,12 @@ import { cx } from "@/components/ui/primitives";
 import { emailConfigured } from "@/lib/delivery";
 
 // How updates reach people, stated as it is (IMP-08). Nothing here claims a channel that
-// isn't switched on. Optional email, SMS, push and digests await a product decision.
+// isn't switched on. Which updates are also emailed is each person's choice (Account).
 export function UpdateChannels() {
   const email = emailConfigured();
   const rows: Array<{ icon: IconName; label: string; status: string; tone: "on" | "partial" | "off" }> = [
     { icon: "bell", label: "In the app", status: "On", tone: "on" },
-    { icon: "file", label: "Email", status: email ? "Invites and alerts only" : "Off", tone: email ? "partial" : "off" },
+    { icon: "file", label: "Email", status: email ? "On for what you choose" : "Off", tone: email ? "on" : "off" },
     { icon: "phone", label: "SMS, WhatsApp, push", status: "Coming soon", tone: "off" },
   ];
   return (
