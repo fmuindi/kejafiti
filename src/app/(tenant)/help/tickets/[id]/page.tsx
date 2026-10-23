@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TicketThread } from "@/components/support/ticket-thread";
 import { Icon } from "@/components/ui/icon";
@@ -8,6 +7,7 @@ import { requireUser } from "@/lib/auth";
 import { formatDateTime } from "@/lib/dates";
 import { SUPPORT_STATUS, categoryLabel } from "@/lib/support";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
 
 export const metadata: Metadata = { title: "Support request" };
 
@@ -26,7 +26,7 @@ export default async function TicketPage({ params, searchParams }: PageProps<"/h
   const isNew = (await searchParams).new === "1";
   return (
     <div className="mx-auto flex max-w-[720px] flex-col gap-4 px-4 pt-5 pb-10">
-      <Link href="/help" className="inline-flex min-h-11 items-center gap-1 self-start font-semibold"><Icon name="chevronLeft" /> Help and support</Link>
+      <BackLink href="/help">Help and support</BackLink>
       {isNew ? <Notice tone="success" role="status" title={`Request ${t.ref} sent`}>Support will reply here, and you&apos;ll see it in Updates.</Notice> : null}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>

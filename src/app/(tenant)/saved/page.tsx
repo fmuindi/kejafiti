@@ -3,13 +3,16 @@ import Link from "next/link";
 import { ComparePicker } from "@/components/tenant/compare-picker";
 import { DeleteSavedSearch } from "@/components/tenant/delete-saved-search";
 import { ListingCard, type SearchRow } from "@/components/tenant/listing-card";
-import { ButtonLink, EmptyState, PageTitle } from "@/components/ui/primitives";
+import { PageHeader } from "@/components/shell/page-header";
+import { TenantJumps } from "@/components/shell/tenant-jumps";
+import { Icon } from "@/components/ui/icon";
+import { ButtonLink, EmptyState } from "@/components/ui/primitives";
 import { requireUser } from "@/lib/auth";
 import { formatDate } from "@/lib/dates";
 import { signListingPhotos } from "@/lib/storage";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata: Metadata = { title: "Saved homes" };
+export const metadata: Metadata = { title: "Saved" };
 
 export default async function SavedPage() {
   const user = await requireUser("/saved");
@@ -51,59 +54,61 @@ export default async function SavedPage() {
   const photos = await signListingPhotos(supabase, cards.map((c) => c.cover_path));
   const gone = (saved ?? []).filter((s) => s.status !== "published");
 
+  const meta = [cards.length ? `${cards.length} home${cards.length === 1 ? "" : "s"}` : null, searches?.length ? `${searches.length} search${searches.length === 1 ? "" : "es"}` : null].filter(Boolean).join(" · ");
+
   return (
-    <div className="mx-auto flex max-w-[1100px] flex-col gap-6 px-4 pt-5 pb-10">
-      <PageTitle>Saved</PageTitle>
+    <div className="mx-auto flex max-w-[1100px] flex-col gap-5 px-4 pt-5 pb-10">
+      <PageHeader icon="heart" title="Saved" meta={meta || null} />
+      <TenantJumps current="/saved" />
+      {cards.length === 0 && gone.length === 0 && !searches?.length ? (
+        <EmptyState title="Nothing saved yet" icon="heart" action={<ButtonLink href="/search" icon="search">Find a home</ButtonLink>}>
+          Tap ♥ on any home to keep it here.
+        </EmptyState>
+      ) : null}
       {searches?.length ? (
-        <section aria-labelledby="ss">
-          <h2 id="ss" className="font-display text-[18px] font-bold">Saved searches</h2>
-          <ul className="mt-2 flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+        <section aria-labelledby="ss" className="flex flex-col gap-2">
+          <h2 id="ss" className="flex items-center gap-2 text-[15px] font-semibold text-muted"><Icon name="search" size={16} /> Searches</h2>
+          <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
             {searches.map((s) => (
-              <li key={s.id} className="flex items-center justify-between gap-3 px-4 py-3">
-                <Link href={`/search?${(s.params as { query?: string }).query ?? ""}`} className="min-w-0 flex-1 hover:underline">
-                  <span className="block truncate font-semibold">{s.label}</span>
-                  <span className="text-[13px] text-muted">Alert preference: {s.alert_frequency} · saved {formatDate(s.created_at)}</span>
+              <li key={s.id} className="flex items-center gap-2 pr-2">
+                <Link href={`/search?${(s.params as { query?: string }).query ?? ""}`} className="flex min-h-14 min-w-0 flex-1 items-center gap-3 px-4 py-2.5 hover:bg-cool">
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-semibold">{s.label}</span>
+                    <span className="text-[12.5px] text-muted">Saved {formatDate(s.created_at, { year: false })}</span>
+                  </span>
+                  <Icon name="arrowRight" size={18} className="shrink-0 text-primary" />
                 </Link>
                 <DeleteSavedSearch id={s.id} />
               </li>
             ))}
           </ul>
-          <p className="mt-2 text-[12.5px] text-muted">Matching-home alerts are not sent yet; this saves your filters so you can rerun them in one tap.</p>
         </section>
       ) : null}
-      <section aria-labelledby="sh">
-        <h2 id="sh" className="font-display text-[18px] font-bold">Saved homes</h2>
-        {cards.length === 0 && gone.length === 0 ? (
-          <div className="mt-2">
-            <EmptyState title="No saved homes yet" icon="heart" action={<ButtonLink href="/search">Find a home</ButtonLink>}>Tap the heart on any listing to save it here.</EmptyState>
-          </div>
-        ) : (
-          <>
-          <div className="mt-3">
-            <ComparePicker homes={cards.map((c) => ({ ref: c.ref, label: `${c.title ?? c.area} · KES ${(c.fixed_monthly_total ?? c.rent_amount).toLocaleString("en-KE")}` }))} />
-          </div>
-          <ul className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {cards.length ? (
+        <section aria-labelledby="sh" className="flex flex-col gap-3">
+          <h2 id="sh" className="sr-only">Saved homes</h2>
+          <ComparePicker homes={cards.map((c) => ({ ref: c.ref, label: `${c.title ?? c.area} · KES ${(c.fixed_monthly_total ?? c.rent_amount).toLocaleString("en-KE")}` }))} />
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {cards.map((c) => (
               <li key={c.ref}>
                 <ListingCard row={c} photoUrl={c.cover_path ? photos.get(c.cover_path) : undefined} saved signedIn returnTo="/saved" back="saved" />
               </li>
             ))}
           </ul>
-          </>
-        )}
-        {gone.length ? (
-          <ul className="mt-4 flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
-            {gone.map((l) => (
-              <li key={l.listing_id}>
-                <Link href={`/homes/${l.ref}`} className="flex flex-col px-4 py-3 hover:bg-cool">
-                  <span className="font-semibold">{l.title ?? `Home in ${l.area}`}</span>
-                  <span className="text-[13px] font-semibold text-error">No longer available{l.let_on ? ` · let on ${formatDate(l.let_on, { year: false })}` : ""} · see similar homes</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-      </section>
+        </section>
+      ) : null}
+      {gone.length ? (
+        <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+          {gone.map((l) => (
+            <li key={l.listing_id}>
+              <Link href={`/homes/${l.ref}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-cool">
+                <span className="truncate font-semibold">{l.title ?? `Home in ${l.area}`}</span>
+                <span className="shrink-0 rounded-full bg-error-tint px-2 text-[12px] font-semibold text-error">{l.let_on ? `Let ${formatDate(l.let_on, { year: false })}` : "Unavailable"}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </div>
   );
 }

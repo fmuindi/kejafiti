@@ -55,10 +55,10 @@ export function ResultsLocation({ placesEnabled, q, lat, lng, r, keep }: {
       ) : null}
       <p className="text-[12.5px] text-muted" aria-live="polite">
         {at
-          ? `Homes within ${r} km of the picked place. Your other filters stay.`
+          ? `Within ${r} km`
           : text
-            ? `Matching homes whose area, road or landmark mentions "${text}". Pick a suggestion to search by distance.${nearestSort ? " Nearest-first sorting needs a picked place, so it will switch to Most relevant." : ""}`
-            : "Anywhere. Your other filters stay."}
+            ? `Name match. Pick a suggestion to search by distance.${nearestSort ? " Nearest-first needs a picked place." : ""}`
+            : null}
       </p>
     </form>
   );

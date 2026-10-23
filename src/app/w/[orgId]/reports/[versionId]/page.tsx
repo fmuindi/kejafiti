@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PrintButton } from "@/components/rent/print-button";
 import { ReportView, type ReportCommentary, type ReportSnapshot } from "@/components/rent/report-view";
 import { Icon } from "@/components/ui/icon";
 import { requireWorkspace } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
 
 export const metadata: Metadata = { title: "Report version" };
 
@@ -21,9 +21,7 @@ export default async function ReportVersionPage({ params }: PageProps<"/w/[orgId
   return (
     <div className="mx-auto flex max-w-[900px] flex-col gap-4">
       <div className="no-print flex flex-wrap items-center justify-between gap-2">
-        <Link href={`/w/${orgId}/reports?property=${v.property_id}&period=${v.period_start.slice(0, 7)}`} className="inline-flex min-h-11 items-center gap-1 font-semibold">
-          <Icon name="chevronLeft" /> Reports
-        </Link>
+        <BackLink href={`/w/${orgId}/reports?property=${v.property_id}&period=${v.period_start.slice(0, 7)}`}>Reports</BackLink>
         <div className="flex gap-2">
           {ws.can_export ? <a href={`/api/export/report?version=${v.id}`} className="inline-flex min-h-11 items-center gap-1.5 rounded-[12px] border-[1.5px] border-ink px-4 font-semibold"><Icon name="download" size={16} /> CSV of v{v.version}</a> : null}
           <PrintButton />

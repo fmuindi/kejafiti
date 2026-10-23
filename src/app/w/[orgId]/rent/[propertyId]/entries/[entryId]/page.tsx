@@ -10,6 +10,7 @@ import { formatAmount, formatMoney } from "@/lib/money";
 import { getOpenCharges, getProperty } from "@/lib/rent/queries";
 import { METHOD_LABEL } from "@/lib/rent/status";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
 
 const ACTION_LABEL: Record<string, string> = {
   created: "Entered",
@@ -77,9 +78,7 @@ export default async function EntryPage({ params }: PageProps<"/w/[orgId]/rent/[
 
   return (
     <div className="mx-auto flex max-w-[760px] flex-col gap-5">
-      <Link href={base} className="inline-flex min-h-11 items-center gap-1 self-start font-semibold">
-        <Icon name="chevronLeft" /> Rent register
-      </Link>
+      <BackLink href={base}>Rent register</BackLink>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <Eyebrow>

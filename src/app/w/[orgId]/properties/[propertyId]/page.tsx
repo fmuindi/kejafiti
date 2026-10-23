@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddUnitsForm } from "@/components/workspace/add-units";
 import { UnitsTable, type UnitRow } from "@/components/workspace/units-table";
@@ -9,6 +8,7 @@ import { ButtonLink, Eyebrow } from "@/components/ui/primitives";
 import { isOrgAdmin, requireWorkspace } from "@/lib/auth";
 import { STYLE_LABEL } from "@/lib/listing/catalog";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
 
 export const metadata: Metadata = { title: "Property" };
 
@@ -47,9 +47,7 @@ export default async function PropertyPage({ params }: PageProps<"/w/[orgId]/pro
 
   return (
     <div className="flex flex-col gap-6">
-      <nav aria-label="Breadcrumb" className="text-[14px] text-muted">
-        <Link href={`/w/${orgId}/properties`} className="hover:underline">Properties</Link> / <span className="text-ink">{p.name}</span>
-      </nav>
+      <BackLink href={`/w/${orgId}/properties`}>Properties</BackLink>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <Eyebrow>{STYLE_LABEL[p.building_style ?? ""] ?? "Property"}</Eyebrow>

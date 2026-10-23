@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
-import { EmptyState, PageTitle } from "@/components/ui/primitives";
+import { EmptyState } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
 import { formatDate, timeAgo } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/shell/page-header";
 
 export const metadata: Metadata = { title: "My entries" };
 
@@ -27,7 +28,7 @@ export default async function MyEntriesPage({ params }: PageProps<"/w/[orgId]/re
   const rows = data ?? [];
   return (
     <div className="mx-auto flex max-w-[760px] flex-col gap-5">
-      <PageTitle>My entries</PageTitle>
+      <PageHeader icon="inbox" title="My entries" />
       {error ? (
         <p role="alert" className="text-error">We couldn&apos;t load your entries. Reload to try again.</p>
       ) : rows.length === 0 ? (

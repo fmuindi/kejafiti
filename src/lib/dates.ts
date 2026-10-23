@@ -134,3 +134,10 @@ export function eatLocalToIso(local: string): string | null {
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(local)) return null;
   return new Date(`${local}:00+03:00`).toISOString();
 }
+
+/** Pieces of an appointment for a calendar-style tile: { month: "Oct", day: "24", weekday: "Sat", time: "3:00 PM" } in EAT. */
+export function appointmentParts(ts: string): { month: string; day: string; weekday: string; time: string } {
+  const parts = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit", hour12: true, timeZone: TZ }).formatToParts(new Date(ts));
+  const get = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value ?? "";
+  return { month: get("month"), day: get("day"), weekday: get("weekday"), time: `${get("hour")}:${get("minute")} ${get("dayPeriod").toUpperCase()}` };
+}

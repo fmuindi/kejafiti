@@ -26,7 +26,7 @@ export function SupportForm({ contextLink, initialDescription = "" }: { contextL
   return (
     <form
       noValidate
-      className="flex flex-col gap-4 rounded-[18px] border border-line bg-surface p-4"
+      className="flex flex-col gap-4"
       onSubmit={(e) => {
         e.preventDefault();
         start(async () => {
@@ -60,10 +60,10 @@ export function SupportForm({ contextLink, initialDescription = "" }: { contextL
       <Field label="Subject" htmlFor="subject" error={errors.subject}>
         <TextInput id="subject" value={subject} maxLength={140} onChange={(e) => setSubject(e.target.value)} error={errors.subject} />
       </Field>
-      <Field label="What happened?" htmlFor="description" error={errors.description} hint="Don't include passwords, sign-in codes or full payment details. Support can't see your messages or rent records unless you write them here.">
+      <Field label="What happened?" htmlFor="description" error={errors.description} hint="No passwords, sign-in codes or card details.">
         <TextArea id="description" rows={5} maxLength={4000} value={description} onChange={(e) => setDescription(e.target.value)} error={errors.description} />
       </Field>
-      <Field label="Screenshot or document" htmlFor="file" optional error={errors.file} hint="JPG, PNG, WEBP or PDF up to 15 MB. Only you and the support team can open it.">
+      <Field label="Screenshot or document" htmlFor="file" optional error={errors.file} hint="JPG, PNG, WEBP or PDF, up to 15 MB. Only you and support can open it.">
         <input id="file" type="file" accept={TYPES.join(",")} onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="text-[14px]" />
       </Field>
       {contextLink ? <Notice tone="info">We&apos;ll include the page you came from ({contextLink}) so support knows where to look.</Notice> : null}

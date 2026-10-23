@@ -253,17 +253,24 @@ export function KeyValue({ label, value, className }: { label: ReactNode; value:
   );
 }
 
-export function Avatar({ name, className }: { name: string; className?: string }) {
+/** Soft tints from the palette; each name always gets the same one. */
+const AVATAR_TONES = ["bg-cool text-deep", "bg-pink text-primary-hover", "bg-success-tint text-success", "bg-waiting-tint text-waiting-strong"];
+
+/** Initials in a circle (there are no profile photos). `size` in px. */
+export function Avatar({ name, size = 40, className }: { name: string; size?: number; className?: string }) {
   const initials = name
-    .split(/\s+/)
+    .split(/[\s@._-]+/)
     .filter(Boolean)
     .slice(0, 2)
     .map((p) => p[0]?.toUpperCase())
     .join("");
+  let hash = 0;
+  for (const ch of name) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
   return (
     <span
       aria-hidden="true"
-      className={cx("grid size-10 shrink-0 place-items-center rounded-full bg-cool font-mono text-[13px] font-medium text-deep", className)}
+      style={{ width: size, height: size, fontSize: Math.round(size * 0.36) }}
+      className={cx("grid shrink-0 place-items-center rounded-full font-semibold tracking-[0.3px]", AVATAR_TONES[hash % AVATAR_TONES.length], className)}
     >
       {initials || "?"}
     </span>

@@ -17,9 +17,9 @@ export function AskHelp({ signedIn }: { signedIn: boolean }) {
   const supportHref = signedIn ? handoff : `/sign-in?next=${encodeURIComponent(handoff)}`;
   return (
     <section aria-labelledby="ask" className="flex flex-col gap-2">
-      <h2 id="ask" className="font-display text-[20px] font-bold">Ask a question</h2>
+      <h2 id="ask" className="sr-only">Ask a question</h2>
       <form
-        className="flex flex-col gap-2 sm:flex-row"
+        className="flex gap-2"
         onSubmit={(e) => {
           e.preventDefault();
           start(async () => {
@@ -32,10 +32,10 @@ export function AskHelp({ signedIn }: { signedIn: boolean }) {
         }}
       >
         <label htmlFor="ask-q" className="sr-only">Your question</label>
-        <TextInput id="ask-q" value={q} maxLength={500} onChange={(e) => setQ(e.target.value)} placeholder="e.g. Can I pay rent here?" className="flex-1" />
-        <Button type="submit" pending={pending} pendingLabel="Checking">Ask</Button>
+        <TextInput id="ask-q" value={q} maxLength={500} onChange={(e) => setQ(e.target.value)} placeholder="Ask anything, e.g. can I pay rent here?" className="min-w-0 flex-1" />
+        <Button type="submit" icon="arrowRight" pending={pending} pendingLabel="Checking">Ask</Button>
       </form>
-      <p className="text-[12.5px] text-muted">Answers come from the help articles on this page. Please don&apos;t include personal details.</p>
+      <p className="text-[12.5px] text-muted">Answered from our help articles. Leave out personal details.</p>
       <div aria-live="polite">
         {error ? <Notice tone="error">{error}</Notice> : null}
         {result?.found ? (

@@ -1127,6 +1127,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"user_activity": {
+                  Row: {
+                    "last_active_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "last_active_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "last_active_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "user_activity_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"viewings": {
                   Row: {
                     "cancel_reason": string | null,"cancelled_by_side": string | null,"client_ref": string | null,"confirmed_start": string | null,"conversation_id": string | null,"created_at": string,"decline_reason": string | null,"id": string,"listing_id": string,"meeting_instructions": string | null,"org_id": string,"property_id": string,"proposed_start": string | null,"requested_start": string,"status": string,"tenant_id": string,"tenant_note": string | null,"updated_at": string,"updated_by": string | null
@@ -1340,6 +1360,11 @@ isOneToOne: false
 "confirm_still_available":
 { Args: { "p_listings": (string)[] }; Returns: Json
                            },
+"conversation_activity":
+{ Args: { "p_ids": (string)[] }; Returns: {
+              "conversation_id": string,"last_active_at": string
+            }[]
+                           },
 "correct_entry":
 { Args: { "p": Json,"p_entry": string,"p_reason": string }; Returns: Json
                            },
@@ -1526,8 +1551,16 @@ isOneToOne: false
 "tenant_viewing_action":
 { Args: { "p_action": string,"p_reason"?: string,"p_time"?: string,"p_viewing": string }; Returns: undefined
                            },
+"touch_activity":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
 "update_member_access":
 { Args: { "p": Json,"p_membership": string }; Returns: undefined
+                           },
+"viewing_location":
+{ Args: { "p_viewing": string }; Returns: {
+              "address": string,"confirmed_start": string,"landmark": string,"latitude": number,"longitude": number,"meeting_instructions": string,"property_name": string
+            }[]
                            }
           }
           Enums: {

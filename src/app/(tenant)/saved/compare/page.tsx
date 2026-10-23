@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CompareNote } from "@/components/tenant/compare-note";
 import { Icon } from "@/components/ui/icon";
-import { ButtonLink, PageTitle } from "@/components/ui/primitives";
+import { ButtonLink } from "@/components/ui/primitives";
 import { requireUser } from "@/lib/auth";
 import { daysSince, formatDate } from "@/lib/dates";
 import { layoutLabel } from "@/lib/listing/catalog";
@@ -10,6 +10,8 @@ import { chargeName, type ListingCharge } from "@/lib/listing/costs";
 import { isOpenListing, type ClosedListing, type PublicListing } from "@/lib/listing/types";
 import { formatAmount } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
+import { PageHeader } from "@/components/shell/page-header";
 
 export const metadata: Metadata = { title: "Compare saved homes", robots: { index: false } };
 
@@ -54,7 +56,7 @@ export default async function ComparePage({ searchParams }: PageProps<"/saved/co
   if (refs.length < 2) {
     return (
       <div className="mx-auto flex max-w-[720px] flex-col gap-4 px-4 pt-5 pb-10">
-        <PageTitle>Compare saved homes</PageTitle>
+        <PageHeader icon="swap" title="Compare" />
         <p className="text-[15px] text-muted">Choose two or three of your saved homes to compare.</p>
         <ButtonLink href="/saved" variant="secondary" className="self-start">Back to saved homes</ButtonLink>
       </div>
@@ -63,8 +65,8 @@ export default async function ComparePage({ searchParams }: PageProps<"/saved/co
 
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-4 px-4 pt-5 pb-10">
-      <Link href="/saved" className="inline-flex min-h-11 items-center gap-1 self-start font-semibold"><Icon name="chevronLeft" /> Saved homes</Link>
-      <PageTitle>Compare saved homes</PageTitle>
+      <BackLink href="/saved">Saved homes</BackLink>
+      <PageHeader icon="swap" title="Compare" />
       <p className="-mt-2 text-[14px] text-muted">&quot;Unknown&quot; means the advertiser hasn&apos;t confirmed it. Ask before you pay anything.</p>
       {/* Columns side by side from tablet width; stacked per home on phones. */}
       <div className="grid gap-4 md:grid-cols-[repeat(var(--n),minmax(0,1fr))]" style={{ ["--n" as string]: refs.length }}>

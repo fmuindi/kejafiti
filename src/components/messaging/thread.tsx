@@ -8,6 +8,7 @@ import { Icon } from "@/components/ui/icon";
 import { cx } from "@/components/ui/primitives";
 import { formatTime, formatDate } from "@/lib/dates";
 import { getBrowserClient } from "@/lib/supabase/browser";
+import { TypingBubble, useLiveConversation } from "./live";
 
 export type ThreadMessage = { id: string; body: string; side: "tenant" | "advertiser" | "system"; created_at: string; mine: boolean };
 type Outgoing = { ref: string; body: string; state: "sending" | "queued" | "failed"; at: string };
@@ -15,9 +16,14 @@ type Outgoing = { ref: string; body: string; state: "sending" | "queued" | "fail
 // The platform thread is the durable record. Outgoing messages show their true state:
 // Sending -> Sent, Queued (offline, not sent yet) or Not sent (Retry). Retries reuse the
 // same client reference, so a message is never posted twice.
-/** `userId`: the signed-in user; the unsent reply is kept on this device for them only. */
-export function Thread({ userId, conversationId, messages, quickReplies }: { userId: string; conversationId: string; messages: ThreadMessage[]; quickReplies?: string[] }) {
+/**
+ * `userId`: the signed-in user; the unsent reply is kept on this device for them only.
+ * `peerName`: the other side, for the typing indicator (inside a LiveConversation).
+ */
+export function Thread({ userId, conversationId, messages, quickReplies, peerName = "The other side" }: { userId: string; conversationId: string; messages: ThreadMessage[]; quickReplies?: string[]; peerName?: string }) {
   const router = useRouter();
+  const live = useLiveConversation();
+  const peerTyping = !!live?.peer.typing;
   const [draft, setDraft] = useState("");
   const [outgoing, setOutgoing] = useState<Outgoing[]>([]);
   const online = useSyncExternalStore(
@@ -46,14 +52,19 @@ export function Thread({ userId, conversationId, messages, quickReplies }: { use
     void markRead(conversationId);
     // Live updates for this thread only; RLS limits delivery to participants.
     const supabase = getBrowserClient();
+    let cancelled = false;
     const channel = supabase
       .channel(`conv-${conversationId}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${conversationId}` }, () => {
         router.refresh();
         void markRead(conversationId);
-      })
-      .subscribe();
+      });
+    // Join with the signed-in user's token, so RLS lets this participant's messages through.
+    void supabase.realtime.setAuth().then(() => {
+      if (!cancelled) channel.subscribe();
+    });
     return () => {
+      cancelled = true;
       void supabase.removeChannel(channel);
     };
   }, [conversationId, userId, router]);
@@ -69,7 +80,7 @@ export function Thread({ userId, conversationId, messages, quickReplies }: { use
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
-  }, [messages.length, outgoing.length]);
+  }, [messages.length, outgoing.length, peerTyping]);
 
   async function deliver(o: Outgoing) {
     if (!navigator.onLine) {
@@ -108,6 +119,7 @@ export function Thread({ userId, conversationId, messages, quickReplies }: { use
     const o: Outgoing = { ref: crypto.randomUUID(), body, state: "sending", at: new Date().toISOString() };
     setOutgoing((x) => [...x, o]);
     setDraft("");
+    live?.stoppedTyping();
     void deliver(o);
   };
 
@@ -151,6 +163,7 @@ export function Thread({ userId, conversationId, messages, quickReplies }: { use
             ) : null}
           </li>
         ))}
+        <TypingBubble name={peerName} />
       </ol>
       <div ref={endRef} />
       {quickReplies?.length ? (
@@ -174,7 +187,12 @@ export function Thread({ userId, conversationId, messages, quickReplies }: { use
           rows={1}
           value={draft}
           maxLength={4000}
-          onChange={(e) => setDraft(e.target.value)}
+          onChange={(e) => {
+            setDraft(e.target.value);
+            if (e.target.value.trim()) live?.typing();
+            else live?.stoppedTyping();
+          }}
+          onBlur={() => live?.stoppedTyping()}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();

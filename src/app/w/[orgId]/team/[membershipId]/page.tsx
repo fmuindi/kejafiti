@@ -1,13 +1,12 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EditAccess } from "@/components/team/edit-access";
-import { Icon } from "@/components/ui/icon";
 import { Eyebrow, PageTitle } from "@/components/ui/primitives";
 import { isOrgAdmin, requireWorkspace } from "@/lib/auth";
 import { formatDateTime } from "@/lib/dates";
 import { getVisibleProperties } from "@/lib/rent/queries";
 import { ROLE_LABEL } from "@/lib/rent/status";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
 
 export default async function EditMemberPage({ params }: PageProps<"/w/[orgId]/team/[membershipId]">) {
   const { orgId, membershipId } = await params;
@@ -26,9 +25,7 @@ export default async function EditMemberPage({ params }: PageProps<"/w/[orgId]/t
 
   return (
     <div className="mx-auto flex max-w-[640px] flex-col gap-5">
-      <Link href={`/w/${orgId}/team`} className="inline-flex min-h-11 items-center gap-1 self-start font-semibold">
-        <Icon name="chevronLeft" /> Team
-      </Link>
+      <BackLink href={`/w/${orgId}/team`}>Team</BackLink>
       <div>
         <Eyebrow>{ROLE_LABEL[m.role]} · {m.status}</Eyebrow>
         <PageTitle className="mt-1">{m.display_name}</PageTitle>

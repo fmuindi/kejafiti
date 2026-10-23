@@ -5,12 +5,13 @@ import { PrintButton } from "@/components/rent/print-button";
 import { AI } from "@/lib/ai/config";
 import { ReportView, type ReportSnapshot } from "@/components/rent/report-view";
 import { Icon } from "@/components/ui/icon";
-import { EmptyState, Notice, PageTitle } from "@/components/ui/primitives";
+import { EmptyState, Notice } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
 import { addMonths, currentPeriod, formatDateTime, formatPeriod, parsePeriodParam, periodParam } from "@/lib/dates";
 import { getVisibleProperties } from "@/lib/rent/queries";
 import { formatAmount } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/shell/page-header";
 
 export const metadata: Metadata = { title: "Reports" };
 
@@ -50,7 +51,7 @@ export default async function ReportsPage({ params, searchParams }: PageProps<"/
 
   return (
     <div className="flex flex-col gap-5">
-      <PageTitle>Monthly reports</PageTitle>
+      <PageHeader icon="file" title="Reports" />
       <form className="flex flex-wrap items-end gap-2" aria-label="Report filters">
         <label className="flex flex-col gap-1 text-[13px] text-muted">
           Property

@@ -4,6 +4,7 @@ import { ViewingRequestForm } from "@/components/messaging/viewing-request";
 import { getSessionUser } from "@/lib/auth";
 import { formatAmount } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
+import { BackLink } from "@/components/shell/back-link";
 
 export const metadata: Metadata = { title: "Request a viewing" };
 
@@ -18,6 +19,7 @@ export default async function ViewingPage({ params, searchParams }: PageProps<"/
   const user = await getSessionUser();
   return (
     <div className="mx-auto flex max-w-[560px] flex-col gap-4 px-4 pt-5 pb-10">
+      <BackLink href={`/homes/${ref}`}>The home</BackLink>
       <h1 className="font-display text-[26px] font-bold">Request a viewing</h1>
       <p className="text-[14px] text-muted">
         {l.title} · KES {formatAmount(l.rent_amount)} · with {l.advertiser?.name}

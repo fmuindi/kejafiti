@@ -9,8 +9,8 @@ export function MarkAllRead({ orgId }: { orgId?: string }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   return (
-    <Button size="sm" variant="secondary" pending={pending} onClick={() => start(async () => { await markAllUpdatesRead(orgId); router.refresh(); })}>
-      Mark all as read
+    <Button size="sm" variant="secondary" icon="check" pending={pending} onClick={() => start(async () => { await markAllUpdatesRead(orgId); router.refresh(); })}>
+      Mark all read
     </Button>
   );
 }

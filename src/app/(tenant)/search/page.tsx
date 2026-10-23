@@ -80,7 +80,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
       </div>
       <div className="sticky top-0 z-20 -mx-4 border-b border-line bg-cream/95 px-4 pt-1 pb-3 backdrop-blur md:static md:mx-0 md:border-0 md:bg-transparent md:px-0">
         <div className="flex items-center gap-3">
-          <Link href="/" aria-label="Back to Explore" className="grid size-10 place-items-center rounded-full md:hidden">
+          <Link href="/" aria-label="Back to Explore" className="grid size-9 shrink-0 place-items-center rounded-full border border-line bg-surface md:hidden">
             <Icon name="chevronLeft" />
           </Link>
           <div className="min-w-0 flex-1">
@@ -190,8 +190,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
               ) : null}
             </div>
             <p className="max-w-xl text-center text-[12.5px] text-muted">
-              Sponsored homes are paid placements. They still match every filter you set and get the same checks as other
-              listings.
+              Sponsored homes are paid placements that match your filters.
             </p>
           </div>
         </>

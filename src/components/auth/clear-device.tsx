@@ -13,12 +13,13 @@ export function ClearDeviceData({ userId }: { userId: string }) {
       <Button
         variant="secondary"
         size="sm"
+        icon="trash"
         onClick={() => {
           clearDeviceDataFor(userId);
           setDone(true);
         }}
       >
-        Clear my searches and drafts on this device
+        Clear searches and drafts
       </Button>
       {done ? <span role="status" className="text-[13.5px] font-semibold text-success">Cleared</span> : null}
     </div>
