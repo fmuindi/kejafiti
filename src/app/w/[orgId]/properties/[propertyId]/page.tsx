@@ -47,19 +47,19 @@ export default async function PropertyPage({ params }: PageProps<"/w/[orgId]/pro
   const admin = isOrgAdmin(ws);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5">
       <BackLink href={`/w/${orgId}/properties`}>Properties</BackLink>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <Eyebrow>{STYLE_LABEL[p.building_style ?? ""] ?? "Property"}</Eyebrow>
-          <h1 className="mt-1 font-display text-[1.875rem] leading-none font-bold tracking-[-1px] md:text-[2.5rem]">{p.name}</h1>
-          <p className="mt-2 text-[0.90625rem] text-muted">{[p.road, p.area, p.town].filter(Boolean).join(", ")}</p>
+          <h1 className="heading-page mt-1">{p.name}</h1>
+          <p className="mt-2 text-body text-muted">{[p.road, p.area, p.town].filter(Boolean).join(", ")}</p>
         </div>
         <dl className="flex gap-6">
           {[["Units", rows.length], ["Vacant", vacant], ["Published", published], ["Open enquiries", open]].map(([k, v]) => (
             <div key={k as string}>
-              <dd className={`font-display text-[1.625rem] font-bold ${k === "Open enquiries" && Number(v) > 0 ? "text-waiting" : ""}`}>{v}</dd>
-              <dt className="text-[0.78125rem] text-muted">{k}</dt>
+              <dd className={`font-display text-title-lg font-bold ${k === "Open enquiries" && Number(v) > 0 ? "text-waiting" : ""}`}>{v}</dd>
+              <dt className="text-caption text-muted">{k}</dt>
             </div>
           ))}
         </dl>
@@ -72,7 +72,7 @@ export default async function PropertyPage({ params }: PageProps<"/w/[orgId]/pro
       {ws.can_manage_tenancies || ws.can_manage_listings ? <AddUnitsForm orgId={orgId} propertyId={propertyId} /> : null}
       {ws.can_manage_tenancies ? <ImportUnits orgId={orgId} propertyId={propertyId} /> : null}
       {admin ? (
-        <details className="rounded-[18px] border border-line bg-surface p-4">
+        <details className="surface p-4">
           <summary className="cursor-pointer font-semibold"><Icon name="edit" size={16} className="mr-1 inline" /> Edit property details</summary>
           <div className="mt-4">
             <PropertyForm

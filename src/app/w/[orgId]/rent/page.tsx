@@ -23,13 +23,13 @@ export default async function RentIndex({ params }: PageProps<"/w/[orgId]/rent">
       <div>
         <Eyebrow>Rent records · {formatPeriod(period)}</Eyebrow>
         <PageTitle className="mt-1">Choose a property</PageTitle>
-        <p className="mt-2 max-w-2xl text-[0.90625rem] text-muted">
+        <p className="mt-2 max-w-2xl text-body text-muted">
           Tenants pay through each property&apos;s existing arrangements. Staff check payments outside nyumbani, then record and
           confirm them here.
         </p>
       </div>
       {ws.can_confirm ? (
-        <Link href={`/w/${orgId}/rent/inbox`} className="flex min-h-[56px] items-center gap-3 rounded-[16px] border border-[#f0d9ad] bg-waiting-tint px-4 font-semibold text-waiting-strong">
+        <Link href={`/w/${orgId}/rent/inbox`} className="flex min-h-row items-center gap-3 rounded-card border border-waiting-line bg-waiting-tint px-4 font-semibold text-waiting-strong">
           <Icon name="inbox" /> Open the confirmation inbox <Icon name="chevronRight" className="ml-auto" />
         </Link>
       ) : null}
@@ -49,14 +49,14 @@ export default async function RentIndex({ params }: PageProps<"/w/[orgId]/rent">
             const s = summaries[i].summary;
             return (
               <li key={p.id}>
-                <Link href={`/w/${orgId}/rent/${p.id}`} className="flex flex-col gap-2 rounded-[18px] border border-line bg-surface p-4 hover:border-ink">
+                <Link href={`/w/${orgId}/rent/${p.id}`} className="surface flex flex-col gap-2 p-4 hover:border-ink">
                   <span className="flex items-center justify-between">
-                    <span className="font-display text-[1.1875rem] font-bold">{p.name}</span>
+                    <span className="font-display text-lead font-bold">{p.name}</span>
                     <Icon name="chevronRight" className="text-muted" />
                   </span>
-                  <span className="text-[0.84375rem] text-muted">{p.area}</span>
+                  <span className="text-label text-muted">{p.area}</span>
                   {s ? (
-                    <span className="text-[0.875rem]">
+                    <span className="text-label">
                       <strong>{formatMoney(s.settled)}</strong> confirmed of {formatMoney(s.billed)} billed ·{" "}
                       {formatRate(s.collection_rate)}
                       {s.pending_count ? (

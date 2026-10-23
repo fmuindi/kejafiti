@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { updateProfileName } from "@/app/(tenant)/account/actions";
 import { Field, TextInput } from "@/components/ui/form";
-import { Avatar, Button } from "@/components/ui/primitives";
+import { Avatar, Button, InlineError } from "@/components/ui/primitives";
 
 /** Who you are: avatar, name and sign-in email, with the name editable in place. */
 export function ProfileForm({ name, email }: { name: string; email: string }) {
@@ -13,12 +13,12 @@ export function ProfileForm({ name, email }: { name: string; email: string }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   return (
-    <section aria-label="Profile" className="flex flex-col gap-3 rounded-[20px] border border-line bg-surface p-4">
+    <section aria-label="Profile" className="surface flex flex-col gap-3 p-4">
       <div className="flex items-center gap-3.5">
         <Avatar name={saved || email} size={56} />
         <div className="min-w-0 flex-1">
-          <p className="truncate font-display text-[1.25rem] font-bold">{saved || "Add your name"}</p>
-          <p className="truncate text-[0.875rem] text-muted">{email}</p>
+          <p className="truncate font-display text-title-sm font-bold">{saved || "Add your name"}</p>
+          <p className="truncate text-label text-muted">{email}</p>
         </div>
         {!editing ? (
           <Button type="button" size="sm" variant="secondary" icon="edit" onClick={() => setEditing(true)}>
@@ -46,7 +46,7 @@ export function ProfileForm({ name, email }: { name: string; email: string }) {
           <div className="flex items-center gap-2">
             <Button type="submit" size="sm" icon="check" pending={pending}>Save</Button>
             <Button type="button" size="sm" variant="quiet" onClick={() => { setValue(saved); setEditing(false); setError(null); }}>Cancel</Button>
-            {error ? <span role="alert" className="text-[0.84375rem] font-semibold text-error">{error}</span> : null}
+            {error ? <InlineError>{error}</InlineError> : null}
           </div>
         </form>
       ) : null}

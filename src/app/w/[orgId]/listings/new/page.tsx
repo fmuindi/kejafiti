@@ -16,10 +16,10 @@ export default async function NewListingPage({ params, searchParams }: PageProps
   const supabase = await createClient();
   const { data: properties } = await supabase.from("properties").select("id, name, area, units(id, label, occupancy)").eq("org_id", orgId).is("archived_at", null).order("name");
   return (
-    <div className="mx-auto flex max-w-[600px] flex-col gap-4">
+    <div className="mx-auto flex max-w-reading flex-col gap-5">
       <BackLink href={`/w/${orgId}`}>Overview</BackLink>
       <PageHeader icon="plus" title="List a home" />
-      <p className="text-[0.9375rem] text-muted">Listing is free for one vacancy. It takes about 10 minutes and saves as you go.</p>
+      <p className="text-body text-muted">Listing is free for one vacancy. It takes about 10 minutes and saves as you go.</p>
       <StartListingForm
         orgId={orgId}
         canCreateProperty={isOrgAdmin(ws)}

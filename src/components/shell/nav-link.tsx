@@ -30,7 +30,7 @@ export function BottomTabs({ items, label }: { items: NavItem[]; label: string }
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cx(
-                  "flex min-h-[58px] flex-col items-center justify-center gap-1 text-[0.71875rem] font-semibold",
+                  "flex min-h-[58px] flex-col items-center justify-center gap-1 text-micro font-semibold",
                   active ? "text-primary" : "text-muted",
                 )}
               >
@@ -38,10 +38,10 @@ export function BottomTabs({ items, label }: { items: NavItem[]; label: string }
                   {item.avatar ? (
                     <Avatar name={item.avatar} size={24} className={cx("ring-2 ring-offset-1", active ? "ring-primary" : "ring-transparent")} />
                   ) : (
-                    <Icon name={item.icon} size={22} />
+                    <Icon name={item.icon} size={24} />
                   )}
                   {item.badge ? (
-                    <span className="absolute -top-1.5 -right-2.5 min-w-[18px] rounded-full bg-primary px-1 text-center text-[0.65625rem] leading-[1.125rem] text-white">
+                    <span className="absolute -top-1.5 -right-2.5 min-w-[18px] rounded-full bg-primary px-1 text-center text-micro leading-[1.125rem] text-white">
                       {item.badge > 99 ? "99+" : item.badge}
                     </span>
                   ) : null}
@@ -72,14 +72,14 @@ export function SidebarLinks({ items }: { items: NavItem[] }) {
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={cx(
-                "flex min-h-11 items-center gap-2.5 rounded-[12px] px-3 text-[0.9375rem] transition-colors",
-                active ? "bg-pink font-semibold text-primary-hover" : "text-[#3d4750] hover:bg-surface",
+                "flex min-h-11 items-center gap-2.5 rounded-control px-3 text-body transition-colors",
+                active ? "bg-pink font-semibold text-primary-hover" : "text-ink-soft hover:bg-surface",
               )}
             >
               <Icon name={item.icon} size={18} className={active ? "text-primary" : "text-muted"} />
               <span className="flex-1">{item.label}</span>
               {item.badge ? (
-                <span className="min-w-6 rounded-full bg-primary px-1.5 text-center text-[0.75rem] leading-6 font-bold text-white">
+                <span className="min-w-6 rounded-full bg-primary px-1.5 text-center text-micro leading-6 font-bold text-white">
                   {item.badge > 99 ? "99+" : item.badge}
                   <span className="sr-only"> waiting</span>
                 </span>
@@ -106,14 +106,14 @@ export function HeaderLink({ href, children, icon, badge, exact }: { href: strin
       aria-label={badge ? `${children}, ${badge} new` : undefined}
       title={children}
       className={cx(
-        "relative inline-flex min-h-10 items-center gap-1.5 rounded-full px-3 text-[0.9375rem] font-semibold transition-colors",
+        "relative inline-flex min-h-10 items-center gap-1.5 rounded-full px-3 text-body font-semibold transition-colors",
         active ? "bg-pink text-primary-hover" : "text-ink hover:bg-cool",
       )}
     >
       <Icon name={icon} size={18} />
       <span className="sr-only lg:not-sr-only">{children}</span>
       {badge ? (
-        <span aria-hidden="true" className="min-w-5 rounded-full bg-primary px-1 text-center text-[0.6875rem] leading-5 font-bold text-white">
+        <span aria-hidden="true" className="min-w-5 rounded-full bg-primary px-1 text-center text-micro leading-5 font-bold text-white">
           {badge > 99 ? "99+" : badge}
         </span>
       ) : null}
@@ -130,7 +130,7 @@ export function AccountLink({ href, name }: { href: string; name: string }) {
       href={href}
       aria-current={active ? "page" : undefined}
       className={cx(
-        "ml-2 inline-flex min-h-11 items-center gap-2 rounded-full border py-1 pr-3.5 pl-1 text-[0.9375rem] font-semibold transition-colors",
+        "ml-2 inline-flex min-h-11 items-center gap-2 rounded-full border py-1 pr-3.5 pl-1 text-body font-semibold transition-colors",
         active ? "border-primary text-primary" : "border-line bg-surface text-ink hover:border-ink",
       )}
     >

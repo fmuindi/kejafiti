@@ -66,7 +66,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
   const filterCount = chips.length;
 
   return (
-    <div className="mx-auto max-w-[1360px] px-4 pt-4 pb-10 md:px-6 md:pt-6">
+    <div className="mx-auto max-w-shell px-4 pt-4 pb-10 md:px-6 md:pt-6">
       <RememberSearch label={`${p.q ?? "Anywhere"} · ${subtitle}`} query={query} />
       <div className="mb-3 max-w-xl">
         <ResultsLocation
@@ -84,8 +84,8 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
             <Icon name="chevronLeft" />
           </Link>
           <div className="min-w-0 flex-1">
-            <h1 className="truncate font-display text-[1.25rem] font-bold md:text-[2.125rem] md:tracking-[-1px]">{title}</h1>
-            <p className="truncate text-[0.8125rem] text-muted md:text-[0.9375rem]">{subtitle}</p>
+            <h1 className="heading-page truncate">{title}</h1>
+            <p className="truncate text-caption text-muted md:text-body">{subtitle}</p>
           </div>
           <SaveSearchButton label={`${title} · ${subtitle}`} query={query} signedIn={!!user} />
         </div>
@@ -97,7 +97,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
               href={`/search?${toQuery({ ...p, category: p.category === c.value ? undefined : c.value, page: 1 })}`}
               aria-current={p.category === c.value ? "true" : undefined}
               className={cx(
-                "border-b-2 px-3 py-2 text-[0.9375rem] whitespace-nowrap",
+                "border-b-2 px-3 py-2 text-body whitespace-nowrap",
                 p.category === c.value ? "border-primary font-semibold" : "border-transparent text-muted hover:text-ink",
               )}
             >
@@ -117,16 +117,16 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
               <li key={c.label}>
                 <Link
                   href={c.href}
-                  className="inline-flex min-h-9 items-center gap-1.5 rounded-full border-[1.5px] border-primary bg-pink px-3 text-[0.84375rem] font-semibold text-primary-hover"
+                  className="inline-flex min-h-9 items-center gap-1.5 rounded-full border-strong border-primary bg-pink px-3 text-label font-semibold text-primary-hover"
                 >
                   {c.label}
-                  <Icon name="x" size={14} strokeWidth={2.4} />
+                  <Icon name="x" size={16} strokeWidth={2.4} />
                   <span className="sr-only">Remove filter</span>
                 </Link>
               </li>
             ))}
             <li>
-              <Link href={`/search?${toQuery({ q: p.q, lat: p.lat, lng: p.lng, r: p.r, max: p.max, category: p.category })}`} className="inline-flex min-h-9 items-center px-2 text-[0.84375rem] font-semibold text-ink underline">
+              <Link href={`/search?${toQuery({ q: p.q, lat: p.lat, lng: p.lng, r: p.r, max: p.max, category: p.category })}`} className="link-action inline-flex min-h-9 items-center px-2 text-label">
                 Clear all
               </Link>
             </li>
@@ -148,7 +148,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
         <NoResults params={p} />
       ) : (
         <>
-          <p className="mt-4 text-[0.875rem]" aria-live="polite">
+          <p className="mt-4 text-label" aria-live="polite">
             <strong>
               {total} home{total === 1 ? "" : "s"}
             </strong>{" "}
@@ -158,7 +158,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
               <>
                 {" "}
                 {extra} more {extra === 1 ? "has" : "have"} an unconfirmed must-have.{" "}
-                <Link href={removeChip(p, { unconfirmed: true })} className="font-semibold text-primary underline">
+                <Link href={removeChip(p, { unconfirmed: true })} className="link-action">
                   Include them
                 </Link>
               </>
@@ -174,22 +174,22 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
             ))}
           </ul>
           <div className="mt-6 flex flex-col items-center gap-3">
-            <p className="text-[0.875rem] text-muted">
+            <p className="text-label text-muted">
               Showing {(p.page - 1) * PAGE_SIZE + 1}–{(p.page - 1) * PAGE_SIZE + rows.length} of {total} homes
             </p>
             <div className="flex gap-2">
               {p.page > 1 ? (
-                <Link href={`/search?${toQuery({ ...p, page: p.page - 1 })}`} className="rounded-[12px] border-[1.5px] border-ink px-4 py-2.5 font-semibold">
+                <Link href={`/search?${toQuery({ ...p, page: p.page - 1 })}`} className="rounded-control border-strong border-ink px-4 py-2.5 font-semibold">
                   Previous
                 </Link>
               ) : null}
               {p.page * PAGE_SIZE < total ? (
-                <Link href={`/search?${toQuery({ ...p, page: p.page + 1 })}`} className="rounded-[12px] border-[1.5px] border-ink px-4 py-2.5 font-semibold">
+                <Link href={`/search?${toQuery({ ...p, page: p.page + 1 })}`} className="rounded-control border-strong border-ink px-4 py-2.5 font-semibold">
                   Show more homes
                 </Link>
               ) : null}
             </div>
-            <p className="max-w-xl text-center text-[0.78125rem] text-muted">
+            <p className="max-w-xl text-center text-caption text-muted">
               Sponsored homes are paid placements that match your filters.
             </p>
           </div>

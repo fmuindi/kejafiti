@@ -18,10 +18,10 @@ export default async function NewMessagePage({ params }: PageProps<"/homes/[ref]
   const { data: existing } = await supabase.from("conversations").select("id").eq("listing_id", l.id).eq("tenant_id", user.id).maybeSingle();
   if (existing) redirect(`/messages/${existing.id}`);
   return (
-    <div className="mx-auto flex max-w-[640px] flex-col gap-4 px-4 pt-5 pb-10">
+    <div className="mx-auto flex max-w-reading flex-col gap-5 px-4 pt-5 pb-10">
       <BackLink href={`/homes/${ref}`}>The home</BackLink>
-      <h1 className="font-display text-[1.625rem] font-bold">Message {l.advertiser?.name}</h1>
-      <p className="text-[0.875rem] text-muted">
+      <h1 className="heading-page">Message {l.advertiser?.name}</h1>
+      <p className="text-label text-muted">
         About: {l.title} · KES {formatAmount(l.rent_amount)}. The listing is attached to your message.
       </p>
       <NewMessageForm refId={ref} />

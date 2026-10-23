@@ -36,9 +36,9 @@ export default async function TenantLayout({ children }: LayoutProps<"/">) {
   const listHref = workspaces.length ? "/w" : "/start";
 
   return (
-    <div className="min-h-dvh pb-[76px] md:pb-0">
+    <div className="flex min-h-dvh flex-col pb-[76px] md:pb-0">
       <header className="no-print sticky top-0 z-30 hidden border-b border-line bg-cream/95 backdrop-blur md:block">
-        <div className="mx-auto flex h-[68px] max-w-[1360px] items-center gap-4 px-6">
+        <div className="mx-auto flex h-[68px] max-w-shell items-center gap-4 px-6">
           <Link href="/" aria-label="nyumbani home">
             <Logo />
           </Link>
@@ -65,7 +65,7 @@ export default async function TenantLayout({ children }: LayoutProps<"/">) {
         <Link href="/" aria-label="nyumbani home"><Logo /></Link>
         {user ? <UpdatesBell count={unread} /> : <Link href="/sign-in" className={buttonClass("secondary", "sm")}>Sign in</Link>}
       </div>
-      <main id="main">{children}</main>
+      <main id="main" className="flex-1">{children}</main>
       <SiteFooter listHref={listHref} listLabel={workspaces.length ? "My workspace" : "List your home"} signedIn={!!user} />
       <BottomTabs items={tabs} label="Tenant" />
       {user ? <ActivityPing /> : null}

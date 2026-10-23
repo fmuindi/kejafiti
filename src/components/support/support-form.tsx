@@ -64,7 +64,7 @@ export function SupportForm({ contextLink, initialDescription = "" }: { contextL
         <TextArea id="description" rows={5} maxLength={4000} value={description} onChange={(e) => setDescription(e.target.value)} error={errors.description} />
       </Field>
       <Field label="Screenshot or document" htmlFor="file" optional error={errors.file} hint="JPG, PNG, WEBP or PDF, up to 15 MB. Only you and support can open it.">
-        <input id="file" type="file" accept={TYPES.join(",")} onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="text-[0.875rem]" />
+        <input id="file" type="file" accept={TYPES.join(",")} onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="text-label" />
       </Field>
       {contextLink ? <Notice tone="info">We&apos;ll include the page you came from ({contextLink}) so support knows where to look.</Notice> : null}
       <Button type="submit" size="lg" pending={pending} pendingLabel="Sending" className="self-start">Send to support</Button>

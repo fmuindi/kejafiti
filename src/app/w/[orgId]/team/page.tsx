@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { AddMemberPanel } from "@/components/team/add-member";
 import { MemberActions } from "@/components/team/member-actions";
 import { Icon } from "@/components/ui/icon";
-import { EmptyState, Notice, PageTitle, StatusBadge, cx } from "@/components/ui/primitives";
+import { EmptyState, Notice, PageTitle, StatusBadge, cx, buttonClass } from "@/components/ui/primitives";
 import { isOrgAdmin, requireWorkspace } from "@/lib/auth";
 import { formatDate, timeAgo } from "@/lib/dates";
 import { emailConfigured } from "@/lib/delivery";
@@ -47,7 +47,7 @@ export default async function TeamPage({ params, searchParams }: PageProps<"/w/[
         <PageTitle>
           <span id="team">Team</span>
         </PageTitle>
-        <p className="mt-2 text-[0.9375rem] text-muted">People who manage your properties. Only you can change their access.</p>
+        <p className="mt-2 text-body text-muted">People who manage your properties. Only you can change their access.</p>
         {!emailConfigured() ? (
           <Notice tone="waiting" className="mt-4" title="Invitation emails aren't being sent yet">
             No email provider is configured, so invitations wait in the queue. After you invite someone, copy their invitation link
@@ -56,27 +56,27 @@ export default async function TeamPage({ params, searchParams }: PageProps<"/w/[
         ) : null}
 
         <form className="mt-5 flex flex-wrap gap-2" aria-label="Filter team">
-          <select name="property" defaultValue={fProp} aria-label="Property" className="min-h-11 rounded-[12px] border border-line bg-surface px-3 text-[0.90625rem]">
+          <select name="property" defaultValue={fProp} aria-label="Property" className="min-h-11 rounded-control border border-line bg-surface px-3 text-body">
             <option value="">All properties</option>
             {properties.map((p) => (
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
           </select>
-          <select name="role" defaultValue={fRole} aria-label="Role" className="min-h-11 rounded-[12px] border border-line bg-surface px-3 text-[0.90625rem]">
+          <select name="role" defaultValue={fRole} aria-label="Role" className="min-h-11 rounded-control border border-line bg-surface px-3 text-body">
             <option value="">All roles</option>
             <option value="manager">Property manager</option>
             <option value="caretaker">Caretaker</option>
             <option value="viewer">Accountant (view only)</option>
             <option value="agency_admin">Agency admin</option>
           </select>
-          <select name="status" defaultValue={fStatus} aria-label="Status" className="min-h-11 rounded-[12px] border border-line bg-surface px-3 text-[0.90625rem]">
+          <select name="status" defaultValue={fStatus} aria-label="Status" className="min-h-11 rounded-control border border-line bg-surface px-3 text-body">
             <option value="">All statuses</option>
             <option value="active">Active</option>
             <option value="invited">Invited</option>
             <option value="expired">Invitation expired</option>
             <option value="suspended">Suspended</option>
           </select>
-          <button type="submit" className="min-h-11 rounded-[12px] bg-ink px-4 text-[0.90625rem] font-semibold text-white">Filter</button>
+          <button type="submit" className={buttonClass("dark", "md")}>Filter</button>
         </form>
 
         {error ? (
@@ -88,55 +88,55 @@ export default async function TeamPage({ params, searchParams }: PageProps<"/w/[
             </EmptyState>
           </div>
         ) : (
-          <ul className="mt-5 flex flex-col divide-y divide-divider overflow-hidden rounded-[18px] border border-line bg-surface">
+          <ul className="surface-list @container mt-5">
             {members.map((m) => {
               const st = statusOf(m);
               return (
-                <li key={m.membership_id} className="flex flex-col gap-3 p-4 lg:flex-row lg:items-center">
+                <li key={m.membership_id} className="flex flex-col gap-3 p-4 @3xl:flex-row @3xl:items-center">
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold">{m.display_name}</p>
-                    <p className="text-[0.84375rem] text-muted">
+                    <p className="text-label text-muted">
                       {ROLE_LABEL[m.role]} · {m.email}
                     </p>
                     {/* IMP-15: sign-in and record changes are different events. */}
                     {m.status === "active" ? (
-                      <p className="text-[0.8125rem] text-muted">
+                      <p className="text-caption text-muted">
                         Signed in {m.last_sign_in_at ? timeAgo(m.last_sign_in_at) : "never"} · Last change to rent records {m.last_active_at ? timeAgo(m.last_active_at) : "never"}
                       </p>
                     ) : null}
-                    <p className="mt-1 text-[0.84375rem]">{m.role === "owner" || m.all_properties ? "All properties" : m.property_names.join(", ") || "No properties"}</p>
+                    <p className="mt-1 text-label">{m.role === "owner" || m.all_properties ? "All properties" : m.property_names.join(", ") || "No properties"}</p>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2 lg:w-[310px] lg:justify-end">
+                  <div className="flex flex-wrap items-center gap-2 @3xl:w-[310px] @3xl:justify-end">
                     {st === "active" ? <StatusBadge tone="success">Active</StatusBadge> : null}
                     {st === "invited" ? <StatusBadge tone="waiting">Invited · expires {formatDate(m.invite_expires_at, { year: false })}</StatusBadge> : null}
                     {st === "expired" ? <StatusBadge tone="error">Invitation expired</StatusBadge> : null}
                     {st === "suspended" ? <StatusBadge tone="neutral" icon="lock">Suspended {m.status_changed_at ? formatDate(m.status_changed_at, { year: false }) : ""}</StatusBadge> : null}
-                    <span className={cx("text-[0.8125rem] font-semibold", m.can_confirm || m.role === "owner" ? "text-success" : "text-muted")}>
+                    <span className={cx("text-caption font-semibold", m.can_confirm || m.role === "owner" ? "text-success" : "text-muted")}>
                       {m.role === "owner" || m.role === "agency_admin" ? "Full access" : m.can_confirm ? "Can confirm" : m.can_enter_payments ? "Submits only" : "View only"}
                     </span>
-                    {m.submitted_pending ? <span className="text-[0.8125rem] font-semibold text-waiting">{m.submitted_pending} submitted</span> : null}
-                    {m.open_work ? <span className="text-[0.8125rem] font-semibold text-waiting">{m.open_work} open</span> : null}
+                    {m.submitted_pending ? <span className="text-caption font-semibold text-waiting">{m.submitted_pending} submitted</span> : null}
+                    {m.open_work ? <span className="text-caption font-semibold text-waiting">{m.open_work} open</span> : null}
                   </div>
                   {m.role !== "owner" && m.user_id !== null && m.status !== "invited" ? (
-                    <div className="flex flex-wrap gap-2 lg:w-[220px] lg:justify-end">
-                      <Link href={`/w/${orgId}/team/${m.membership_id}`} className="inline-flex min-h-10 items-center gap-1 rounded-[10px] border border-line px-3 text-[0.875rem] font-semibold">
+                    <div className="flex flex-wrap gap-2 @3xl:w-[220px] @3xl:justify-end">
+                      <Link href={`/w/${orgId}/team/${m.membership_id}`} className={buttonClass("secondary", "sm")}>
                         <Icon name="edit" size={16} /> Edit access
                       </Link>
                       <MemberActions orgId={orgId} membershipId={m.membership_id} status={m.status} name={m.display_name} replacements={replacements.filter((r) => r.id !== m.membership_id)} />
                     </div>
                   ) : m.status === "invited" ? (
-                    <div className="flex flex-wrap gap-2 lg:w-[220px] lg:justify-end">
+                    <div className="flex flex-wrap gap-2 @3xl:w-[220px] @3xl:justify-end">
                       <MemberActions orgId={orgId} membershipId={m.membership_id} status="invited" name={m.display_name} replacements={[]} />
                     </div>
                   ) : (
-                    <div className="lg:w-[220px]" />
+                    <div className="hidden @3xl:block @3xl:w-[220px]" />
                   )}
                 </li>
               );
             })}
           </ul>
         )}
-        <p className="mt-3 text-[0.8125rem] text-muted">
+        <p className="mt-3 text-caption text-muted">
           Suspending or removing someone blocks their access straight away. Their past entries stay in the records, and anything they
           left open moves to the person you choose.
         </p>

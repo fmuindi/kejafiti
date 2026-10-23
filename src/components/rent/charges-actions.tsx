@@ -49,7 +49,7 @@ export function ChargesActions({
         </Button>
       ) : null}
       {canToggleAuto ? (
-        <div className="rounded-[16px] border border-line bg-surface p-4">
+        <div className="surface p-4">
           <Checkbox
             checked={auto}
             disabled={pending}

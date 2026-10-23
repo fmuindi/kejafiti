@@ -130,7 +130,7 @@ export function Thread({ userId, conversationId, messages, quickReplies, peerNam
   return (
     <div className="flex flex-col gap-3">
       {!online ? (
-        <p role="status" className="flex items-center gap-2 rounded-[12px] bg-waiting-tint px-3 py-2 text-[0.875rem] font-semibold text-waiting-strong">
+        <p role="status" className="flex items-center gap-2 rounded-control bg-waiting-tint px-3 py-2 text-label font-semibold text-waiting-strong">
           <Icon name="wifiOff" size={18} /> You&apos;re offline. Messages wait here and send when you reconnect.
         </p>
       ) : null}
@@ -138,13 +138,13 @@ export function Thread({ userId, conversationId, messages, quickReplies, peerNam
         {messages.map((m, i) => {
           return (
             <li key={m.id} className="flex flex-col">
-              {dayHeader[i] ? <span className="my-2 self-center font-mono text-[0.71875rem] text-muted uppercase">{dayHeader[i]}</span> : null}
+              {dayHeader[i] ? <span className="my-2 self-center font-mono text-micro text-muted uppercase">{dayHeader[i]}</span> : null}
               {m.side === "system" ? (
-                <span className="self-center rounded-full bg-cool px-3 py-1.5 text-center text-[0.8125rem] text-deep">{m.body}</span>
+                <span className="self-center rounded-full bg-cool px-3 py-1.5 text-center text-caption text-deep">{m.body}</span>
               ) : (
-                <span className={cx("max-w-[82%] rounded-[16px] px-3.5 py-2.5 text-[0.9375rem] whitespace-pre-line", m.mine ? "self-end bg-ink text-white" : "self-start border border-line bg-surface")}>
+                <span className={cx("max-w-[82%] rounded-card px-3.5 py-2.5 text-body whitespace-pre-line", m.mine ? "self-end bg-ink text-white" : "self-start border border-line bg-surface")}>
                   {m.body}
-                  <span className={cx("mt-1 block text-right text-[0.71875rem]", m.mine ? "text-white/70" : "text-muted")}>{m.mine ? `Sent ${formatTime(m.created_at)}` : formatTime(m.created_at)}</span>
+                  <span className={cx("mt-1 block text-right text-micro", m.mine ? "text-white/70" : "text-muted")}>{m.mine ? `Sent ${formatTime(m.created_at)}` : formatTime(m.created_at)}</span>
                 </span>
               )}
             </li>
@@ -152,14 +152,14 @@ export function Thread({ userId, conversationId, messages, quickReplies, peerNam
         })}
         {outgoing.map((o) => (
           <li key={o.ref} className="flex flex-col items-end">
-            <span className={cx("max-w-[82%] rounded-[16px] px-3.5 py-2.5 text-[0.9375rem]", o.state === "failed" ? "border border-error bg-error-tint text-ink" : "bg-ink/70 text-white")}>
+            <span className={cx("max-w-[82%] rounded-card px-3.5 py-2.5 text-body", o.state === "failed" ? "border border-error bg-error-tint text-ink" : "bg-ink/70 text-white")}>
               {o.body}
-              <span className="mt-1 block text-right text-[0.71875rem]">
+              <span className="mt-1 block text-right text-micro">
                 {o.state === "sending" ? "Sending…" : o.state === "queued" ? "Queued · not sent yet" : "Not sent"}
               </span>
             </span>
             {o.state === "failed" ? (
-              <button type="button" onClick={() => void deliver(o)} className="mt-1 text-[0.8125rem] font-semibold text-primary underline">Retry</button>
+              <button type="button" onClick={() => void deliver(o)} className="link-action mt-1 text-caption">Retry</button>
             ) : null}
           </li>
         ))}
@@ -168,9 +168,9 @@ export function Thread({ userId, conversationId, messages, quickReplies, peerNam
       <div ref={endRef} />
       {quickReplies?.length ? (
         <div className="flex flex-wrap gap-2" aria-label="Quick replies">
-          <span className="w-full text-[0.78125rem] text-muted">Quick replies, edited before sending</span>
+          <span className="w-full text-caption text-muted">Quick replies, edited before sending</span>
           {quickReplies.map((q) => (
-            <button key={q} type="button" onClick={() => setDraft(q)} className="min-h-10 rounded-full border-[1.5px] border-line bg-surface px-3.5 text-[0.84375rem] font-semibold">{q.split(".")[0]}</button>
+            <button key={q} type="button" onClick={() => setDraft(q)} className="min-h-10 rounded-full border-strong border-line bg-surface px-3.5 text-label font-semibold">{q.split(".")[0]}</button>
           ))}
         </div>
       ) : null}
@@ -200,9 +200,9 @@ export function Thread({ userId, conversationId, messages, quickReplies, peerNam
             }
           }}
           placeholder="Write a message"
-          className="max-h-40 min-h-[50px] flex-1 resize-y rounded-[14px] border border-input bg-surface px-3.5 py-3 text-[1rem] focus:outline-none focus:ring-2 focus:ring-deep/40"
+          className="max-h-40 min-h-field flex-1 resize-y rounded-control border border-input bg-surface px-3.5 py-3 text-base focus:outline-none focus:ring-2 focus:ring-deep/40"
         />
-        <button type="submit" aria-label="Send message" className="grid size-[50px] shrink-0 place-items-center rounded-[14px] bg-primary text-white hover:bg-primary-hover disabled:opacity-50" disabled={!draft.trim()}>
+        <button type="submit" aria-label="Send message" className="grid size-field shrink-0 place-items-center rounded-control bg-primary text-white hover:bg-primary-hover disabled:opacity-50" disabled={!draft.trim()}>
           <Icon name="arrowRight" />
         </button>
       </form>

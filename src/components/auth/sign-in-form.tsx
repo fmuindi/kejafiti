@@ -110,9 +110,9 @@ export function SignInForm({ next, phoneEnabled }: { next: string; phoneEnabled:
         }}
         noValidate
       >
-        <p className="text-[0.9375rem]">
+        <p className="text-body">
           Sent to <strong>{step.channel === "email" ? maskEmail(step.destination) : step.destination.replace(/(\+254\d)\d{5}(\d{3})/, "$1•• ••• $2")}</strong>.{" "}
-          <button type="button" className="font-semibold text-primary underline" onClick={() => { setStep({ kind: "contact" }); setCode(""); setError(null); }}>
+          <button type="button" className="link-action" onClick={() => { setStep({ kind: "contact" }); setCode(""); setError(null); }}>
             Change
           </button>
         </p>
@@ -128,19 +128,19 @@ export function SignInForm({ next, phoneEnabled }: { next: string; phoneEnabled:
             onChange={(e) => setCode(e.target.value)}
             error={error ?? undefined}
             aria-describedby={describedBy("code", { error: error ?? undefined, hint: true })}
-            className="font-mono text-[1.5rem] tracking-[8px]"
+            className="font-mono text-title tracking-[8px]"
           />
         </Field>
         <Button type="submit" size="lg" pending={pending} pendingLabel="Checking">
           Verify and continue
         </Button>
-        <div className="flex items-center justify-between text-[0.875rem]">
+        <div className="flex items-center justify-between text-label">
           <span className="text-muted">Didn&apos;t get it?</span>
-          <button type="button" disabled={resendIn > 0 || pending} onClick={() => void sendCode()} className="font-semibold text-primary disabled:text-muted">
+          <button type="button" disabled={resendIn > 0 || pending} onClick={() => void sendCode()} className="link-action">
             {resendIn > 0 ? `Resend in 0:${String(resendIn).padStart(2, "0")}` : "Resend code"}
           </button>
         </div>
-        <p className="text-[0.78125rem] text-muted">The code expires 10 minutes after it was sent. We never ask for it by phone or WhatsApp.</p>
+        <p className="text-caption text-muted">The code expires 10 minutes after it was sent. We never ask for it by phone or WhatsApp.</p>
       </form>
     );
   }
@@ -165,9 +165,9 @@ export function SignInForm({ next, phoneEnabled }: { next: string; phoneEnabled:
         </Field>
       ) : (
         <Field label="Mobile number" htmlFor="contact" hint="We'll text you a 6-digit code. Standard SMS rates may apply.">
-          <div className="flex min-h-[50px] items-center rounded-[12px] border border-input bg-surface focus-within:ring-2 focus-within:ring-deep/40">
-            <span className="border-r border-divider px-3.5 text-[1rem] font-semibold">+254</span>
-            <input id="contact" type="tel" autoComplete="tel-national" inputMode="tel" value={contact} onChange={(e) => setContact(e.target.value)} className="min-w-0 flex-1 bg-transparent px-3 text-[1rem] focus:outline-none" aria-describedby="contact-hint" />
+          <div className="flex min-h-field items-center rounded-control border border-input bg-surface focus-within:ring-2 focus-within:ring-deep/40">
+            <span className="border-r border-divider px-3.5 text-base font-semibold">+254</span>
+            <input id="contact" type="tel" autoComplete="tel-national" inputMode="tel" value={contact} onChange={(e) => setContact(e.target.value)} className="min-w-0 flex-1 bg-transparent px-3 text-base focus:outline-none" aria-describedby="contact-hint" />
           </div>
         </Field>
       )}
@@ -178,7 +178,7 @@ export function SignInForm({ next, phoneEnabled }: { next: string; phoneEnabled:
         Send code
       </Button>
       {phoneEnabled ? (
-        <button type="button" className="text-[0.9375rem] font-semibold underline" onClick={() => { setChannel(channel === "email" ? "phone" : "email"); setError(null); setContact(""); }}>
+        <button type="button" className="link-action text-body" onClick={() => { setChannel(channel === "email" ? "phone" : "email"); setError(null); setContact(""); }}>
           {channel === "email" ? "Use my mobile number instead" : "Use email instead"}
         </button>
       ) : null}

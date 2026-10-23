@@ -14,7 +14,7 @@ export function StartWorkspaceForm() {
   const [pending, start] = useTransition();
   return (
     <form
-      className="flex flex-col gap-4 rounded-[20px] border border-line bg-surface p-5"
+      className="surface flex flex-col gap-4 p-5"
       action={(fd) =>
         start(async () => {
           setError(null);

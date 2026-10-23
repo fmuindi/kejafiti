@@ -57,15 +57,15 @@ export function LiveUpdates({ userId }: { userId: string }) {
   return (
     <div role="status" aria-live="polite" className="no-print fixed inset-x-3 top-3 z-50 flex flex-col gap-2 md:inset-x-auto md:top-[80px] md:right-6 md:w-[380px]">
       {toasts.map((t) => (
-        <div key={t.id} className="flex items-start gap-3 rounded-[16px] border border-line bg-surface p-3.5 shadow-[0_14px_40px_rgba(16,24,32,0.18)]">
+        <div key={t.id} className="surface flex items-start gap-3 p-3.5 shadow-overlay">
           <span className="grid size-9 shrink-0 place-items-center rounded-full bg-pink text-primary" aria-hidden="true">
             <Icon name="bell" size={18} />
           </span>
           {/* A plain link, so a prefetch can never mark the update read. */}
           <a href={`/updates/open/${t.id}`} className="min-w-0 flex-1" onClick={() => setToasts((x) => x.filter((y) => y.id !== t.id))}>
             <span className="block font-semibold">{t.title}</span>
-            {t.body ? <span className="mt-0.5 line-clamp-2 block text-[0.84375rem] text-muted">{t.body}</span> : null}
-            {t.link ? <span className="mt-1 inline-block text-[0.84375rem] font-semibold text-primary">Open</span> : null}
+            {t.body ? <span className="mt-0.5 line-clamp-2 block text-label text-muted">{t.body}</span> : null}
+            {t.link ? <span className="link-action mt-1 inline-block text-label">Open</span> : null}
           </a>
           <button type="button" aria-label="Dismiss" onClick={() => setToasts((x) => x.filter((y) => y.id !== t.id))} className="grid size-8 shrink-0 place-items-center rounded-full text-muted hover:bg-cool hover:text-ink">
             <Icon name="x" size={16} />

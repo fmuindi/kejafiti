@@ -55,7 +55,7 @@ export function ViewingRequestForm({ refId, signedIn, initialTime, initialNote }
       <Field label="Note for the advertiser" htmlFor="note" optional>
         <TextArea id="note" rows={2} maxLength={500} value={note} onChange={(e) => setNote(e.target.value)} />
       </Field>
-      <p className="text-[0.8125rem] text-muted">Viewings on nyumbani are free. Never pay a deposit or &quot;viewing fee&quot; before seeing the home.</p>
+      <p className="text-caption text-muted">Viewings on nyumbani are free. Never pay a deposit or &quot;viewing fee&quot; before seeing the home.</p>
       {error ? <Notice tone="error" role="alert">{error}</Notice> : null}
       <Button type="submit" size="lg" pending={pending} pendingLabel="Sending">{signedIn ? "Send request" : "Continue to sign in"}</Button>
     </form>

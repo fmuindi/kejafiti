@@ -35,20 +35,20 @@ export default async function SignInPage({ searchParams }: PageProps<"/sign-in">
   const next = safeNext(typeof sp.next === "string" ? sp.next : undefined);
   if (await getSessionUser()) redirect(next);
   const reason = typeof sp.reason === "string" ? REASONS[sp.reason] : undefined;
-  const copy = reason ?? { title: "Sign in or create an account", body: "We'll email you a 6-digit code. No password needed." };
+  const copy = reason ?? { title: "Sign in or create an account", body: "Use your email or mobile number. No password needed." };
 
   return (
-    <main id="main" className="mx-auto flex min-h-dvh max-w-[460px] flex-col px-4 pt-5 pb-10">
+    <main id="main" className="mx-auto flex min-h-dvh max-w-narrow flex-col px-4 pt-5 pb-10">
       <Link href="/" aria-label="nyumbani home" className="self-start">
         <Logo />
       </Link>
-      <h1 className="mt-8 font-display text-[2rem] leading-[1.05] font-bold tracking-[-1px]">{copy.title}</h1>
-      <p className="mt-2 text-[0.9375rem] text-muted">{copy.body}</p>
+      <h1 className="heading-page mt-8">{copy.title}</h1>
+      <p className="mt-2 text-body text-muted">{copy.body}</p>
       <SignInForm next={next} phoneEnabled={PHONE_AUTH_ENABLED} />
-      <Link href={next === "/" || next === "/auth/continue" ? "/" : "/search"} className="mt-4 inline-flex min-h-11 items-center justify-center text-center text-[0.9375rem] font-semibold underline">
+      <Link href={next === "/" || next === "/auth/continue" ? "/" : "/search"} className="link-action mt-4 inline-flex min-h-11 items-center justify-center text-center text-body">
         Keep browsing without an account
       </Link>
-      <p className="mt-auto pt-10 text-[0.78125rem] text-muted">
+      <p className="mt-auto pt-10 text-caption text-muted">
         By continuing you agree to the <Link href="/legal/terms" className="underline">Terms</Link> and{" "}
         <Link href="/legal/privacy" className="underline">Privacy notice</Link>. On a shared phone, sign out when you&apos;re done.
       </p>

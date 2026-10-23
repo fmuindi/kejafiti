@@ -103,13 +103,13 @@ export default async function InboxPage({ params, searchParams }: PageProps<"/w/
   );
 
   return (
-    <div className="mx-auto flex max-w-[760px] flex-col gap-5">
+    <div className="mx-auto flex max-w-reading flex-col gap-5">
       <div>
         <Eyebrow>{property ? (rows[0]?.properties?.name ?? "Property") : "All your properties"}</Eyebrow>
-        <h1 className="mt-1 font-display text-[1.625rem] font-bold tracking-[-0.5px] md:text-[2.125rem]">
+        <h1 className="heading-page mt-1">
           Awaiting your confirmation · {inbox.length}
         </h1>
-        <p className="mt-1 text-[0.875rem] text-muted">
+        <p className="mt-1 text-label text-muted">
           Check each payment using your property&apos;s external records before confirming. The platform records your decision; it
           does not verify payments.
         </p>
@@ -135,18 +135,18 @@ export default async function InboxPage({ params, searchParams }: PageProps<"/w/
 
       {(recent ?? []).length ? (
         <section aria-labelledby="recent" role="status">
-          <h2 id="recent" className="mb-2 text-[0.875rem] font-bold text-muted">
+          <h2 id="recent" className="heading-group mb-2">
             Decided by you in the last hour
           </h2>
-          <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+          <ul className="surface-list">
             {(recent ?? []).map((r) => (
               <li key={r.id}>
                 <Link href={`/w/${orgId}/rent/${r.property_id}/entries/${r.id}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-cool">
                   <span className="font-semibold">
                     <span className="font-mono">{(r.units as unknown as { label: string } | null)?.label}</span> · {formatMoney(Number(r.amount))}
-                    <span className="block text-[0.8125rem] font-normal text-muted">{r.ref} · {timeAgo(r.decided_at)}</span>
+                    <span className="block text-caption font-normal text-muted">{r.ref} · {timeAgo(r.decided_at)}</span>
                   </span>
-                  <span className={`text-[0.84375rem] font-semibold ${r.status === "confirmed" ? "text-success" : r.status === "returned" ? "text-waiting" : "text-error"}`}>
+                  <span className={`text-label font-semibold ${r.status === "confirmed" ? "text-success" : r.status === "returned" ? "text-waiting" : "text-error"}`}>
                     {r.status === "confirmed" ? "Confirmed" : r.status === "returned" ? "Returned" : r.status === "not_accepted" ? "Not accepted" : r.status}
                   </span>
                 </Link>
@@ -158,10 +158,10 @@ export default async function InboxPage({ params, searchParams }: PageProps<"/w/
 
       {(returned ?? []).length ? (
         <section aria-labelledby="ret">
-          <h2 id="ret" className="mb-2 text-[0.875rem] font-bold text-muted">
+          <h2 id="ret" className="heading-group mb-2">
             Returned, waiting on staff
           </h2>
-          <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+          <ul className="surface-list">
             {(returned ?? []).map((r) => (
               <li key={r.id} className="px-4 py-3">
                 <Link href={`/w/${orgId}/rent/${r.property_id}/entries/${r.id}`} className="block hover:underline">
@@ -170,9 +170,9 @@ export default async function InboxPage({ params, searchParams }: PageProps<"/w/
                       <span className="font-mono">{(r.units as unknown as { label: string } | null)?.label}</span> · {formatMoney(Number(r.amount))} ·{" "}
                       {r.assigned_to ? people.get(r.assigned_to) ?? "staff" : "staff"}
                     </span>
-                    <span className="text-[0.8125rem] text-muted">{timeAgo(r.decided_at)}</span>
+                    <span className="text-caption text-muted">{timeAgo(r.decided_at)}</span>
                   </span>
-                  <span className="mt-0.5 block text-[0.84375rem] text-muted">&quot;{r.decision_reason}&quot;</span>
+                  <span className="mt-0.5 block text-label text-muted">&quot;{r.decision_reason}&quot;</span>
                 </Link>
               </li>
             ))}

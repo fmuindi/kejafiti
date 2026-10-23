@@ -18,10 +18,10 @@ export default async function ViewingPage({ params, searchParams }: PageProps<"/
   if (!l?.id) notFound();
   const user = await getSessionUser();
   return (
-    <div className="mx-auto flex max-w-[560px] flex-col gap-4 px-4 pt-5 pb-10">
+    <div className="mx-auto flex max-w-narrow flex-col gap-5 px-4 pt-5 pb-10">
       <BackLink href={`/homes/${ref}`}>The home</BackLink>
-      <h1 className="font-display text-[1.625rem] font-bold">Request a viewing</h1>
-      <p className="text-[0.875rem] text-muted">
+      <h1 className="heading-page">Request a viewing</h1>
+      <p className="text-label text-muted">
         {l.title} · KES {formatAmount(l.rent_amount)} · with {l.advertiser?.name}
       </p>
       <ViewingRequestForm

@@ -1,14 +1,13 @@
 import { SignOutForm } from "@/components/auth/sign-out-form";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { UpdateChannels } from "@/components/workspace/update-channels";
 import { ProfileForm } from "@/components/auth/profile-form";
 import { EmailSettings, type EmailCategory } from "@/components/auth/email-settings";
 import { emailConfigured } from "@/lib/delivery";
 import { createClient } from "@/lib/supabase/server";
 import { ClearDeviceData } from "@/components/auth/clear-device";
 import { Icon, type IconName } from "@/components/ui/icon";
-import { cx } from "@/components/ui/primitives";
+import { cx, buttonClass } from "@/components/ui/primitives";
 import { getUnreadCount } from "@/lib/updates";
 import { getIsPlatformAdmin, getProfile, getWorkspaces, requireUser } from "@/lib/auth";
 import { ROLE_LABEL } from "@/lib/rent/status";
@@ -56,7 +55,7 @@ export default async function AccountPage() {
   ];
 
   return (
-    <div className="mx-auto flex max-w-[720px] flex-col gap-5 px-4 pt-5 pb-10">
+    <div className="mx-auto flex max-w-reading flex-col gap-5 px-4 pt-5 pb-10">
       <h1 className="sr-only">Account</h1>
       <ProfileForm name={profile?.full_name ?? ""} email={profile?.email ?? user.email ?? ""} />
       <nav aria-label="Your places">
@@ -66,16 +65,16 @@ export default async function AccountPage() {
               <Link
                 href={t.href}
                 className={cx(
-                  "flex h-full flex-col gap-2.5 rounded-[18px] border-[1.5px] p-3.5 transition-colors",
+                  "flex h-full flex-col gap-2.5 rounded-card border-strong p-3.5 transition-colors",
                   t.attention ? "border-primary bg-pink hover:bg-pink/70" : "border-line bg-surface hover:border-ink",
                 )}
               >
-                <span aria-hidden="true" className={cx("grid size-10 place-items-center rounded-[12px]", t.attention ? "bg-primary text-white" : "bg-cool text-deep")}>
+                <span aria-hidden="true" className={cx("grid size-10 place-items-center rounded-control", t.attention ? "bg-primary text-white" : "bg-cool text-deep")}>
                   <Icon name={t.icon} size={20} />
                 </span>
                 <span>
                   <span className="block font-semibold">{t.label}</span>
-                  <span className={cx("block text-[0.8125rem]", t.attention ? "font-semibold text-primary-hover" : "text-muted")}>{t.meta}</span>
+                  <span className={cx("block text-caption", t.attention ? "font-semibold text-primary-hover" : "text-muted")}>{t.meta}</span>
                 </span>
               </Link>
             </li>
@@ -83,16 +82,16 @@ export default async function AccountPage() {
         </ul>
       </nav>
       <section aria-labelledby="ws" className="flex flex-col gap-2">
-        <h2 id="ws" className="flex items-center gap-2 text-[0.9375rem] font-semibold text-muted">
+        <h2 id="ws" className="heading-group flex items-center gap-2">
           <Icon name="building" size={16} /> Properties
         </h2>
-        <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+        <ul className="surface-list">
           {workspaces.map((w) => (
             <li key={w.org_id}>
               <Link href={`/w/${w.org_id}`} className="flex min-h-14 items-center gap-3 px-4 py-2 hover:bg-cool">
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold">{w.org_name}</span>
-                  <span className="text-[0.8125rem] text-muted">{ROLE_LABEL[w.role]}</span>
+                  <span className="text-caption text-muted">{ROLE_LABEL[w.role]}</span>
                 </span>
                 <Icon name="arrowRight" size={18} className="text-primary" />
               </Link>
@@ -109,16 +108,15 @@ export default async function AccountPage() {
           ) : null}
         </ul>
       </section>
-      <UpdateChannels />
       <EmailSettings categories={emailCategories} off={settings?.email_off ?? []} emailOn={emailConfigured()} />
       <section aria-labelledby="device" className="flex flex-col gap-2">
-        <h2 id="device" className="flex items-center gap-2 text-[0.9375rem] font-semibold text-muted">
+        <h2 id="device" className="heading-group flex items-center gap-2">
           <Icon name="phone" size={16} /> This device
         </h2>
         <div className="flex flex-wrap items-center gap-2">
           <ClearDeviceData userId={user.id} />
           <SignOutForm userId={user.id}>
-            <button type="submit" className="inline-flex min-h-10 items-center gap-2 rounded-[12px] border-[1.5px] border-ink px-3.5 text-[0.875rem] font-semibold hover:bg-ink hover:text-white">
+            <button type="submit" className={buttonClass("secondary", "sm")}>
               <Icon name="logout" size={18} /> Sign out
             </button>
           </SignOutForm>

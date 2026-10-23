@@ -6,7 +6,7 @@ export function PeriodNav({ period, hrefFor, note }: { period: string; hrefFor: 
   const next = addMonths(period, 1);
   const canNext = next <= addMonths(currentPeriod(), 1);
   return (
-    <div className="flex items-center justify-between gap-2 rounded-[14px] border border-line bg-surface px-1.5 py-1">
+    <div className="surface flex items-center justify-between gap-2 px-1.5 py-1">
       <Link href={hrefFor(addMonths(period, -1))} aria-label={`Previous period, ${formatPeriod(addMonths(period, -1))}`} className="grid size-11 place-items-center rounded-full hover:bg-cool">
         <Icon name="chevronLeft" />
       </Link>
@@ -15,7 +15,7 @@ export function PeriodNav({ period, hrefFor, note }: { period: string; hrefFor: 
           <span className="sr-only">Rent period: </span>
           {formatPeriod(period)} rent
         </p>
-        {note ? <p className="text-[0.78125rem] text-muted">{note}</p> : null}
+        {note ? <p className="text-caption text-muted">{note}</p> : null}
       </div>
       {canNext ? (
         <Link href={hrefFor(next)} aria-label={`Next period, ${formatPeriod(next)}`} className="grid size-11 place-items-center rounded-full hover:bg-cool">

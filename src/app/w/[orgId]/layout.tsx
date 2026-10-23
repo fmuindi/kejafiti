@@ -79,21 +79,21 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
         <Link href={base} aria-label="Workspace overview" className="px-2">
           <Logo />
         </Link>
-        <div className="mt-5 rounded-[14px] border border-line bg-surface px-3 py-2.5">
-          <p className="truncate text-[0.875rem] font-semibold">{ws.org_name}</p>
-          <p className="text-[0.78125rem] text-muted">{ROLE_LABEL[ws.role]}</p>
+        <div className="surface mt-5 px-3 py-2.5">
+          <p className="truncate text-label font-semibold">{ws.org_name}</p>
+          <p className="text-caption text-muted">{ROLE_LABEL[ws.role]}</p>
         </div>
         <nav aria-label="Workspace" className="mt-4">
           <SidebarLinks items={sidebar} />
         </nav>
-        <div className="mt-auto flex flex-col gap-1 border-t border-line pt-3 text-[0.875rem]">
+        <div className="mt-auto flex flex-col gap-1 border-t border-line pt-3 text-label">
           {all.length > 1 ? (
-            <details className="rounded-[12px] px-3 py-2">
+            <details className="rounded-control px-3 py-2">
               <summary className="cursor-pointer font-semibold">Switch workspace</summary>
               <ul className="mt-2 flex flex-col gap-1">
                 {all.filter((w) => w.org_id !== orgId).map((w) => (
                   <li key={w.org_id}>
-                    <Link href={`/w/${w.org_id}`} className="block rounded-[8px] px-2 py-1.5 hover:bg-surface">
+                    <Link href={`/w/${w.org_id}`} className="block rounded-chip px-2 py-1.5 hover:bg-surface">
                       {w.org_name}
                     </Link>
                   </li>
@@ -101,21 +101,21 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
               </ul>
             </details>
           ) : null}
-          <Link href={`${base}/account`} className="flex min-h-12 items-center gap-2.5 rounded-[12px] px-2 py-1.5 hover:bg-surface">
+          <Link href={`${base}/account`} className="flex min-h-12 items-center gap-2.5 rounded-control px-2 py-1.5 hover:bg-surface">
             <Avatar name={me} size={32} />
             <span className="min-w-0">
               <span className="block truncate font-semibold">{me}</span>
-              <span className="block text-[0.75rem] text-muted">Your account</span>
+              <span className="block text-micro text-muted">Your account</span>
             </span>
           </Link>
-          <HelpLink className="flex min-h-11 items-center gap-2 rounded-[12px] px-3 hover:bg-surface">
+          <HelpLink className="flex min-h-11 items-center gap-2 rounded-control px-3 hover:bg-surface">
             <Icon name="info" size={18} /> Help and support
           </HelpLink>
-          <Link href="/" className="flex min-h-11 items-center gap-2 rounded-[12px] px-3 hover:bg-surface">
+          <Link href="/" className="flex min-h-11 items-center gap-2 rounded-control px-3 hover:bg-surface">
             <Icon name="search" size={18} /> Browse homes
           </Link>
           <SignOutForm userId={signedInUserId}>
-            <button type="submit" className="flex min-h-11 w-full items-center gap-2 rounded-[12px] px-3 hover:bg-surface">
+            <button type="submit" className="flex min-h-11 w-full items-center gap-2 rounded-control px-3 hover:bg-surface">
               <Icon name="logout" size={18} /> Sign out
             </button>
           </SignOutForm>
@@ -126,13 +126,13 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
           <Link href={base} className="flex min-w-0 items-center gap-2">
             <Logo withWord={false} />
             <span className="min-w-0">
-              <span className="block truncate text-[0.875rem] font-semibold">{ws.org_name}</span>
-              <span className="block text-[0.75rem] text-muted">{ROLE_LABEL[ws.role]}</span>
+              <span className="block truncate text-label font-semibold">{ws.org_name}</span>
+              <span className="block text-micro text-muted">{ROLE_LABEL[ws.role]}</span>
             </span>
           </Link>
           <UpdatesBell count={unreadUpdates} href={`${base}/activity`} />
         </header>
-        <main id="main" className="mx-auto w-full max-w-[1200px] px-4 py-5 md:px-8 md:py-8">
+        <main id="main" className="mx-auto w-full max-w-wide px-4 py-5 md:px-8 md:py-8">
           {children}
         </main>
       </div>

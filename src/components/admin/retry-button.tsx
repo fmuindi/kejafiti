@@ -10,7 +10,7 @@ export function RetryButton({ taskId, label = "Retry", allowCancel = false }: { 
   const router = useRouter();
   const [msg, setMsg] = useState<string | null>(null);
   const [pending, start] = useTransition();
-  if (msg) return <span role="status" className="text-[0.8125rem] font-semibold">{msg}</span>;
+  if (msg) return <span role="status" className="text-caption font-semibold">{msg}</span>;
   const run = (fn: typeof retryDelivery, done: string) =>
     start(async () => {
       const r = await fn(taskId);
@@ -34,7 +34,7 @@ export function ProcessNowButton() {
       <Button size="sm" pending={pending} pendingLabel="Sending" onClick={() => start(async () => { const r = await processDueDeliveries(); setMsg(r.ok ? r.data.summary : r.message); router.refresh(); })}>
         Send due messages now
       </Button>
-      {msg ? <span role="status" className="text-[0.8125rem] font-semibold">{msg}</span> : null}
+      {msg ? <span role="status" className="text-caption font-semibold">{msg}</span> : null}
     </span>
   );
 }

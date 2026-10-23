@@ -109,8 +109,8 @@ function useAutosave<T>(value: T, save: (v: T) => Promise<{ ok: boolean; message
 function SaveBadge({ state }: { state: SaveState }) {
   const text = { idle: "", saving: "Saving…", saved: "Draft saved", failed: "Not saved", offline: "Offline: not saved yet" }[state];
   return (
-    <p aria-live="polite" className={cx("inline-flex items-center gap-1 text-[0.8125rem] font-semibold", state === "saved" ? "text-success" : state === "failed" || state === "offline" ? "text-error" : "text-muted")}>
-      {state === "saved" ? <Icon name="check" size={15} strokeWidth={2.4} /> : null}
+    <p aria-live="polite" className={cx("inline-flex items-center gap-1 text-caption font-semibold", state === "saved" ? "text-success" : state === "failed" || state === "offline" ? "text-error" : "text-muted")}>
+      {state === "saved" ? <Icon name="check" size={16} strokeWidth={2.4} /> : null}
       {text}
     </p>
   );
@@ -144,7 +144,7 @@ export function Wizard({ data, step, focus, fromReview = false }: { data: Wizard
         <Notice tone="waiting" title="Our team asked for a correction">&quot;{data.reviewNote}&quot; Fix it, then submit again.</Notice>
       ) : null}
       <nav aria-label="Listing steps">
-        <p className="font-mono text-[0.75rem] tracking-[0.6px] text-muted uppercase">
+        <p className="font-mono text-micro tracking-caps text-muted uppercase">
           Step {step} of 6 · {STEPS[step - 1]}
         </p>
         <ol className="mt-2 grid grid-cols-6 gap-1.5">
@@ -186,7 +186,7 @@ function StepNav({ onBack, onNext, onReview, nextLabel, pending, state }: { onBa
           Save and back to review
         </Button>
       ) : null}
-      <p className="text-[0.78125rem] text-muted">You can leave and continue later. Publishing is always a separate final step.</p>
+      <p className="text-caption text-muted">You can leave and continue later. Publishing is always a separate final step.</p>
     </div>
   );
 }
@@ -205,8 +205,8 @@ function LocationStep({ data, onNext }: { data: WizardData; onNext: () => void }
   const set = (k: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setV({ ...v, [k]: e.target.value });
   return (
     <section aria-labelledby="s1" className="flex flex-col gap-4">
-      <h1 id="s1" className="font-display text-[1.625rem] leading-[1.1] font-bold tracking-[-0.5px]">Where is the home?</h1>
-      <p className="-mt-2 text-[0.90625rem] text-muted">Tenants see the area and a nearby landmark. The exact address is shared only after a viewing is confirmed.</p>
+      <h1 id="s1" className="heading-page">Where is the home?</h1>
+      <p className="-mt-2 text-body text-muted">Tenants see the area and a nearby landmark. The exact address is shared only after a viewing is confirmed.</p>
       {!data.canEditBuilding ? <Notice tone="info">Building details are managed by the workspace owner. You can edit the unit reference.</Notice> : null}
       <Field label="Area or estate" htmlFor="area" error={errors.area} hint={data.placesEnabled ? "Start typing and pick the estate, road or building to fill in the details below." : undefined}>
         <PlaceAutocomplete
@@ -236,8 +236,8 @@ function LocationStep({ data, onNext }: { data: WizardData; onNext: () => void }
         />
       </Field>
       {v.latitude !== null && v.longitude !== null ? (
-        <p className="-mt-2 inline-flex items-center gap-1 text-[0.8125rem] font-semibold text-success">
-          <Icon name="pin" size={15} /> Location pinned on the map
+        <p className="-mt-2 inline-flex items-center gap-1 text-caption font-semibold text-success">
+          <Icon name="pin" size={16} /> Location pinned on the map
         </p>
       ) : null}
       <div className="grid gap-4 sm:grid-cols-2">
@@ -278,7 +278,7 @@ function HomeStep({ data, onBack, onNext }: { data: WizardData; onBack: () => vo
   const num = (s: string) => (s === "" ? null : Number(s));
   return (
     <section aria-labelledby="s2" className="flex flex-col gap-5">
-      <h1 id="s2" className="font-display text-[1.625rem] leading-[1.1] font-bold tracking-[-0.5px]">What is being rented?</h1>
+      <h1 id="s2" className="heading-page">What is being rented?</h1>
       {msg ? <Notice tone="error" role="alert">{msg}</Notice> : null}
       <ChoiceChips name="scope" legend="Tenants rent" value={v.rental_scope} onChange={(x) => setV({ ...v, rental_scope: x as typeof v.rental_scope })}
         options={[{ value: "entire_home", label: "The entire home" }, { value: "private_room", label: "A private room" }, { value: "shared_room", label: "A shared room" }, { value: "bedspace", label: "A bed (bedspace)" }]} />
@@ -311,18 +311,18 @@ function HomeStep({ data, onBack, onNext }: { data: WizardData; onBack: () => vo
       <ChoiceChips name="furnishing" legend="Furnishing" value={v.furnishing ?? ""} onChange={(x) => setV({ ...v, furnishing: (x || null) as typeof v.furnishing })}
         options={[{ value: "unfurnished", label: "Unfurnished" }, { value: "partly", label: "Partly furnished" }, { value: "fully", label: "Furnished" }]} />
       <fieldset className="flex flex-col gap-1">
-        <legend className="mb-1 text-[0.875rem] font-semibold">Facts tenants filter by</legend>
-        <p className="mb-2 text-[0.8125rem] text-muted">Answer Yes, No or Not sure. &quot;Not sure&quot; is shown as Unknown; it never counts as Yes.</p>
-        <div className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+        <legend className="mb-1 text-label font-semibold">Facts tenants filter by</legend>
+        <p className="mb-2 text-caption text-muted">Answer Yes, No or Not sure. &quot;Not sure&quot; is shown as Unknown; it never counts as Yes.</p>
+        <div className="surface-list">
           {EDITABLE_FACTS.map((f) => (
             <div key={f.key} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5" role="radiogroup" aria-label={f.label}>
-              <span className="text-[0.90625rem]">{f.label}</span>
+              <span className="text-body">{f.label}</span>
               <span className="flex gap-1">
                 {(["yes", "no", "unknown"] as const).map((val) => {
                   const on = (v.facts[f.key] ?? "unknown") === val;
                   return (
                     <button key={val} type="button" role="radio" aria-checked={on} onClick={() => setV({ ...v, facts: { ...v.facts, [f.key]: val } })}
-                      className={cx("min-h-10 rounded-full border-[1.5px] px-3 text-[0.8125rem] font-semibold", on ? "border-ink bg-ink text-white" : "border-line")}>
+                      className={cx("min-h-10 rounded-full border-strong px-3 text-caption font-semibold", on ? "border-ink bg-ink text-white" : "border-line")}>
                       {val === "yes" ? "Yes" : val === "no" ? "No" : "Not sure"}
                     </button>
                   );
@@ -384,8 +384,8 @@ function CostsStep({ data, onBack, onNext, onReview }: { data: WizardData; onBac
 
   return (
     <section aria-labelledby="s3" className="flex flex-col gap-5">
-      <h1 id="s3" className="font-display text-[1.625rem] leading-[1.1] font-bold tracking-[-0.5px]">What will the tenant pay?</h1>
-      <p className="-mt-2 text-[0.90625rem] text-muted">Tenants see these exact figures. Listings with complete costs get more serious enquiries.</p>
+      <h1 id="s3" className="heading-page">What will the tenant pay?</h1>
+      <p className="-mt-2 text-body text-muted">Tenants see these exact figures. Listings with complete costs get more serious enquiries.</p>
       <Field label="Rent" htmlFor="rent" error={errors.rent}>
         <MoneyInput id="rent" currency="KES" suffix={`/ ${period}`} value={rent} onChange={(e) => setRent(e.target.value)} error={errors.rent} />
       </Field>
@@ -433,13 +433,13 @@ function CostsStep({ data, onBack, onNext, onReview }: { data: WizardData; onBac
       <ChoiceChips name="power" legend="Electricity" value={power} onChange={(x) => setPower(x as typeof power)} options={[{ value: "metered", label: "Own token meter / paid separately" }, { value: "included", label: "Included" }, { value: "unknown", label: "Not sure" }]} />
 
       <fieldset className="flex flex-col gap-3">
-        <legend className="mb-1 text-[0.875rem] font-semibold">Other compulsory charges <span className="font-normal text-muted">(optional)</span></legend>
+        <legend className="mb-1 text-label font-semibold">Other compulsory charges <span className="font-normal text-muted">(optional)</span></legend>
         {others.map((c, i) => (
-          <div key={i} className="grid grid-cols-[1fr_auto] gap-2 rounded-[14px] border border-line bg-surface p-3 sm:grid-cols-[1.2fr_1fr_1fr_auto]">
+          <div key={i} className="surface grid grid-cols-[1fr_auto] gap-2 p-3 sm:grid-cols-[1.2fr_1fr_1fr_auto]">
             <Select aria-label="Charge type" value={c.kind} onChange={(e) => setOthers(others.map((o, j) => (j === i ? { ...o, kind: e.target.value as ListingCharge["kind"] } : o)))}>
               {OTHER_KINDS.map((k) => <option key={k} value={k}>{CHARGE_LABEL[k]}</option>)}
             </Select>
-            <MoneyInput aria-label="Amount" currency="KES" value={c.amount ?? ""} onChange={(e) => { const n = parseAmount(e.target.value); setOthers(others.map((o, j) => (j === i ? { ...o, amount: n !== null && Number.isFinite(n) ? n : null } : o))); }} className="min-h-[50px]" />
+            <MoneyInput aria-label="Amount" currency="KES" value={c.amount ?? ""} onChange={(e) => { const n = parseAmount(e.target.value); setOthers(others.map((o, j) => (j === i ? { ...o, amount: n !== null && Number.isFinite(n) ? n : null } : o))); }} />
             <Select aria-label="How often" value={c.frequency} onChange={(e) => setOthers(others.map((o, j) => (j === i ? { ...o, frequency: e.target.value as ListingCharge["frequency"] } : o)))}>
               <option value="monthly">Every month</option>
               <option value="one_off">Once, at move-in</option>
@@ -452,18 +452,18 @@ function CostsStep({ data, onBack, onNext, onReview }: { data: WizardData; onBac
         <Button type="button" variant="secondary" icon="plus" onClick={() => setOthers([...others, { kind: "garbage", label: null, amount: null, frequency: "monthly", billing: "fixed", compulsory: true }])} className="self-start">
           Add a charge
         </Button>
-        <p className="text-[0.78125rem] text-muted">Leave an amount empty if you don&apos;t know it yet; tenants will see &quot;Charge not confirmed&quot;.</p>
+        <p className="text-caption text-muted">Leave an amount empty if you don&apos;t know it yet; tenants will see &quot;Charge not confirmed&quot;.</p>
       </fieldset>
 
-      <div className="rounded-[16px] bg-ink p-4 text-white" aria-live="polite">
-        <p className="text-[0.8125rem] text-white/75">Tenants will see</p>
-        <p className="mt-1 font-display text-[1.375rem] font-extrabold">
+      <div className="rounded-card bg-ink p-4 text-white" aria-live="polite">
+        <p className="text-caption text-white/75">Tenants will see</p>
+        <p className="mt-1 font-display text-title font-extrabold">
           {period === "month"
             ? `KES ${formatAmount(summary.fixedMonthly)} /mo · move-in ${formatAmount(summary.moveIn)}`
             : `KES ${formatAmount(rentNum ?? 0)} / ${period} · no monthly or move-in total`}
         </p>
-        {period !== "month" ? <p className="mt-1 text-[0.8125rem] text-white/75">Rent per {period} isn&apos;t converted to months, so tenants see the rent and monthly charges separately.</p> : null}
-        {!summary.complete ? <p className="mt-1 text-[0.8125rem] font-semibold text-[#ffd59a]">Total incomplete: a charge is not confirmed.</p> : null}
+        {period !== "month" ? <p className="mt-1 text-caption text-white/75">Rent per {period} isn&apos;t converted to months, so tenants see the rent and monthly charges separately.</p> : null}
+        {!summary.complete ? <p className="mt-1 text-caption font-semibold text-waiting-on-dark">Total incomplete: a charge is not confirmed.</p> : null}
       </div>
       <StepNav state={state} onBack={onBack} nextLabel="Continue to photos" onNext={async () => { if (validate() && (await saveNow())) onNext(); }}
         onReview={onReview ? async () => { if (validate() && (await saveNow())) onReview(); } : undefined} />
@@ -478,7 +478,7 @@ function DetailsStep({ data, onBack, onNext, onReview }: { data: WizardData; onB
   const { state, saveNow } = useAutosave(v, save, true);
   return (
     <section aria-labelledby="s5" className="flex flex-col gap-4">
-      <h1 id="s5" className="font-display text-[1.625rem] leading-[1.1] font-bold tracking-[-0.5px]">Availability and contact</h1>
+      <h1 id="s5" className="heading-page">Availability and contact</h1>
       <Field label="Available from" htmlFor="available_from">
         <TextInput id="available_from" type="date" value={v.available_from ?? ""} onChange={(e) => setV({ ...v, available_from: e.target.value || null })} />
       </Field>
@@ -489,9 +489,9 @@ function DetailsStep({ data, onBack, onNext, onReview }: { data: WizardData; onB
         <TextArea id="description" rows={4} value={v.description} maxLength={4000} onChange={(e) => setV({ ...v, description: e.target.value })} />
       </Field>
       {data.aiDraft ? <DescribeHelper orgId={data.orgId} listingId={data.listingId} onApply={(d) => setV({ ...v, title: d.title || v.title, description: d.description })} /> : null}
-      <fieldset id="contact" tabIndex={-1} className="flex flex-col gap-2 rounded-[12px] focus:ring-2 focus:ring-deep/40 focus:outline-none">
-        <legend className="mb-1 text-[0.875rem] font-semibold">How tenants can reach you</legend>
-        <p className="text-[0.8125rem] text-muted">In-app messages are always on. Calls and WhatsApp happen outside nyumbani.</p>
+      <fieldset id="contact" tabIndex={-1} className="flex flex-col gap-2 rounded-control focus:ring-2 focus:ring-deep/40 focus:outline-none">
+        <legend className="mb-1 text-label font-semibold">How tenants can reach you</legend>
+        <p className="text-caption text-muted">In-app messages are always on. Calls and WhatsApp happen outside nyumbani.</p>
         <Checkbox checked={v.contact_call} onChange={(e) => setV({ ...v, contact_call: e.target.checked })} label="Phone calls" />
         <Checkbox checked={v.contact_whatsapp} onChange={(e) => setV({ ...v, contact_whatsapp: e.target.checked })} label="WhatsApp" />
       </fieldset>
@@ -532,13 +532,13 @@ function ReviewStep({ data, onBack }: { data: WizardData; onBack: () => void }) 
   }
   return (
     <section aria-labelledby="s6" className="flex flex-col gap-4">
-      <h1 id="s6" className="font-display text-[1.625rem] leading-[1.1] font-bold tracking-[-0.5px]">Review and submit</h1>
+      <h1 id="s6" className="heading-page">Review and submit</h1>
       {required.length ? (
         <Notice tone="waiting" title="Finish these before submitting">
           <ul className="list-disc pl-5">
             {required.map((p) => (
               <li key={p.code}>
-                <Link href={`${base}?step=${p.step}&focus=${p.field}&from=review`} className="font-semibold underline">{p.message}</Link>
+                <Link href={`${base}?step=${p.step}&focus=${p.field}&from=review`} className="link-action">{p.message}</Link>
               </li>
             ))}
           </ul>
@@ -555,7 +555,7 @@ function ReviewStep({ data, onBack }: { data: WizardData; onBack: () => void }) 
           </ul>
         </Notice>
       ) : null}
-      <dl className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface px-4">
+      <dl className="surface-list px-4">
         {[
           ["Title", data.details.title || "Not set"],
           ["Area", [data.location.area, data.location.road].filter(Boolean).join(", ") || "Not set"],
@@ -565,16 +565,16 @@ function ReviewStep({ data, onBack }: { data: WizardData; onBack: () => void }) 
           ["Photos", `${data.photos.length}`],
           ["Available from", data.details.available_from ?? "Not set"],
         ].map(([k, val]) => (
-          <div key={k} className="flex justify-between gap-4 py-2.5 text-[0.90625rem]">
+          <div key={k} className="flex justify-between gap-4 py-2.5 text-body">
             <dt className="text-muted">{k}</dt>
             <dd className="text-right font-semibold">{val}</dd>
           </div>
         ))}
       </dl>
-      <Link href={`/homes/${data.ref}`} className="inline-flex items-center gap-1 font-semibold text-primary underline" target="_blank">
+      <Link href={`/homes/${data.ref}`} className="link-action inline-flex items-center gap-1" target="_blank">
         Preview the tenant page <Icon name="arrowRight" size={16} />
       </Link>
-      <p className="text-[0.8125rem] text-muted">
+      <p className="text-caption text-muted">
         By submitting you confirm the details are accurate and you are authorised to advertise this home. Listing is free; nothing is charged.
       </p>
       {error ? <Notice tone="error" role="alert">{error}</Notice> : null}

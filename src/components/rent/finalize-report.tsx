@@ -46,7 +46,7 @@ export function FinalizeReport({ orgId, propertyId, propertyName, period, nextVe
   }
   return (
     <form
-      className="flex flex-col gap-3 rounded-[18px] border border-ink bg-surface p-4"
+      className="flex flex-col gap-3 rounded-card border border-ink bg-surface p-4"
       onSubmit={(e) => {
         e.preventDefault();
         if (!reviewing) {
@@ -64,8 +64,8 @@ export function FinalizeReport({ orgId, propertyId, propertyName, period, nextVe
         });
       }}
     >
-      <h2 className="font-display text-[1.125rem] font-bold">Manager&apos;s commentary</h2>
-      <p className="-mt-2 text-[0.8125rem] text-muted">Saved inside v{nextVersion}. It won&apos;t change after finalizing.</p>
+      <h2 className="heading-section">Manager&apos;s commentary</h2>
+      <p className="-mt-2 text-caption text-muted">Saved inside v{nextVersion}. It won&apos;t change after finalizing.</p>
       {aiCommentary ? (
         <div className="flex flex-col gap-1">
           <Button type="button" size="sm" variant="secondary" icon="edit" className="self-start" pending={drafting} pendingLabel="Drafting" onClick={() => startDraft(async () => {
@@ -78,7 +78,7 @@ export function FinalizeReport({ orgId, propertyId, propertyName, period, nextVe
           })}>
             Draft commentary
           </Button>
-          {draftNote ? <p role="status" className="text-[0.8125rem] text-muted">{draftNote}</p> : null}
+          {draftNote ? <p role="status" className="text-caption text-muted">{draftNote}</p> : null}
         </div>
       ) : null}
       <Field label="What changed this month" htmlFor="c_changes" optional>
@@ -96,7 +96,7 @@ export function FinalizeReport({ orgId, propertyId, propertyName, period, nextVe
         </Field>
       ) : null}
       {reviewing ? (
-        <section aria-labelledby="freeze" className="rounded-[14px] border-[1.5px] border-ink p-3 text-[0.875rem]">
+        <section aria-labelledby="freeze" className="rounded-card border-strong border-ink p-3 text-label">
           <h3 id="freeze" className="font-semibold">You are about to freeze</h3>
           <ul className="mt-1 flex flex-col gap-0.5">
             <li>{propertyName} · {formatPeriod(period)} · version {nextVersion}</li>

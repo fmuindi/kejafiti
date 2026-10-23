@@ -20,7 +20,7 @@ export function ReviewDecision({ listingId }: { listingId: string }) {
       if (r.ok) router.refresh();
     });
   return (
-    <section className="flex flex-col gap-3 rounded-[16px] border border-ink bg-surface p-4">
+    <section className="flex flex-col gap-3 rounded-card border border-ink bg-surface p-4">
       <h2 className="font-semibold">Decision</h2>
       <Field label="Note to the advertiser" htmlFor="note" hint="Required when sending back. Say exactly what to correct.">
         <TextArea id="note" rows={3} value={note} onChange={(e) => setNote(e.target.value)} maxLength={1000} />

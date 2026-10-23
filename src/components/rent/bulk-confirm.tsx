@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { confirmEntries } from "@/app/w/[orgId]/rent/actions";
 import { Checkbox } from "@/components/ui/form";
-import { Button, Notice } from "@/components/ui/primitives";
+import { Button, Notice, InlineError } from "@/components/ui/primitives";
 import { formatMoney, sumAmounts } from "@/lib/money";
 
 // Confirm several entries at once, only after checking each externally. Shows unit count,
@@ -29,7 +29,7 @@ export function BulkConfirm({ orgId, entries }: { orgId: string; entries: Array<
     );
   }
   return (
-    <section aria-labelledby="bulk" className="flex flex-col gap-3 rounded-[20px] border border-ink bg-surface p-4">
+    <section aria-labelledby="bulk" className="flex flex-col gap-3 rounded-card border border-ink bg-surface p-4">
       <h2 id="bulk" className="font-semibold">
         Confirm several entries
       </h2>
@@ -51,13 +51,13 @@ export function BulkConfirm({ orgId, entries }: { orgId: string; entries: Array<
         ))}
       </ul>
       {chosen.length ? (
-        <p className="rounded-[12px] bg-cool p-3 text-[0.875rem]">
+        <p className="rounded-control bg-cool p-3 text-label">
           <strong>{chosen.length}</strong> unit{chosen.length === 1 ? "" : "s"} · total <strong>{formatMoney(total)}</strong> · periods:{" "}
           {[...new Set(chosen.flatMap((c) => c.periods))].join(", ") || "credit"}
         </p>
       ) : null}
       <Checkbox checked={ack} onChange={(e) => setAck(e.target.checked)} label="I have checked each of these payments using our property's external records and confirm the entries are accurate." />
-      {error ? <p role="alert" className="text-[0.875rem] font-semibold text-error">{error}</p> : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       {results ? (
         <Notice tone={results.every((r) => r.ok) ? "success" : "waiting"} role="status" title={`${results.filter((r) => r.ok).length} confirmed, ${results.filter((r) => !r.ok).length} not confirmed`}>
           <ul className="list-disc pl-5">

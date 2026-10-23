@@ -16,8 +16,8 @@ export function AddUnitsForm({ orgId, propertyId }: { orgId: string; propertyId:
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [pending, start] = useTransition();
   return (
-    <section aria-labelledby="add-units" className="rounded-[18px] border border-line bg-surface p-4">
-      <h2 id="add-units" className="font-display text-[1.125rem] font-bold">Add units</h2>
+    <section aria-labelledby="add-units" className="surface p-4">
+      <h2 id="add-units" className="heading-section">Add units</h2>
       <form
         className="mt-3 grid gap-3 sm:grid-cols-[1.4fr_1fr_0.6fr_1fr_auto] sm:items-end"
         onSubmit={(e) => {
@@ -49,7 +49,7 @@ export function AddUnitsForm({ orgId, propertyId }: { orgId: string; propertyId:
         <Field label="Usual rent" htmlFor="u-rent" optional>
           <MoneyInput id="u-rent" value={rent} onChange={(e) => setRent(e.target.value)} />
         </Field>
-        <Button type="submit" pending={pending} className="min-h-[54px]">Add</Button>
+        <Button type="submit" pending={pending} className="min-h-field">Add</Button>
       </form>
       {msg ? <Notice tone={msg.ok ? "success" : "error"} role="status" className="mt-3">{msg.text}</Notice> : null}
     </section>

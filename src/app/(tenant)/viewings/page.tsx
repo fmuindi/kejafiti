@@ -6,7 +6,7 @@ import { TenantJumps } from "@/components/shell/tenant-jumps";
 import { ViewingDirections } from "@/components/tenant/viewing-directions";
 import { DateTile } from "@/components/ui/date-tile";
 import { Icon } from "@/components/ui/icon";
-import { ButtonLink, EmptyState, StatusBadge } from "@/components/ui/primitives";
+import { ButtonLink, EmptyState, StatusBadge, Notice } from "@/components/ui/primitives";
 import { requireUser } from "@/lib/auth";
 import { appointmentParts, formatAppointment, formatDate } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
@@ -47,10 +47,10 @@ export default async function TenantViewingsPage() {
   const meta = [confirmed ? `${confirmed} confirmed` : null, needYou ? `${needYou} need${needYou === 1 ? "s" : ""} you` : null].filter(Boolean).join(" · ");
 
   return (
-    <div className="mx-auto flex max-w-[720px] flex-col gap-5 px-4 pt-5 pb-10">
+    <div className="mx-auto flex max-w-reading flex-col gap-5 px-4 pt-5 pb-10">
       <PageHeader icon="calendar" title="Viewings" meta={meta || null} />
       <TenantJumps current="/viewings" />
-      {error ? <p role="alert" className="text-error">Couldn&apos;t load viewings. Reload to try again.</p> : null}
+      {error ? <Notice tone="error" role="alert">Couldn&apos;t load viewings. Reload to try again.</Notice> : null}
       {!error && active.length === 0 && past.length === 0 ? (
         <EmptyState title="No viewings yet" icon="calendar" action={<ButtonLink href="/search" icon="search">Find a home</ButtonLink>}>
           Request one from any home.
@@ -62,11 +62,11 @@ export default async function TenantViewingsPage() {
           const when = v.confirmed_start ?? v.proposed_start ?? v.requested_start;
           const p = appointmentParts(when);
           return (
-            <li key={v.id} className="flex flex-col gap-3.5 rounded-[20px] border border-line bg-surface p-4">
+            <li key={v.id} className="surface flex flex-col gap-3.5 p-4">
               <div className="flex items-start gap-3.5">
                 <DateTile at={when} tone={s.tone === "success" ? "success" : s.tone === "waiting" ? "waiting" : "neutral"} />
                 <div className="min-w-0 flex-1">
-                  <p className="font-display text-[1.1875rem] leading-tight font-bold">
+                  <p className="font-display text-lead leading-tight font-bold">
                     {p.weekday} · {p.time}
                   </p>
                   <ListingLink v={v} />
@@ -74,12 +74,12 @@ export default async function TenantViewingsPage() {
                 <StatusBadge tone={s.tone}>{s.label.split(" · ")[0]}</StatusBadge>
               </div>
               {NEXT[v.state] ? (
-                <p className={needsTenant(v.state) ? "flex items-center gap-2 text-[0.875rem] font-semibold text-waiting-strong" : "flex items-center gap-2 text-[0.875rem] text-muted"}>
+                <p className={needsTenant(v.state) ? "flex items-center gap-2 text-label font-semibold text-waiting-strong" : "flex items-center gap-2 text-label text-muted"}>
                   <Icon name={needsTenant(v.state) ? "alert" : "clock"} size={16} /> {NEXT[v.state]}
                 </p>
               ) : null}
               {v.state === "confirmed" && v.meeting_instructions ? (
-                <p className="flex items-start gap-2 text-[0.875rem]">
+                <p className="flex items-start gap-2 text-label">
                   <Icon name="info" size={16} className="mt-0.5 shrink-0 text-deep" /> {v.meeting_instructions}
                 </p>
               ) : null}
@@ -91,15 +91,15 @@ export default async function TenantViewingsPage() {
       </ul>
       {changes.length ? (
         <section aria-labelledby="changes" className="flex flex-col gap-2">
-          <h2 id="changes" className="flex items-center gap-2 text-[0.9375rem] font-semibold text-muted">
+          <h2 id="changes" className="heading-group flex items-center gap-2">
             <Icon name="alert" size={16} /> Saved homes now let
           </h2>
-          <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+          <ul className="surface-list">
             {changes.map((l) => (
               <li key={l.listing_id}>
                 <Link href={`/homes/${l.ref}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-cool">
                   <span className="truncate font-semibold">{l.title ?? `Home in ${l.area}`}</span>
-                  <span className="shrink-0 text-[0.8125rem] text-error">{l.let_on ? `Let ${formatDate(l.let_on, { year: false })}` : "Unavailable"}</span>
+                  <span className="shrink-0 text-caption text-error">{l.let_on ? `Let ${formatDate(l.let_on, { year: false })}` : "Unavailable"}</span>
                 </Link>
               </li>
             ))}
@@ -107,14 +107,14 @@ export default async function TenantViewingsPage() {
         </section>
       ) : null}
       {past.length ? (
-        <details className="group rounded-[16px] border border-line bg-surface">
+        <details className="surface group">
           <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2 px-4 font-semibold">
             <Icon name="history" size={18} className="text-muted" /> Past <span className="text-muted">{past.length}</span>
             <Icon name="chevronDown" size={18} className="ml-auto text-muted transition-transform group-open:rotate-180" />
           </summary>
           <ul className="flex flex-col divide-y divide-divider border-t border-divider">
             {past.map((v) => (
-              <li key={v.id} className="flex flex-col px-4 py-3 text-[0.875rem]">
+              <li key={v.id} className="flex flex-col px-4 py-3 text-label">
                 <span className="font-semibold">{v.listing_title ?? `Home in ${v.area}`}</span>
                 <span className="text-muted">
                   {formatAppointment(v.confirmed_start ?? v.requested_start)} · {(TENANT_LABEL[v.state] ?? TENANT_LABEL.unknown).label}
@@ -133,7 +133,7 @@ export default async function TenantViewingsPage() {
 function ListingLink({ v }: { v: { listing_ref: string; listing_title: string | null; listing_status: string; area: string; org_name: string } }) {
   const title = v.listing_title ?? `Home in ${v.area}`;
   return (
-    <p className="mt-0.5 flex min-w-0 flex-col text-[0.875rem]">
+    <p className="mt-0.5 flex min-w-0 flex-col text-label">
       {v.listing_ref ? (
         <Link href={`/homes/${v.listing_ref}`} className="truncate hover:underline">
           {title}
@@ -141,7 +141,7 @@ function ListingLink({ v }: { v: { listing_ref: string; listing_title: string | 
       ) : (
         <span className="truncate">{title}</span>
       )}
-      <span className="truncate text-[0.8125rem] text-muted">
+      <span className="truncate text-caption text-muted">
         {v.org_name} · {v.area}
         {v.listing_status !== "published" ? <span className="font-semibold text-error"> · unavailable</span> : null}
       </span>

@@ -65,20 +65,20 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
 
   if (propertyCount === 0 && isOrgAdmin(ws)) {
     return (
-      <div className="mx-auto flex max-w-[560px] flex-col gap-6">
-        <h1 className="font-display text-[2.125rem] leading-[1.02] font-bold tracking-[-1.2px]">Welcome{firstName ? `, ${firstName}` : ""}. Let&apos;s get your vacant home seen.</h1>
-        <p className="text-[0.9375rem] text-muted">Listing is free for one vacancy. It takes about 10 minutes and saves as you go.</p>
+      <div className="mx-auto flex max-w-narrow flex-col gap-5">
+        <h1 className="heading-page">Welcome{firstName ? `, ${firstName}` : ""}. Let&apos;s get your vacant home seen.</h1>
+        <p className="text-body text-muted">Listing is free for one vacancy. It takes about 10 minutes and saves as you go.</p>
         <ol className="flex flex-col gap-3">
           {[
             ["Where it is", "Area and a nearby landmark. Exact address stays private."],
             ["What the tenant pays", "Rent, deposit and any service charge."],
             ["A few photos", "Taken on your phone is fine."],
           ].map(([t, d], i) => (
-            <li key={t} className="flex gap-4 rounded-[16px] border border-line bg-surface p-4">
-              <span className="font-mono text-[0.875rem] text-muted">0{i + 1}</span>
+            <li key={t} className="surface flex gap-4 p-4">
+              <span className="font-mono text-label text-muted">0{i + 1}</span>
               <span>
                 <span className="block font-semibold">{t}</span>
-                <span className="text-[0.875rem] text-muted">{d}</span>
+                <span className="text-label text-muted">{d}</span>
               </span>
             </li>
           ))}
@@ -96,22 +96,22 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
           {new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "Africa/Nairobi" }).format(new Date())} · {propertyCount} propert{propertyCount === 1 ? "y" : "ies"}
           {s ? ` · ${s.units_total} units` : ""}
         </Eyebrow>
-        <h1 className="mt-1 font-display text-[1.875rem] leading-[1.05] font-bold tracking-[-0.8px] md:text-[2.5rem]">
+        <h1 className="heading-page mt-1">
           {greeting()}
           {firstName ? `, ${firstName}` : ""}. {tasks ? `${tasks} thing${tasks === 1 ? "" : "s"} need${tasks === 1 ? "s" : ""} you.` : "You're up to date."}
         </h1>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
-        <section aria-label="Needs attention" className="overflow-hidden rounded-[22px] border border-line bg-surface">
+        <section aria-label="Needs attention" className="surface overflow-hidden">
           <ul className="divide-y divide-divider">
             {ws.can_manage_listings ? (
               <li>
                 <Link href={`/w/${orgId}/enquiries`} className="flex items-center gap-4 px-4 py-4 hover:bg-cool">
-                  <span className={`font-display text-[1.625rem] font-bold ${unanswered.length ? "text-waiting" : "text-muted"}`}>{unanswered.length}</span>
+                  <span className={`w-8 shrink-0 text-center font-display text-title-lg font-bold tabular-nums ${unanswered.length ? "text-waiting" : "text-muted"}`}>{unanswered.length}</span>
                   <span className="min-w-0 flex-1">
                     <span className="block font-semibold">Enquiries need a reply</span>
-                    <span className="text-[0.84375rem] text-muted">{oldest ? `Oldest waiting ${timeAgo(oldest.last_tenant_message_at)} · ${(oldest.properties as unknown as { name: string } | null)?.name ?? ""}` : "Nothing waiting"}</span>
+                    <span className="text-label text-muted">{oldest ? `Oldest waiting ${timeAgo(oldest.last_tenant_message_at)} · ${(oldest.properties as unknown as { name: string } | null)?.name ?? ""}` : "Nothing waiting"}</span>
                   </span>
                   <Icon name="chevronRight" className="text-muted" />
                 </Link>
@@ -120,10 +120,10 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
             {ws.can_manage_listings ? (
               <li>
                 <Link href={`/w/${orgId}/enquiries?tab=viewings`} className="flex items-center gap-4 px-4 py-4 hover:bg-cool">
-                  <span className={`font-display text-[1.625rem] font-bold ${requests.length ? "text-waiting" : "text-muted"}`}>{requests.length}</span>
+                  <span className={`w-8 shrink-0 text-center font-display text-title-lg font-bold tabular-nums ${requests.length ? "text-waiting" : "text-muted"}`}>{requests.length}</span>
                   <span className="min-w-0 flex-1">
                     <span className="block font-semibold">Viewing requests to answer</span>
-                    <span className="text-[0.84375rem] text-muted">Accept, suggest a time or decline</span>
+                    <span className="text-label text-muted">Accept, suggest a time or decline</span>
                   </span>
                   <Icon name="chevronRight" className="text-muted" />
                 </Link>
@@ -133,30 +133,30 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
               <>
                 <li>
                   <Link href={`/w/${orgId}/rent/mine#returned`} className="flex items-center gap-4 px-4 py-4 hover:bg-cool">
-                    <span className={`font-display text-[1.625rem] font-bold ${myReturned ? "text-error" : "text-muted"}`}>{myReturned}</span>
+                    <span className={`w-8 shrink-0 text-center font-display text-title-lg font-bold tabular-nums ${myReturned ? "text-error" : "text-muted"}`}>{myReturned}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block font-semibold">Returned to you for correction</span>
-                      <span className="text-[0.84375rem] text-muted">{myReturned ? "Fix and resubmit" : "Nothing returned"}</span>
+                      <span className="text-label text-muted">{myReturned ? "Fix and resubmit" : "Nothing returned"}</span>
                     </span>
                     <Icon name="chevronRight" className="text-muted" />
                   </Link>
                 </li>
                 <li>
                   <Link href={`/w/${orgId}/rent/mine#drafts`} className="flex items-center gap-4 px-4 py-4 hover:bg-cool">
-                    <span className={`font-display text-[1.625rem] font-bold ${myDrafts ? "text-waiting" : "text-muted"}`}>{myDrafts}</span>
+                    <span className={`w-8 shrink-0 text-center font-display text-title-lg font-bold tabular-nums ${myDrafts ? "text-waiting" : "text-muted"}`}>{myDrafts}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block font-semibold">Your saved drafts</span>
-                      <span className="text-[0.84375rem] text-muted">{myDrafts ? "Finish and submit" : "No drafts in the workspace"}</span>
+                      <span className="text-label text-muted">{myDrafts ? "Finish and submit" : "No drafts in the workspace"}</span>
                     </span>
                     <Icon name="chevronRight" className="text-muted" />
                   </Link>
                 </li>
                 <li>
                   <Link href={`/w/${orgId}/rent/mine#submitted`} className="flex items-center gap-4 px-4 py-4 hover:bg-cool">
-                    <span className="font-display text-[1.625rem] font-bold text-muted">{mySubmitted}</span>
+                    <span className="w-8 shrink-0 text-center font-display text-title-lg font-bold tabular-nums text-muted">{mySubmitted}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block font-semibold">Submitted, waiting for a manager</span>
-                      <span className="text-[0.84375rem] text-muted">Nothing for you to do. They don&apos;t count until confirmed.</span>
+                      <span className="text-label text-muted">Nothing for you to do. They don&apos;t count until confirmed.</span>
                     </span>
                     <Icon name="chevronRight" className="text-muted" />
                   </Link>
@@ -166,10 +166,10 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
             {ws.can_confirm ? (
             <li>
               <Link href={`/w/${orgId}/rent/inbox`} className="flex items-center gap-4 px-4 py-4 hover:bg-cool">
-                <span className={`font-display text-[1.625rem] font-bold ${(pending.data ?? []).length ? "text-waiting" : "text-muted"}`}>{(pending.data ?? []).length}</span>
+                <span className={`w-8 shrink-0 text-center font-display text-title-lg font-bold tabular-nums ${(pending.data ?? []).length ? "text-waiting" : "text-muted"}`}>{(pending.data ?? []).length}</span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold">Rent entries awaiting confirmation</span>
-                  <span className="text-[0.84375rem] text-muted">
+                  <span className="text-label text-muted">
                     {(pending.data ?? []).length ? `${formatMoney(pendingTotal)} · ` : ""}
                     {s ? `${formatPeriod(period)} ${formatRate(s.collection_rate)} confirmed` : "No rent records yet"}
                   </span>
@@ -181,19 +181,19 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
             {ws.can_manage_listings ? (
               <li className="px-4 py-4">
                 <div className="flex items-center gap-4">
-                  <span className={`font-display text-[1.625rem] font-bold ${stale.length ? "text-waiting" : "text-muted"}`}>{stale.length}</span>
+                  <span className={`w-8 shrink-0 text-center font-display text-title-lg font-bold tabular-nums ${stale.length ? "text-waiting" : "text-muted"}`}>{stale.length}</span>
                   <span className="min-w-0 flex-1">
                     <span className="block font-semibold">Vacancies to reconfirm</span>
-                    <span className="text-[0.84375rem] text-muted">Tenants see the date you last confirmed</span>
+                    <span className="text-label text-muted">Tenants see the date you last confirmed</span>
                   </span>
                 </div>
                 {stale.slice(0, 3).map((l) => {
                   const unit = l.units as unknown as { label: string; layout: string } | null;
                   return (
-                    <div key={l.id} className="mt-3 flex items-center gap-3 rounded-[14px] bg-cool p-3">
+                    <div key={l.id} className="mt-3 flex items-center gap-3 rounded-card bg-cool p-3">
                       <span className="min-w-0 flex-1">
-                        <span className="block font-mono text-[0.8125rem] uppercase">Unit {unit?.label} · {(l.properties as unknown as { name: string } | null)?.name}</span>
-                        <span className="text-[0.8125rem] text-muted">Last confirmed {formatDate(l.availability_confirmed_at, { year: false })}</span>
+                        <span className="block font-mono text-caption uppercase">Unit {unit?.label} · {(l.properties as unknown as { name: string } | null)?.name}</span>
+                        <span className="text-caption text-muted">Last confirmed {formatDate(l.availability_confirmed_at, { year: false })}</span>
                       </span>
                       <StillAvailableButton orgId={orgId} listingIds={[l.id]} />
                     </div>
@@ -204,10 +204,10 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
             {drafts.length ? (
               <li>
                 <Link href={`/w/${orgId}/listings/${drafts[0].id}`} className="flex items-center gap-4 px-4 py-4 hover:bg-cool">
-                  <span className="font-display text-[1.625rem] font-bold text-waiting">{drafts.length}</span>
+                  <span className="w-8 shrink-0 text-center font-display text-title-lg font-bold tabular-nums text-waiting">{drafts.length}</span>
                   <span className="min-w-0 flex-1">
                     <span className="block font-semibold">Listings to finish or correct</span>
-                    <span className="text-[0.84375rem] text-muted">{drafts.some((d) => d.status === "needs_correction") ? "Our team asked for a correction" : "Drafts are saved as you go"}</span>
+                    <span className="text-label text-muted">{drafts.some((d) => d.status === "needs_correction") ? "Our team asked for a correction" : "Drafts are saved as you go"}</span>
                   </span>
                   <Icon name="chevronRight" className="text-muted" />
                 </Link>
@@ -220,15 +220,15 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
           {ws.can_manage_listings ? (
             <section aria-labelledby="today" className="flex flex-col gap-2">
               <div className="flex items-baseline justify-between">
-                <h2 id="today" className="font-display text-[1.125rem] font-bold">Today&apos;s viewings</h2>
-                <Link href={`/w/${orgId}/viewings`} className="inline-flex min-h-11 items-center text-[0.875rem] font-semibold text-primary">Agenda</Link>
+                <h2 id="today" className="heading-section">Today&apos;s viewings</h2>
+                <Link href={`/w/${orgId}/viewings`} className="link-action inline-flex min-h-11 items-center text-label">Agenda</Link>
               </div>
               {todays.length ? (
-                <ul className="flex flex-col divide-y divide-divider rounded-[18px] border border-line bg-surface">
+                <ul className="surface-list">
                   {todays.map((v) => (
                     <li key={v.id} className="flex items-center gap-4 px-4 py-3">
-                      <span className="font-mono text-[0.9375rem]">{formatTime(v.confirmed_start as string)}</span>
-                      <span className="min-w-0 flex-1 text-[0.875rem]">
+                      <span className="font-mono text-body">{formatTime(v.confirmed_start as string)}</span>
+                      <span className="min-w-0 flex-1 text-label">
                         Unit {((v.listings as unknown as { units: { label: string } | null } | null)?.units?.label) ?? ""} · {(v.properties as unknown as { name: string } | null)?.name}
                       </span>
                       <StatusBadge tone="success">Confirmed</StatusBadge>
@@ -236,18 +236,18 @@ export default async function OverviewPage({ params }: PageProps<"/w/[orgId]">) 
                   ))}
                 </ul>
               ) : (
-                <p className="rounded-[16px] border border-dashed border-line bg-surface p-4 text-[0.875rem] text-muted">No viewings today.</p>
+                <p className="surface-empty p-4">No viewings today.</p>
               )}
             </section>
           ) : null}
           {s && s.billed > 0 ? (
-            <Link href={`/w/${orgId}/dashboard`} className="rounded-[18px] border border-line bg-surface p-4 hover:border-ink">
+            <Link href={`/w/${orgId}/dashboard`} className="surface p-4 hover:border-ink">
               <Eyebrow>Rent · {formatPeriod(period)}</Eyebrow>
               <p className="mt-1">
-                <span className="font-display text-[1.375rem] font-extrabold">{formatMoney(s.settled)}</span>
+                <span className="font-display text-title font-extrabold">{formatMoney(s.settled)}</span>
                 <span className="text-muted"> of {formatMoney(s.billed)} confirmed · {formatRate(s.collection_rate)}</span>
               </p>
-              <p className="mt-1 text-[0.78125rem] text-muted">Confirmed by property staff. Open the dashboard</p>
+              <p className="mt-1 text-caption text-muted">Confirmed by property staff. Open the dashboard</p>
             </Link>
           ) : null}
           {ws.can_manage_listings ? <ButtonLink href={`/w/${orgId}/listings/new`} size="lg" icon="plus">List a home</ButtonLink> : null}

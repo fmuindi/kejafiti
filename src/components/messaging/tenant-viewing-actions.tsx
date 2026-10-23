@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { tenantViewingAction } from "@/lib/messaging-actions";
 import { TextInput } from "@/components/ui/form";
-import { Button, buttonClass } from "@/components/ui/primitives";
+import { Button, buttonClass, InlineError } from "@/components/ui/primitives";
 
 /** `status` is the viewing state from the database, so a passed time arrives as "expired". */
 export function TenantViewingActions({ viewingId, status, conversationId }: { viewingId: string; status: string; conversationId: string | null }) {
@@ -37,14 +37,14 @@ export function TenantViewingActions({ viewingId, status, conversationId }: { vi
       </div>
       {mode === "change" ? (
         <div className="flex flex-wrap items-end gap-2">
-          <label className="flex flex-col gap-1 text-[0.8125rem] font-semibold">
+          <label className="flex flex-col gap-1 text-caption font-semibold">
             New day and time (EAT)
             <TextInput type="datetime-local" value={time} onChange={(e) => setTime(e.target.value)} />
           </label>
           <Button size="sm" pending={pending} onClick={() => run("change")}>Send new time</Button>
         </div>
       ) : null}
-      {error ? <p role="alert" className="text-[0.84375rem] font-semibold text-error">{error}</p> : null}
+      {error ? <InlineError>{error}</InlineError> : null}
     </div>
   );
 }

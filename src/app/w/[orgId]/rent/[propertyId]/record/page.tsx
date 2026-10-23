@@ -82,12 +82,12 @@ export default async function RecordPaymentPage({ params, searchParams }: PagePr
   const tenantName = (tenancy.tenants as unknown as { full_name: string } | null)?.full_name ?? "";
 
   return (
-    <div className="mx-auto max-w-[640px]">
+    <div className="mx-auto max-w-reading">
       <div className="mb-4 flex items-center justify-between">
         <Link href={`${base}?period=${period.slice(0, 7)}`} className="inline-flex min-h-11 items-center gap-1 font-semibold" aria-label="Back to the rent register">
           <Icon name="x" /> <span className="sr-only md:not-sr-only">Close</span>
         </Link>
-        <h1 className="font-display text-[1.25rem] font-bold">{entry ? `Edit ${entry.ref}` : "Record payment"}</h1>
+        <h1 className="heading-compact">{entry ? `Edit ${entry.ref}` : "Record payment"}</h1>
         <span className="w-11" />
       </div>
       {entry?.status === "returned" && entry.decision_reason ? (

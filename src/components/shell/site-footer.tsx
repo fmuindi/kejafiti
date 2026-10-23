@@ -18,21 +18,21 @@ export function SiteFooter({ listHref, listLabel, signedIn }: { listHref: string
   const year = new Date().getFullYear();
   return (
     <footer className="no-print mt-12 border-t border-line bg-surface">
-      <div className="mx-auto hidden max-w-[1360px] grid-cols-[1.4fr_repeat(3,1fr)] gap-x-6 px-6 py-10 md:grid">
+      <div className="mx-auto hidden max-w-shell grid-cols-[1.4fr_repeat(3,1fr)] gap-x-6 px-6 py-10 md:grid">
         <div className="flex flex-col gap-3">
           <Link href="/" aria-label="nyumbani home" className="self-start">
             <Logo />
           </Link>
-          <p className="max-w-[260px] text-[0.875rem] text-muted">Rent, charges and move-in total, up front.</p>
+          <p className="max-w-narrow text-label text-muted">Rent, charges and move-in total, up front.</p>
         </div>
         <nav aria-label="Footer" className="contents">
           {columns.map((col) => (
             <div key={col.title}>
-              <h2 className="text-[0.8125rem] font-semibold tracking-[0.4px] text-muted uppercase">{col.title}</h2>
+              <h2 className="heading-group">{col.title}</h2>
               <ul className="mt-2 flex flex-col">
                 {col.links.map(([href, label]) => (
                   <li key={label}>
-                    <Link href={href} className="inline-flex min-h-10 items-center text-[0.9375rem] text-ink hover:text-primary">
+                    <Link href={href} className="inline-flex min-h-10 items-center text-body text-ink hover:text-primary">
                       {label}
                     </Link>
                   </li>
@@ -44,14 +44,14 @@ export function SiteFooter({ listHref, listLabel, signedIn }: { listHref: string
       </div>
       <nav aria-label="Footer" className="flex flex-col gap-1 px-4 pt-4 md:hidden">
         {phone.map(([href, label, icon]) => (
-          <Link key={href} href={href} className="flex min-h-11 items-center gap-3 text-[0.9375rem] font-semibold">
+          <Link key={href} href={href} className="flex min-h-11 items-center gap-3 text-body font-semibold">
             <Icon name={icon} size={18} className="text-muted" /> {label}
             <Icon name="chevronRight" size={16} className="ml-auto text-muted" />
           </Link>
         ))}
       </nav>
       <div className="border-divider md:border-t">
-        <p className="mx-auto flex max-w-[1360px] flex-wrap items-center gap-x-3 gap-y-1 px-4 py-4 text-[0.8125rem] text-muted md:px-6">
+        <p className="mx-auto flex max-w-shell flex-wrap items-center gap-x-3 gap-y-1 px-4 py-4 text-caption text-muted md:px-6">
           <span>© {year} nyumbani</span>
           <Link href="/legal/terms" className="hover:text-ink md:hidden">Terms</Link>
           <Link href="/legal/privacy" className="hover:text-ink md:hidden">Privacy</Link>

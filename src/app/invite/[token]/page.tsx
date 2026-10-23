@@ -30,19 +30,19 @@ export default async function InvitePage({ params }: PageProps<"/invite/[token]"
   const next = `/invite/${token}`;
 
   return (
-    <main id="main" className="mx-auto flex min-h-dvh max-w-[520px] flex-col gap-6 px-4 pt-5 pb-10">
+    <main id="main" className="mx-auto flex min-h-dvh max-w-narrow flex-col gap-5 px-4 pt-5 pb-10">
       <Link href="/" aria-label="nyumbani home" className="self-start">
         <Logo />
       </Link>
       {p.state === "pending" ? (
         <>
           <div>
-            <h1 className="font-display text-[2rem] leading-[1.05] font-bold tracking-[-1px]">Join {p.org_name}</h1>
-            <p className="mt-2 text-[0.9375rem] text-muted">
+            <h1 className="heading-page">Join {p.org_name}</h1>
+            <p className="mt-2 text-body text-muted">
               {p.display_name}, you&apos;re invited as <strong className="text-ink">{ROLE_LABEL[p.role ?? ""] ?? p.role}</strong>.
             </p>
           </div>
-          <dl className="flex flex-col gap-2 rounded-[18px] border border-line bg-surface p-4 text-[0.90625rem]">
+          <dl className="surface flex flex-col gap-2 p-4 text-body">
             <div className="flex justify-between gap-4">
               <dt className="text-muted">Properties</dt>
               <dd className="text-right font-semibold">{p.properties?.length ? p.properties.join(", ") : "All properties"}</dd>
@@ -67,7 +67,7 @@ export default async function InvitePage({ params }: PageProps<"/invite/[token]"
               <ButtonLink href={`/sign-in?next=${encodeURIComponent(next)}&reason=invite`} size="lg">
                 Sign in with {p.email_hint} to accept
               </ButtonLink>
-              <p className="text-[0.8125rem] text-muted">
+              <p className="text-caption text-muted">
                 New to nyumbani? Signing in with that email creates your account. You set your own sign-in; the person who invited you
                 never sees it.
               </p>
@@ -76,7 +76,7 @@ export default async function InvitePage({ params }: PageProps<"/invite/[token]"
         </>
       ) : (
         <>
-          <h1 className="font-display text-[1.875rem] font-bold">
+          <h1 className="heading-page">
             {p.state === "expired" ? "This invitation has expired" : p.state === "used" ? "This invitation was already used" : "This invitation link isn't valid"}
           </h1>
           <Notice tone="info">

@@ -35,7 +35,7 @@ export function SearchAlertSelect({ id, value, label }: { id: string; value: Fre
         });
       }}
       className={cx(
-        "ml-4 min-h-10 max-w-[11rem] shrink-0 rounded-[10px] sm:ml-0 border bg-surface px-2 text-[0.8125rem] font-semibold",
+        "ml-4 min-h-10 max-w-[11rem] shrink-0 rounded-control sm:ml-0 border bg-surface px-2 text-caption font-semibold",
         error ? "border-error text-error" : "border-line",
       )}
     >

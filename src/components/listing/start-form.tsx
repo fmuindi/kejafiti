@@ -26,7 +26,7 @@ export function StartListingForm({ orgId, properties, canCreateProperty, presetU
 
   return (
     <form
-      className="flex flex-col gap-4 rounded-[20px] border border-line bg-surface p-5"
+      className="surface flex flex-col gap-4 p-5"
       onSubmit={(e) => {
         e.preventDefault();
         start(async () => {

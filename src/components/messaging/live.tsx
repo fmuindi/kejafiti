@@ -117,7 +117,7 @@ export function PeerStatus({ className }: { className?: string }) {
   const label = live && now ? peerLabel(live.peer, now) : null;
   if (!label) return null;
   return (
-    <span className={cx("inline-flex items-center gap-1.5 text-[0.8125rem]", label.tone === "away" ? "text-muted" : "font-semibold text-success", className)}>
+    <span className={cx("inline-flex items-center gap-1.5 text-caption", label.tone === "away" ? "text-muted" : "font-semibold text-success", className)}>
       {label.tone !== "away" ? <span aria-hidden="true" className="size-2 rounded-full bg-success" /> : null}
       {label.text}
     </span>
@@ -130,7 +130,7 @@ export function TypingBubble({ name }: { name: string }) {
   if (!live?.peer.typing) return null;
   return (
     <li className="flex flex-col">
-      <span className="flex items-center gap-1 self-start rounded-[16px] border border-line bg-surface px-3.5 py-3" aria-label={`${name} is typing`}>
+      <span className="surface flex items-center gap-1 self-start px-3.5 py-3" aria-label={`${name} is typing`}>
         {[0, 150, 300].map((d) => (
           <span key={d} aria-hidden="true" className="size-1.5 animate-bounce rounded-full bg-muted" style={{ animationDelay: `${d}ms` }} />
         ))}

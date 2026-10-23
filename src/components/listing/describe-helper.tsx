@@ -23,14 +23,14 @@ export function DescribeHelper({ orgId, listingId, onApply }: { orgId: string; l
     );
   }
   return (
-    <section aria-labelledby="describe-help" className="flex flex-col gap-3 rounded-[16px] border border-line bg-cool p-4">
+    <section aria-labelledby="describe-help" className="flex flex-col gap-3 rounded-card border border-line bg-cool p-4">
       <h2 id="describe-help" className="font-semibold">Draft a description</h2>
-      <p className="-mt-2 text-[0.8125rem] text-muted">Written from the details you&apos;ve entered. Costs aren&apos;t repeated in the text; tenants see them in the cost section. Check every sentence before applying.</p>
-      <label className="flex flex-col gap-1 text-[0.875rem] font-semibold">
+      <p className="-mt-2 text-caption text-muted">Written from the details you&apos;ve entered. Costs aren&apos;t repeated in the text; tenants see them in the cost section. Check every sentence before applying.</p>
+      <label className="flex flex-col gap-1 text-label font-semibold">
         Anything else tenants should know? <span className="font-normal text-muted">(optional)</span>
         <TextArea rows={2} maxLength={1500} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="e.g. Newly painted, tiled floors, close to the main road" />
       </label>
-      <label className="flex max-w-[220px] flex-col gap-1 text-[0.875rem] font-semibold">
+      <label className="flex max-w-narrow flex-col gap-1 text-label font-semibold">
         Language
         <Select value={language} onChange={(e) => setLanguage(e.target.value as "en" | "sw")}>
           <option value="en">English</option>
@@ -50,13 +50,13 @@ export function DescribeHelper({ orgId, listingId, onApply }: { orgId: string; l
       </div>
       {error ? <Notice tone="error" role="alert">{error}</Notice> : null}
       {draft ? (
-        <div className="flex flex-col gap-2 rounded-[12px] border border-line bg-surface p-3" aria-live="polite">
-          <p className="text-[0.75rem] font-semibold tracking-[0.4px] text-muted uppercase">Suggested · not saved</p>
+        <div className="flex flex-col gap-2 rounded-control border border-line bg-surface p-3" aria-live="polite">
+          <p className="heading-group">Suggested · not saved</p>
           <p className="font-semibold">{draft.title}</p>
-          <p className="text-[0.90625rem] whitespace-pre-line">{draft.description}</p>
-          {draft.removed.length ? <p className="text-[0.8125rem] text-muted">We removed {draft.removed.length} sentence{draft.removed.length === 1 ? "" : "s"} that stated figures not in your details.</p> : null}
+          <p className="text-body whitespace-pre-line">{draft.description}</p>
+          {draft.removed.length ? <p className="text-caption text-muted">We removed {draft.removed.length} sentence{draft.removed.length === 1 ? "" : "s"} that stated figures not in your details.</p> : null}
           {draft.questions.length ? (
-            <div className="text-[0.84375rem]">
+            <div className="text-label">
               <p className="font-semibold">Tenants will want to know:</p>
               <ul className="list-disc pl-5">{draft.questions.map((q) => <li key={q}>{q}</li>)}</ul>
             </div>

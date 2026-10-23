@@ -24,12 +24,12 @@ export default async function EditMemberPage({ params }: PageProps<"/w/[orgId]/t
   if (!m || m.role === "owner") notFound();
 
   return (
-    <div className="mx-auto flex max-w-[640px] flex-col gap-5">
+    <div className="mx-auto flex max-w-reading flex-col gap-5">
       <BackLink href={`/w/${orgId}/team`}>Team</BackLink>
       <div>
         <Eyebrow>{ROLE_LABEL[m.role]} · {m.status}</Eyebrow>
         <PageTitle className="mt-1">{m.display_name}</PageTitle>
-        <p className="mt-1 text-[0.90625rem] text-muted">{m.email}</p>
+        <p className="mt-1 text-body text-muted">{m.email}</p>
       </div>
       <EditAccess
         name={m.display_name}
@@ -52,10 +52,10 @@ export default async function EditMemberPage({ params }: PageProps<"/w/[orgId]/t
       />
       {(audit ?? []).length ? (
         <section aria-labelledby="log">
-          <h2 id="log" className="font-display text-[1.125rem] font-bold">Access history</h2>
-          <ul className="mt-2 flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+          <h2 id="log" className="heading-section">Access history</h2>
+          <ul className="surface-list mt-2">
             {(audit ?? []).map((a) => (
-              <li key={a.id} className="flex justify-between gap-3 px-4 py-2.5 text-[0.875rem]">
+              <li key={a.id} className="flex justify-between gap-3 px-4 py-2.5 text-label">
                 <span>{a.action.replaceAll("_", " ")}</span>
                 <span className="text-muted">{formatDateTime(a.created_at)}</span>
               </li>

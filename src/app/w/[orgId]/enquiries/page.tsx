@@ -36,11 +36,11 @@ export default async function EnquiriesPage({ params, searchParams }: PageProps<
   const needCount = (convs ?? []).filter((c) => c.needs_reply && c.follow_up !== "closed").length;
 
   return (
-    <div className="mx-auto flex max-w-[820px] flex-col gap-4">
+    <div className="mx-auto flex max-w-standard flex-col gap-5">
       <PageHeader icon="message" title="Enquiries" meta={needCount ? `${needCount} need a reply` : "All answered"} />
       <nav aria-label="Enquiry views" className="flex gap-2 border-b border-line">
         {[["reply", `Reply needed ${needCount}`], ["viewings", `Viewings ${(requests ?? []).length}`], ["all", "All"]].map(([k, label]) => (
-          <Link key={k} href={`/w/${orgId}/enquiries?tab=${k}`} aria-current={tab === k ? "page" : undefined} className={cx("-mb-px border-b-2 px-3 py-2.5 text-[0.9375rem] font-semibold", tab === k ? "border-primary text-ink" : "border-transparent text-muted")}>
+          <Link key={k} href={`/w/${orgId}/enquiries?tab=${k}`} aria-current={tab === k ? "page" : undefined} className={cx("-mb-px border-b-2 px-3 py-2.5 text-body font-semibold", tab === k ? "border-primary text-ink" : "border-transparent text-muted")}>
             {label}
           </Link>
         ))}
@@ -54,16 +54,16 @@ export default async function EnquiriesPage({ params, searchParams }: PageProps<
             {(requests ?? []).map((v) => {
               const l = v.listings as unknown as { ref: string; title: string | null; units: { label: string } | null } | null;
               return (
-                <li key={v.id} className="flex flex-col gap-3 rounded-[18px] border border-line bg-surface p-4">
-                  <p className="flex justify-between font-mono text-[0.75rem] tracking-[0.5px] text-muted uppercase">
+                <li key={v.id} className="surface flex flex-col gap-3 p-4">
+                  <p className="flex justify-between font-mono text-micro tracking-caps text-muted uppercase">
                     <span>Viewing request · Unit {l?.units?.label}</span>
                     <span>{timeAgo(v.created_at)}</span>
                   </p>
                   <p className="font-semibold">{l?.title}</p>
-                  <p className="text-[0.9375rem]">
+                  <p className="text-body">
                     {v.state === "expired" ? <><StatusBadge tone="error">{STAFF_LABEL.expired.label}</StatusBadge>{" "}{v.status === "new_time_proposed" ? "Your suggested time" : "The requested time"} <strong>{formatAppointment((v.proposed_start ?? v.requested_start) as string)}</strong> passed without confirmation.</> : v.status === "new_time_proposed" ? <>You proposed <strong>{formatAppointment(v.proposed_start as string)}</strong>; waiting for the tenant.</> : <>Wants to view on <strong>{formatAppointment(v.requested_start)}</strong> EAT</>}
                   </p>
-                  {v.tenant_note ? <p className="text-[0.875rem] text-muted">&quot;{v.tenant_note}&quot;</p> : null}
+                  {v.tenant_note ? <p className="text-label text-muted">&quot;{v.tenant_note}&quot;</p> : null}
                   <ViewingResponse viewingId={v.id} state={v.state} />
                 </li>
               );
@@ -77,8 +77,8 @@ export default async function EnquiriesPage({ params, searchParams }: PageProps<
       ) : (
         [...grouped.entries()].map(([group, items]) => (
           <section key={group} aria-label={group}>
-            <h2 className="mb-2 font-mono text-[0.75rem] tracking-[0.5px] text-muted uppercase">{group}</h2>
-            <ul className="flex flex-col divide-y divide-divider overflow-hidden rounded-[18px] border border-line bg-surface">
+            <h2 className="heading-group mb-2">{group}</h2>
+            <ul className="surface-list">
               {items.map((c) => (
                 <li key={c.id}>
                   <Link href={`/w/${orgId}/enquiries/${c.id}`} className="flex gap-3 px-4 py-3.5 hover:bg-cool">
@@ -86,10 +86,10 @@ export default async function EnquiriesPage({ params, searchParams }: PageProps<
                     <span className="min-w-0 flex-1">
                       <span className="flex justify-between gap-3">
                         <span className={cx("truncate", c.unread ? "font-bold" : "font-semibold")}>{c.tenant_name ?? "Tenant"} · {c.unit_label}</span>
-                        <span className={cx("shrink-0 text-[0.78125rem]", c.needs_reply ? "font-semibold text-waiting" : "text-muted")}>{timeAgo(c.last_message_at)}</span>
+                        <span className={cx("shrink-0 text-caption", c.needs_reply ? "font-semibold text-waiting" : "text-muted")}>{timeAgo(c.last_message_at)}</span>
                       </span>
-                      <span className="block truncate text-[0.875rem] text-muted">{c.last_message}</span>
-                      <span className="text-[0.78125rem] text-muted">
+                      <span className="block truncate text-label text-muted">{c.last_message}</span>
+                      <span className="text-caption text-muted">
                         {STAGE[c.follow_up]}{c.needs_reply ? " · not yet replied" : ""}{c.assigned_membership_id ? ` · assigned to ${memberName.get(c.assigned_membership_id) ?? "staff"}` : ""}
                       </span>
                     </span>

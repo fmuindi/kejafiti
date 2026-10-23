@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { changeRent, createTenancy, endTenancy } from "@/app/w/[orgId]/rent/actions";
 import { ErrorSummary, Field, MoneyInput, Select, TextArea, TextInput, describedBy } from "@/components/ui/form";
-import { Button, Notice } from "@/components/ui/primitives";
+import { Button, Notice, InlineError } from "@/components/ui/primitives";
 import { addMonths, currentPeriod, todayEAT } from "@/lib/dates";
 import { formatMoney, parseAmount } from "@/lib/money";
 
@@ -33,11 +33,11 @@ export function TenancySetup({
   const [openingType, setOpeningType] = useState<"none" | "arrears" | "credit">("none");
 
   return (
-    <section aria-labelledby="setup" className="rounded-[20px] border border-line bg-surface p-4">
-      <h2 id="setup" className="font-display text-[1.25rem] font-bold">
+    <section aria-labelledby="setup" className="surface p-4">
+      <h2 id="setup" className="heading-section">
         Set up the current tenancy
       </h2>
-      <p className="mt-1 text-[0.875rem] text-muted">
+      <p className="mt-1 text-label text-muted">
         {occupancy === "vacant" ? "This unit is vacant. Add a tenancy when someone moves in." : "Add the tenant who lives here now."} The tenant doesn&apos;t need an account.
       </p>
       <form
@@ -97,8 +97,8 @@ export function TenancySetup({
           <MoneyInput id="deposit_held" name="deposit_held" aria-describedby="deposit_held-hint" />
         </Field>
 
-        <fieldset className="flex flex-col gap-3 rounded-[16px] border border-line p-4">
-          <legend className="px-1 text-[0.875rem] font-semibold">Opening balance at a cut-off date</legend>
+        <fieldset className="flex flex-col gap-3 rounded-card border border-line p-4">
+          <legend className="px-1 text-label font-semibold">Opening balance at a cut-off date</legend>
           <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Opening balance type">
             {(["none", "arrears", "credit"] as const).map((t) => (
               <button
@@ -107,7 +107,7 @@ export function TenancySetup({
                 role="radio"
                 aria-checked={openingType === t}
                 onClick={() => setOpeningType(t)}
-                className={`min-h-11 rounded-full border-[1.5px] px-4 text-[0.875rem] font-semibold ${openingType === t ? "border-ink bg-ink text-white" : "border-line"}`}
+                className={`min-h-11 rounded-full border-strong px-4 text-label font-semibold ${openingType === t ? "border-ink bg-ink text-white" : "border-line"}`}
               >
                 {t === "none" ? "None" : t === "arrears" ? "Tenant owes (arrears)" : "Tenant has credit"}
               </button>
@@ -172,7 +172,7 @@ export function TenancyActions({ orgId, propertyId, tenancyId, currentRent }: { 
     >
       {mode === "rent" ? (
         <>
-          <p className="text-[0.875rem] text-muted">Current rent: {formatMoney(currentRent)}. New rent applies from the first day of the chosen period; earlier charges keep the old rate.</p>
+          <p className="text-label text-muted">Current rent: {formatMoney(currentRent)}. New rent applies from the first day of the chosen period; earlier charges keep the old rate.</p>
           <Field label="Applies from" htmlFor="effective">
             <TextInput id="effective" name="effective" type="month" defaultValue={nextPeriod.slice(0, 7)} />
           </Field>
@@ -201,7 +201,7 @@ export function TenancyActions({ orgId, propertyId, tenancyId, currentRent }: { 
           </Field>
         </>
       )}
-      {error ? <p role="alert" className="text-[0.875rem] font-semibold text-error">{error}</p> : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="button" variant="secondary" onClick={() => setMode(null)} className="flex-1">
           Cancel

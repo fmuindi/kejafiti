@@ -93,7 +93,7 @@ export function ListingCard({
   const chips = factChips(row);
   const price = cardPrice(row);
   return (
-    <article id={`home-${row.ref}`} className="relative flex scroll-mt-28 flex-col overflow-hidden rounded-[20px] border border-line bg-surface">
+    <article id={`home-${row.ref}`} className="relative flex scroll-mt-28 flex-col overflow-hidden rounded-panel border border-line bg-surface">
       <div className="relative aspect-[16/10] bg-cool">
         {photoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -104,9 +104,9 @@ export function ListingCard({
           </div>
         )}
         {row.sponsored ? (
-          <span className="absolute top-3 left-3 rounded-[8px] bg-surface px-2 py-1 text-[0.75rem] font-semibold">Sponsored</span>
+          <span className="absolute top-3 left-3 rounded-chip bg-surface px-2 py-1 text-micro font-semibold">Sponsored</span>
         ) : null}
-        <span className="absolute bottom-3 left-3 rounded-[8px] bg-ink/85 px-2 py-1 text-[0.75rem] font-semibold text-white">
+        <span className="absolute bottom-3 left-3 rounded-chip bg-ink/85 px-2 py-1 text-micro font-semibold text-white">
           {row.photo_count} photo{row.photo_count === 1 ? "" : "s"}
         </span>
         <div className="absolute top-3 right-3">
@@ -116,17 +116,17 @@ export function ListingCard({
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div>
           <p>
-            <span className="font-display text-[1.5rem] font-extrabold tracking-[-0.4px]">{price.headline}</span>
-            <span className="text-[0.875rem] text-muted">
+            <span className="font-display text-title font-extrabold tracking-[-0.4px]">{price.headline}</span>
+            <span className="text-label text-muted">
               {" "}
               {price.headlineUnit}
               {basis ? ` ${basis}` : ""}
             </span>
           </p>
-          {price.lines.map((l) => <p key={l} className="text-[0.8125rem] text-muted">{l}</p>)}
-          {price.warning ? <p className="text-[0.8125rem] font-semibold text-waiting-strong">{price.warning}</p> : null}
+          {price.lines.map((l) => <p key={l} className="text-caption text-muted">{l}</p>)}
+          {price.warning ? <p className="text-caption font-semibold text-waiting-strong">{price.warning}</p> : null}
         </div>
-        <h3 className="text-[0.96875rem] leading-snug font-semibold">
+        <h3 className="text-body leading-snug font-semibold">
           <Link href={listingHref(row.ref, back)} className="after:absolute after:inset-0 hover:underline">
             {title}
           </Link>
@@ -142,7 +142,7 @@ export function ListingCard({
               <li
                 key={c.label}
                 className={cx(
-                  "rounded-[8px] px-2 py-1 text-[0.78125rem]",
+                  "rounded-chip px-2 py-1 text-caption",
                   c.unknown ? "bg-waiting-tint text-waiting-strong" : "bg-cool text-ink",
                 )}
               >
@@ -152,11 +152,11 @@ export function ListingCard({
           </ul>
         ) : null}
         {row.unconfirmed_match ? (
-          <p className="text-[0.78125rem] font-semibold text-waiting">A must-have isn&apos;t answered yet</p>
+          <p className="text-caption font-semibold text-waiting">A must-have isn&apos;t answered yet</p>
         ) : null}
-        <div className="mt-auto flex items-end justify-between gap-3 pt-2 text-[0.8125rem]">
+        <div className="mt-auto flex items-end justify-between gap-3 pt-2 text-caption">
           <span className={cx("inline-flex items-center gap-1 font-semibold", stale ? "text-waiting" : "text-success")}>
-            <Icon name={stale ? "clock" : "check"} size={15} strokeWidth={2.2} />
+            <Icon name={stale ? "clock" : "check"} size={16} strokeWidth={2.2} />
             {row.availability_confirmed_at
               ? `${stale ? "Last confirmed" : "Available, confirmed"} ${formatDate(row.availability_confirmed_at, { year: false })}`
               : "Availability not confirmed"}

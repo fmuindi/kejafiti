@@ -104,7 +104,7 @@ export default async function ListingWizardPage({ params, searchParams }: PagePr
   };
 
   return (
-    <div className="mx-auto flex max-w-[680px] flex-col gap-4">
+    <div className="mx-auto flex max-w-reading flex-col gap-5">
       <BackLink href={`/w/${orgId}/properties/${l.property_id}`}>{String(property.name)}</BackLink>
       {l.status !== "draft" ? <ListingStatusPanel orgId={orgId} listingId={listingId} status={l.status} refId={l.ref} confirmedAt={l.availability_confirmed_at} reviewNote={l.review_note} /> : null}
       {editable ? (

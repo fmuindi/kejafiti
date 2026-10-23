@@ -22,12 +22,12 @@ export default async function ChargesPage({ params, searchParams }: PageProps<"/
   const canCreate = ws.can_manage_tenancies || ws.can_confirm;
 
   return (
-    <div className="mx-auto flex max-w-[760px] flex-col gap-5">
+    <div className="mx-auto flex max-w-reading flex-col gap-5">
       <BackLink href={base}>{property.name}</BackLink>
       <div>
         <Eyebrow>Rent charges</Eyebrow>
-        <h1 className="mt-1 font-display text-[1.75rem] font-bold">Review {formatPeriod(period)} charges</h1>
-        <p className="mt-1 text-[0.875rem] text-muted">
+        <h1 className="heading-page mt-1">Review {formatPeriod(period)} charges</h1>
+        <p className="mt-1 text-label text-muted">
           Each current tenancy is charged its rent for the period, using the rate in effect on the first day. Check this list before
           creating the charges. Vacant units are never charged.
         </p>
@@ -39,23 +39,23 @@ export default async function ChargesPage({ params, searchParams }: PageProps<"/
         <EmptyState title="No tenancies in this period" icon="file">Set up tenancies on the units first.</EmptyState>
       ) : (
         <>
-          <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+          <ul className="surface-list">
             {rows.map((r) => (
-              <li key={r.tenancy_id} className="flex items-center justify-between gap-3 px-4 py-3 text-[0.90625rem]">
+              <li key={r.tenancy_id} className="flex items-center justify-between gap-3 px-4 py-3 text-body">
                 <span>
                   <span className="font-mono">{r.unit_label}</span> · {r.tenant_name}
-                  <span className="block text-[0.8125rem] text-muted">Due {formatDate(r.due_date)}</span>
+                  <span className="block text-caption text-muted">Due {formatDate(r.due_date)}</span>
                 </span>
                 <span className="text-right">
-                  <span className="font-mono font-medium">{formatMoney(r.amount)}</span>
-                  <span className={`block text-[0.78125rem] font-semibold ${r.already_exists ? "text-success" : "text-waiting"}`}>
+                  <span className="tabular-nums font-medium">{formatMoney(r.amount)}</span>
+                  <span className={`block text-caption font-semibold ${r.already_exists ? "text-success" : "text-waiting"}`}>
                     {r.already_exists ? "Created" : "Not created yet"}
                   </span>
                 </span>
               </li>
             ))}
           </ul>
-          <p className="text-[0.875rem]">
+          <p className="text-label">
             {toCreate.length
               ? `${toCreate.length} charge${toCreate.length === 1 ? "" : "s"} to create · ${formatMoney(sumAmounts(toCreate.map((r) => r.amount)))}`
               : "All charges for this period exist."}

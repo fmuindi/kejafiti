@@ -23,8 +23,8 @@ export function AreaMap({ lat, lng, label }: { lat: number | null; lng: number |
   const src = `https://www.google.com/maps/embed/v1/view?key=${encodeURIComponent(EMBED_KEY)}&center=${lat},${lng}&zoom=14`;
   return (
     <figure className="flex flex-col gap-1.5">
-      <iframe title={`Map of the approximate area: ${label}`} src={src} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="aspect-[16/10] w-full rounded-[14px] border border-line" />
-      <figcaption className="text-[0.78125rem] text-muted">Approximate area only (within about 1 km). The exact address is shared after a viewing is confirmed.</figcaption>
+      <iframe title={`Map of the approximate area: ${label}`} src={src} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="aspect-[16/10] w-full rounded-card border border-line" />
+      <figcaption className="text-caption text-muted">Approximate area only (within about 1 km). The exact address is shared after a viewing is confirmed.</figcaption>
     </figure>
   );
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { OnboardingQuick } from "@/components/admin/onboarding-quick";
 import { RetryButton } from "@/components/admin/retry-button";
-import { EmptyState, Eyebrow, buttonClass } from "@/components/ui/primitives";
+import { EmptyState, Eyebrow, Notice, buttonClass } from "@/components/ui/primitives";
 import { formatAmount } from "@/lib/money";
 import { timeAgo } from "@/lib/dates";
 import { ADVERTISER_ROLE_LABEL, PRICE_BASIS_LABEL } from "@/lib/listing/catalog";
@@ -42,22 +42,22 @@ export default async function AdminReviewPage() {
     <div className="grid gap-8 xl:grid-cols-[1fr_380px]">
       <section aria-labelledby="lr" className="min-w-0">
         <Eyebrow>{new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Africa/Nairobi" }).format(new Date())} EAT</Eyebrow>
-        <h1 id="lr" className="mt-1 font-display text-[2.125rem] font-bold tracking-[-1px] md:text-[2.5rem]">Listing review</h1>
-        <dl className="mt-4 grid grid-cols-2 divide-divider rounded-[18px] border border-line bg-surface sm:grid-cols-4 sm:divide-x">
+        <h1 id="lr" className="heading-page mt-1">Listing review</h1>
+        <dl className="surface mt-4 grid grid-cols-2 divide-divider sm:grid-cols-4 sm:divide-x">
           {[["Oldest in queue", c.oldest_review_hours ? `${Math.round(c.oldest_review_hours)} h` : "—", c.oldest_review_hours > 24], ["Submitted today", c.submitted_today ?? 0, false], ["Sent back for correction", c.sent_back ?? 0, false], ["Published today", c.published_today ?? 0, false]].map(([k, v, warn]) => (
             <div key={k as string} className="p-4">
-              <dd className={`font-display text-[1.625rem] font-bold ${warn ? "text-waiting" : ""}`}>{v as string}</dd>
-              <dt className="text-[0.8125rem] text-muted">{k as string}</dt>
+              <dd className={`font-display text-title-lg font-bold ${warn ? "text-waiting" : ""}`}>{v as string}</dd>
+              <dt className="text-caption text-muted">{k as string}</dt>
             </div>
           ))}
         </dl>
         {(queue ?? []).length === 0 ? (
           <div className="mt-5"><EmptyState title="Nothing waiting for review" icon="check">Submitted listings appear here, oldest first.</EmptyState></div>
         ) : (
-          <div className="mt-5 overflow-x-auto rounded-[18px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Listings waiting for review (scrolls sideways)">
-            <table className="w-full min-w-[720px] text-[0.875rem]">
+          <div className="surface mt-5 overflow-x-auto" tabIndex={0} role="region" aria-label="Listings waiting for review (scrolls sideways)">
+            <table className="w-full min-w-[720px] text-label">
               <thead>
-                <tr className="border-b border-line text-left font-mono text-[0.75rem] text-muted uppercase">
+                <tr className="border-b border-line text-left font-mono text-micro text-muted uppercase">
                   {["Listing", "Advertiser", "Flags", "Waiting", ""].map((h) => <th key={h} scope="col" className="px-4 py-2.5 font-medium">{h}</th>)}
                 </tr>
               </thead>
@@ -65,16 +65,16 @@ export default async function AdminReviewPage() {
                 {(queue ?? []).map((l) => (
                   <tr key={l.id} className="border-b border-divider last:border-0">
                     <td className="px-4 py-3">
-                      <p className="font-semibold">{l.title} · {l.area}{edited.has(l.id) ? <span className="ml-2 rounded-full bg-waiting-tint px-2 py-0.5 text-[0.75rem] text-waiting-strong">Edited after publishing</span> : null}</p>
-                      <p className="font-mono text-[0.78125rem] text-muted">{l.ref} · KES {formatAmount(Number(l.rent_amount))}{PRICE_BASIS_LABEL[l.price_basis] ? ` ${PRICE_BASIS_LABEL[l.price_basis]}` : ""}</p>
+                      <p className="font-semibold">{l.title} · {l.area}{edited.has(l.id) ? <span className="ml-2 rounded-full bg-waiting-tint px-2 py-0.5 text-micro text-waiting-strong">Edited after publishing</span> : null}</p>
+                      <p className="tabular-nums text-caption text-muted">{l.ref} · KES {formatAmount(Number(l.rent_amount))}{PRICE_BASIS_LABEL[l.price_basis] ? ` ${PRICE_BASIS_LABEL[l.price_basis]}` : ""}</p>
                     </td>
                     <td className="px-4 py-3">
                       <p className="font-semibold">{l.org_name}</p>
-                      <p className="text-[0.78125rem] text-muted">{ADVERTISER_ROLE_LABEL[l.advertiser_role]} · {l.identity_checked_at ? "identity checked" : "identity pending"}{l.advertiser_role !== "owner" ? (l.authority_checked_at ? " · authority checked" : " · authority not checked") : ""}</p>
+                      <p className="text-caption text-muted">{ADVERTISER_ROLE_LABEL[l.advertiser_role]} · {l.identity_checked_at ? "identity checked" : "identity pending"}{l.advertiser_role !== "owner" ? (l.authority_checked_at ? " · authority checked" : " · authority not checked") : ""}</p>
                     </td>
                     <td className="px-4 py-3">
                       {((l.flags as string[]) ?? []).length ? (
-                        <ul className="text-[0.8125rem] font-semibold text-waiting">{(l.flags as string[]).map((f) => <li key={f}>{f}</li>)}</ul>
+                        <ul className="text-caption font-semibold text-waiting">{(l.flags as string[]).map((f) => <li key={f}>{f}</li>)}</ul>
                       ) : <span className="text-muted">No flags</span>}
                     </td>
                     <td className="px-4 py-3 font-mono">{timeAgo(l.submitted_at).replace(" ago", "")}</td>
@@ -88,43 +88,41 @@ export default async function AdminReviewPage() {
       </section>
       <div className="flex flex-col gap-6">
         <section aria-labelledby="reg">
-          <h2 id="reg" className="mb-2 font-display text-[1.25rem] font-bold">New registrations</h2>
-          <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+          <h2 id="reg" className="heading-section mb-2">New registrations</h2>
+          <ul className="surface-list">
             {newOrgs.map((o) => (
               <li key={o.org_id} className="flex items-center justify-between gap-3 px-4 py-3">
                 <span className="min-w-0">
                   <span className="block font-semibold">{o.name} · {o.kind === "agency" ? "agent" : "landlord"}</span>
-                  <span className="text-[0.78125rem] text-muted">{timeAgo(o.created_at)}{o.assignee_name ? ` · onboarding with ${o.assignee_name}` : ""}</span>
+                  <span className="text-caption text-muted">{timeAgo(o.created_at)}{o.assignee_name ? ` · onboarding with ${o.assignee_name}` : ""}</span>
                 </span>
                 {!o.assignee_id ? <OnboardingQuick orgId={o.org_id} /> : null}
               </li>
             ))}
-            <li className="px-4 py-3 text-[0.84375rem] text-muted">
-              {(regs ?? []).length} recent account{(regs ?? []).length === 1 ? "" : "s"} · <Link href="/admin/users" className="font-semibold text-ink underline">see all</Link>
+            <li className="px-4 py-3 text-label text-muted">
+              {(regs ?? []).length} recent account{(regs ?? []).length === 1 ? "" : "s"} · <Link href="/admin/users" className="link-action">see all</Link>
             </li>
           </ul>
         </section>
         <section aria-labelledby="fail">
-          <h2 id="fail" className="mb-2 font-display text-[1.25rem] font-bold">Deliveries</h2>
+          <h2 id="fail" className="heading-section mb-2">Deliveries</h2>
           {!provider ? (
-            <p className="mb-2 rounded-[16px] border border-line bg-surface p-4 text-[0.875rem]"><strong>Email is switched off.</strong> Messages stay queued until a provider is configured. <Link href="/admin/deliveries" className="font-semibold underline">Details</Link></p>
+            <Notice tone="waiting" className="mb-2" title="Email is switched off">Messages stay queued until a provider is configured. <Link href="/admin/deliveries" className="link-action">Details</Link></Notice>
           ) : null}
           {deliveryIssues.length ? (
-            <div role="alert" className="mb-2 rounded-[16px] border-[1.5px] border-error bg-surface p-4 text-[0.875rem]">
-              <p className="font-semibold text-error">Messages need attention</p>
-              <ul className="mt-1 list-disc pl-5">{deliveryIssues.map((i) => <li key={i}>{i}</li>)}</ul>
-              <Link href="/admin/deliveries" className="mt-1 inline-flex min-h-11 items-center font-semibold underline">Open deliveries</Link>
-            </div>
+            <Notice tone="error" role="alert" className="mb-2" title="Messages need attention" action={<Link href="/admin/deliveries" className="link-action">Open deliveries</Link>}>
+              <ul className="list-disc pl-5">{deliveryIssues.map((i) => <li key={i}>{i}</li>)}</ul>
+            </Notice>
           ) : null}
           {(fails ?? []).length === 0 ? (
-            <p className="rounded-[16px] border border-dashed border-line bg-surface p-4 text-[0.875rem] text-muted">No failed deliveries.{deliveryIssues.length ? "" : ` ${Number(h.due ?? 0) + Number(h.scheduled ?? 0)} waiting to send, none overdue.`}</p>
+            <p className="surface-empty p-4">No failed deliveries.{deliveryIssues.length ? "" : ` ${Number(h.due ?? 0) + Number(h.scheduled ?? 0)} waiting to send, none overdue.`}</p>
           ) : (
-            <ul className="flex flex-col divide-y divide-divider rounded-[16px] border border-line bg-surface">
+            <ul className="surface-list">
               {(fails ?? []).map((f) => (
                 <li key={f.id} className="flex items-center justify-between gap-3 px-4 py-3">
                   <span className="min-w-0">
                     <span className="block font-semibold">{f.template.replaceAll("_", " ")} · {f.channel} failed</span>
-                    <span className="block truncate text-[0.78125rem] text-muted">{f.last_error}</span>
+                    <span className="block truncate text-caption text-muted">{f.last_error}</span>
                   </span>
                   <RetryButton taskId={f.id} />
                 </li>

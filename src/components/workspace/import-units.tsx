@@ -47,28 +47,28 @@ export function ImportUnits({ orgId, propertyId }: { orgId: string; propertyId: 
   const ready = checked && checked.result && allProblems.length === 0;
 
   return (
-    <details className="rounded-[18px] border border-line bg-surface p-4">
+    <details className="surface p-4">
       <summary className="cursor-pointer font-semibold">
         <Icon name="file" size={16} className="mr-1 inline" /> Import units and tenants from a spreadsheet
       </summary>
       <div className="mt-4 flex flex-col gap-4">
-        <p className="text-[0.875rem] text-muted">
+        <p className="text-label text-muted">
           One row per unit. Add the tenant&apos;s name, start date and rent to set up their tenancy too; leave them empty for a vacant unit.
           Units already here are matched by their reference.{" "}
           <a
-            className="font-semibold text-primary underline"
+            className="link-action"
             download="nyumbani-units-template.csv"
             href={`data:text/csv;charset=utf-8,${encodeURIComponent(TEMPLATE_CSV)}`}
           >
             Download the template
           </a>
         </p>
-        <label className="flex flex-col gap-1.5 text-[0.875rem] font-semibold">
+        <label className="flex flex-col gap-1.5 text-label font-semibold">
           Choose a CSV file
           <input
             type="file"
             accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values"
-            className="text-[0.875rem] font-normal file:mr-3 file:min-h-10 file:rounded-[10px] file:border file:border-line file:bg-cool file:px-3 file:font-semibold"
+            className="text-label font-normal file:mr-3 file:min-h-10 file:rounded-control file:border file:border-line file:bg-cool file:px-3 file:font-semibold"
             onChange={async (e) => {
               const f = e.target.files?.[0];
               if (!f) return;
@@ -79,7 +79,7 @@ export function ImportUnits({ orgId, propertyId }: { orgId: string; propertyId: 
           />
         </label>
         <Field label="Or paste the cells here" htmlFor={pasteId} hint="Copy the rows in Excel or Google Sheets, including the column names, and paste.">
-          <TextArea id={pasteId} rows={5} value={text} onChange={(e) => { setText(e.target.value); setChecked(null); }} className="font-mono text-[0.8125rem]" aria-describedby={`${pasteId}-hint`} />
+          <TextArea id={pasteId} rows={5} value={text} onChange={(e) => { setText(e.target.value); setChecked(null); }} className="font-mono text-caption" aria-describedby={`${pasteId}-hint`} />
         </Field>
         <div className="flex flex-wrap gap-2">
           <Button variant="secondary" pending={pending && !ready} disabled={!text.trim()} onClick={() => check(text)}>Check rows</Button>

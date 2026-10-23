@@ -93,7 +93,7 @@ export function Logo({ className = "", withWord = true }: { className?: string; 
         <path d="M3 13 14 4l11 9" fill="none" stroke="#1D252C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
         <rect x="11" y="15" width="6" height="9" rx="3" fill="#DD0031" />
       </svg>
-      {withWord && <span className="font-display text-[1.25rem] font-bold tracking-[-0.4px] text-ink">nyumbani</span>}
+      {withWord && <span className="font-display text-title-sm font-bold tracking-[-0.4px] text-ink">nyumbani</span>}
     </span>
   );
 }

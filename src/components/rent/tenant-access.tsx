@@ -50,12 +50,12 @@ export function TenantAccess({
 
   return (
     <section aria-labelledby="access-h" className="mt-4 flex flex-col gap-2.5 border-t border-divider pt-4">
-      <h3 id="access-h" className="flex items-center gap-2 text-[0.875rem] font-semibold">
+      <h3 id="access-h" className="flex items-center gap-2 text-label font-semibold">
         <Icon name="user" size={16} className="text-muted" /> Tenant&apos;s online access
       </h3>
       {linked ? (
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-[0.84375rem] text-muted">{first} can see their rent, balance and statement online.</p>
+          <p className="text-label text-muted">{first} can see their rent, balance and statement online.</p>
           <Button
             size="sm"
             variant="secondary"
@@ -74,15 +74,15 @@ export function TenantAccess({
         </div>
       ) : (
         <>
-          <p className="text-[0.84375rem] text-muted">
+          <p className="text-label text-muted">
             {pending
               ? `Link sent to ${pending.email}, waiting for ${first} to open it (expires ${formatDate(pending.expiresAt)}).`
               : `Let ${first} see their own rent, balance and statement online. They see confirmed records only, never your notes.`}
           </p>
           {sent ? (
-            <div className="flex flex-col gap-2 rounded-[12px] bg-cool p-3">
-              <p className="text-[0.8125rem] font-semibold">{sent.emailQueued ? `Emailed to ${email}. You can also share the link yourself:` : "Email is off, so share this link with the tenant yourself:"}</p>
-              <p className="font-mono text-[0.75rem] break-all">{sent.link}</p>
+            <div className="flex flex-col gap-2 rounded-control bg-cool p-3">
+              <p className="text-caption font-semibold">{sent.emailQueued ? `Emailed to ${email}. You can also share the link yourself:` : "Email is off, so share this link with the tenant yourself:"}</p>
+              <p className="font-mono text-micro break-all">{sent.link}</p>
               <Button
                 size="sm"
                 variant="secondary"

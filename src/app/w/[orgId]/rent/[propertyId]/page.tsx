@@ -63,7 +63,7 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
   const pct = summary && summary.billed ? Math.min(100, (summary.settled / summary.billed) * 100) : 0;
 
   return (
-    <div className="mx-auto flex max-w-[860px] flex-col gap-4">
+    <div className="mx-auto flex max-w-standard flex-col gap-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <Eyebrow>
@@ -71,13 +71,13 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
           </Eyebrow>
           {properties.length > 1 ? (
             <details className="relative mt-1">
-              <summary className="flex cursor-pointer list-none items-center gap-1 font-display text-[1.5rem] font-bold md:text-[2rem]">
+              <summary className="flex cursor-pointer list-none items-center gap-1 font-display text-title font-bold md:text-display-sm">
                 {property.name} <Icon name="chevronDown" />
               </summary>
-              <ul className="absolute z-20 mt-2 w-72 rounded-[14px] border border-line bg-surface p-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.08)]">
+              <ul className="surface absolute z-20 mt-2 w-72 p-1.5 shadow-raised">
                 {properties.map((p) => (
                   <li key={p.id}>
-                    <Link href={`/w/${orgId}/rent/${p.id}?period=${periodParam(period)}`} className={cx("block rounded-[10px] px-3 py-2.5", p.id === propertyId ? "bg-cool font-semibold" : "hover:bg-cool")}>
+                    <Link href={`/w/${orgId}/rent/${p.id}?period=${periodParam(period)}`} className={cx("block rounded-control px-3 py-2.5", p.id === propertyId ? "bg-cool font-semibold" : "hover:bg-cool")}>
                       {p.name}
                     </Link>
                   </li>
@@ -85,7 +85,7 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
               </ul>
             </details>
           ) : (
-            <h1 className="mt-1 font-display text-[1.5rem] font-bold md:text-[2rem]">{property.name}</h1>
+            <h1 className="heading-page mt-1">{property.name}</h1>
           )}
         </div>
         <div className="hidden gap-2 md:flex">
@@ -107,25 +107,25 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
       ) : null}
 
       {summary ? (
-        <section aria-label={`${formatPeriod(period)} summary`} className="rounded-[18px] border border-line bg-surface p-4">
+        <section aria-label={`${formatPeriod(period)} summary`} className="surface p-4">
           <p>
-            <span className="font-display text-[1.75rem] font-extrabold">{formatMoney(summary.settled)}</span>{" "}
+            <span className="font-display text-title-lg font-extrabold">{formatMoney(summary.settled)}</span>{" "}
             <span className="text-muted">confirmed of {formatAmount(summary.billed)} billed</span>
           </p>
           <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-cool" role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100} aria-label="Share of billed rent confirmed">
             <div className="h-full rounded-full bg-success" style={{ width: `${pct}%` }} />
           </div>
-          <p className="mt-2 text-[0.84375rem] text-muted">
+          <p className="mt-2 text-label text-muted">
             {formatRate(summary.collection_rate)} collected · {formatMoney(summary.outstanding)} outstanding
             {summary.overdue ? ` · ${formatMoney(summary.overdue)} overdue` : ""}
           </p>
-          <p className="mt-1 text-[0.75rem] text-muted">Confirmed by property staff · Records last changed {changedAt ? formatDateTime(changedAt) : "never"} · Pending entries are not counted</p>
+          <p className="mt-1 text-micro text-muted">Confirmed by property staff · Records last changed {changedAt ? formatDateTime(changedAt) : "never"} · Pending entries are not counted</p>
         </section>
       ) : null}
 
       {summary && summary.pending_count > 0 ? (
         ws.can_confirm ? (
-          <Link href={`/w/${orgId}/rent/inbox?property=${propertyId}`} className="flex min-h-[56px] items-center gap-3 rounded-[16px] border border-[#f0d9ad] bg-waiting-tint px-4 text-[0.90625rem] font-semibold text-waiting-strong">
+          <Link href={`/w/${orgId}/rent/inbox?property=${propertyId}`} className="flex min-h-row items-center gap-3 rounded-card border border-waiting-line bg-waiting-tint px-4 text-body font-semibold text-waiting-strong">
             <Icon name="clock" />
             {summary.pending_count} entr{summary.pending_count === 1 ? "y" : "ies"} awaiting your confirmation · {formatMoney(summary.pending_amount)}
             <Icon name="chevronRight" className="ml-auto" />
@@ -159,9 +159,9 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
         <label htmlFor="q" className="sr-only">
           Search units or tenants
         </label>
-        <div className="flex min-h-[50px] items-center gap-2 rounded-[12px] border border-input bg-surface px-3 focus-within:ring-2 focus-within:ring-deep/40">
+        <div className="flex min-h-field items-center gap-2 rounded-control border border-input bg-surface px-3 focus-within:ring-2 focus-within:ring-deep/40">
           <Icon name="search" className="text-muted" />
-          <input id="q" name="q" defaultValue={q} placeholder="Search unit or tenant" className="min-w-0 flex-1 bg-transparent text-[1rem] focus:outline-none" />
+          <input id="q" name="q" defaultValue={q} placeholder="Search unit or tenant" className="min-w-0 flex-1 bg-transparent text-base focus:outline-none" />
         </div>
       </form>
       <nav aria-label="Filter units" className="-mx-4 flex gap-2 overflow-x-auto px-4 md:mx-0 md:px-0">
@@ -171,7 +171,7 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
             href={`${base}?period=${periodParam(period)}${f.key === "all" ? "" : `&filter=${f.key}`}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
             aria-current={filter === f.key ? "true" : undefined}
             className={cx(
-              "inline-flex min-h-10 shrink-0 items-center rounded-full border-[1.5px] px-3.5 text-[0.875rem] font-semibold",
+              "inline-flex min-h-10 shrink-0 items-center rounded-full border-strong px-3.5 text-label font-semibold",
               filter === f.key ? "border-ink bg-ink text-white" : "border-line bg-surface",
             )}
           >
@@ -185,23 +185,23 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
           Add the units, then set up current tenancies with any opening balances.
         </EmptyState>
       ) : visible.length === 0 ? (
-        <p className="rounded-[16px] border border-dashed border-line bg-surface p-6 text-center text-[0.90625rem] text-muted">No units match this filter.</p>
+        <p className="surface-empty p-6 text-center">No units match this filter.</p>
       ) : (
-        <ul className="flex flex-col divide-y divide-divider overflow-hidden rounded-[18px] border border-line bg-surface">
+        <ul className="surface-list">
           {visible.map((r) => (
             <li key={`${r.unit_id}-${r.tenancy_id ?? "none"}`} className="flex flex-col gap-2 px-4 py-3.5">
               <div className="flex items-start justify-between gap-3">
                 <Link href={`${base}/units/${r.unit_id}?period=${periodParam(period)}`} className="min-w-0 hover:underline">
-                  <span className="font-mono text-[0.9375rem] font-medium">{r.unit_label}</span>
+                  <span className="font-mono text-body font-medium">{r.unit_label}</span>
                   <span className="font-semibold"> · {r.tenant_name ?? "No tenant"}</span>
-                  {r.tenancy_status === "ended" ? <span className="text-[0.8125rem] text-muted"> (former tenant)</span> : null}
-                  <span className="block text-[0.84375rem] text-muted">{lineFor(r)}</span>
+                  {r.tenancy_status === "ended" ? <span className="text-caption text-muted"> (former tenant)</span> : null}
+                  <span className="block text-label text-muted">{lineFor(r)}</span>
                 </Link>
                 <RentStatusBadge status={r.rent_status} overdue={r.overdue} />
               </div>
               {r.pending_count > 0 ? (
-                <Link href={ws.can_confirm ? `/w/${orgId}/rent/inbox?property=${propertyId}` : `${base}/units/${r.unit_id}?period=${periodParam(period)}`} className="inline-flex items-center gap-1.5 text-[0.84375rem] font-semibold text-waiting">
-                  <Icon name="clock" size={15} />
+                <Link href={ws.can_confirm ? `/w/${orgId}/rent/inbox?property=${propertyId}` : `${base}/units/${r.unit_id}?period=${periodParam(period)}`} className="inline-flex items-center gap-1.5 text-label font-semibold text-waiting">
+                  <Icon name="clock" size={16} />
                   Pending {formatMoney(r.pending_amount)}
                   {r.pending_by ? ` from ${r.pending_by}` : ""} · {ws.can_confirm ? "Review" : "awaiting confirmation"}
                 </Link>

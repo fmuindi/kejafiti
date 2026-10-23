@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import { cancelInvitation, resendInvitation, setMemberStatus } from "@/app/w/[orgId]/team/actions";
 import { Select } from "@/components/ui/form";
-import { Button, Notice } from "@/components/ui/primitives";
+import { Button, Notice, InlineError } from "@/components/ui/primitives";
 
 export function MemberActions({
   orgId,
@@ -63,8 +63,8 @@ export function MemberActions({
         >
           Cancel
         </Button>
-        {msg ? <p role="status" className="w-full text-[0.78125rem] break-all text-success">{msg}</p> : null}
-        {error ? <p role="alert" className="w-full text-[0.78125rem] text-error">{error}</p> : null}
+        {msg ? <p role="status" className="w-full text-caption break-all text-success">{msg}</p> : null}
+        {error ? <InlineError className="w-full">{error}</InlineError> : null}
       </>
     );
   }
@@ -93,9 +93,9 @@ export function MemberActions({
       <Button size="sm" variant="quiet" onClick={() => dialog.current?.showModal()}>
         Suspend or remove
       </Button>
-      <dialog ref={dialog} aria-labelledby={`sr-${membershipId}`} className="m-auto w-[min(460px,92vw)] rounded-[22px] bg-surface p-0 backdrop:bg-ink/40">
+      <dialog ref={dialog} aria-labelledby={`sr-${membershipId}`} className="m-auto w-[min(460px,92vw)] rounded-panel bg-surface p-0 backdrop:bg-ink/40">
         <div className="flex flex-col gap-4 p-5">
-          <h2 id={`sr-${membershipId}`} className="font-display text-[1.25rem] font-bold">
+          <h2 id={`sr-${membershipId}`} className="heading-section">
             Change {name}&apos;s access
           </h2>
           <div className="flex gap-2" role="radiogroup" aria-label="Action">
@@ -106,7 +106,7 @@ export function MemberActions({
                 role="radio"
                 aria-checked={action === a}
                 onClick={() => setAction(a)}
-                className={`min-h-11 flex-1 rounded-[12px] border-[1.5px] px-3 text-[0.90625rem] font-semibold ${action === a ? "border-ink bg-ink text-white" : "border-line"}`}
+                className={`min-h-11 flex-1 rounded-control border-strong px-3 text-body font-semibold ${action === a ? "border-ink bg-ink text-white" : "border-line"}`}
               >
                 {a === "suspended" ? "Suspend" : "Remove"}
               </button>
@@ -118,16 +118,16 @@ export function MemberActions({
               : "Access ends permanently for this workspace. Their history stays in the records; their other accounts are unaffected."}
           </Notice>
           <label className="flex flex-col gap-1.5">
-            <span className="text-[0.875rem] font-semibold">Move their open drafts and returned entries to</span>
+            <span className="text-label font-semibold">Move their open drafts and returned entries to</span>
             <Select value={reassign} onChange={(e) => setReassign(e.target.value)}>
               <option value="">Leave unassigned</option>
               {replacements.map((r) => (
                 <option key={r.id} value={r.id}>{r.name}</option>
               ))}
             </Select>
-            <span className="text-[0.78125rem] text-muted">Entries awaiting confirmation stay in the property inbox for any confirmer.</span>
+            <span className="text-caption text-muted">Entries awaiting confirmation stay in the property inbox for any confirmer.</span>
           </label>
-          {error ? <p role="alert" className="text-[0.875rem] font-semibold text-error">{error}</p> : null}
+          {error ? <InlineError>{error}</InlineError> : null}
           <div className="flex gap-2">
             <Button variant="secondary" onClick={() => dialog.current?.close()} className="flex-1">
               Cancel

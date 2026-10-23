@@ -344,7 +344,7 @@ export function RecordPaymentForm(props: Props) {
       }}
       className="flex flex-col gap-5"
     >
-      <p className="-mt-2 text-right text-[0.78125rem] text-muted" aria-live="polite">
+      <p className="-mt-2 text-right text-caption text-muted" aria-live="polite">
         {statusLabel}
       </p>
       <ErrorSummary errors={errors} message={formError ?? undefined} />
@@ -365,8 +365,8 @@ export function RecordPaymentForm(props: Props) {
         </Notice>
       ) : null}
 
-      <section className="rounded-[16px] bg-cool p-4">
-        <p className="font-mono text-[0.75rem] tracking-[0.6px] text-muted uppercase">
+      <section className="rounded-card bg-cool p-4">
+        <p className="font-mono text-micro tracking-caps text-muted uppercase">
           {props.propertyName} · {props.unitLabel}
         </p>
         <p className="mt-1 font-semibold">
@@ -374,11 +374,11 @@ export function RecordPaymentForm(props: Props) {
           {props.tenancyEnded ? " · former tenant" : ` · tenancy since ${formatDate(props.tenancyStart)}`}
         </p>
         {current ? (
-          <p className="mt-1 text-[0.875rem] text-muted">
+          <p className="mt-1 text-label text-muted">
             {current.label} {formatMoney(current.net)} · Confirmed {formatAmount(current.confirmed)} · <strong className="text-ink">{formatAmount(currentOutstanding)} left</strong>
           </p>
         ) : (
-          <p className="mt-1 text-[0.875rem] text-muted">Outstanding across all periods: {formatMoney(totalOutstanding)}</p>
+          <p className="mt-1 text-label text-muted">Outstanding across all periods: {formatMoney(totalOutstanding)}</p>
         )}
       </section>
 
@@ -398,7 +398,7 @@ export function RecordPaymentForm(props: Props) {
             setAmount(String(fullAmount));
             setLinesEdited(false);
           }}
-          className="-mt-3 self-start rounded-full border-[1.5px] border-line bg-surface px-3.5 py-2 text-[0.875rem] font-semibold"
+          className="-mt-3 self-start rounded-full border-strong border-line bg-surface px-3.5 py-2 text-label font-semibold"
         >
           Record full payment · {formatMoney(fullAmount)}
         </button>
@@ -417,9 +417,9 @@ export function RecordPaymentForm(props: Props) {
       </Field>
 
       <fieldset id="allocations" className="flex flex-col gap-2">
-        <legend className="mb-1.5 text-[0.875rem] font-semibold">Apply to</legend>
+        <legend className="mb-1.5 text-label font-semibold">Apply to</legend>
         {charges.length === 0 ? (
-          <p className="rounded-[14px] border border-dashed border-line bg-surface p-4 text-[0.875rem] text-muted">
+          <p className="surface-empty p-4">
             No open charges. The whole amount will be kept as tenant credit for future periods.
           </p>
         ) : (
@@ -429,7 +429,7 @@ export function RecordPaymentForm(props: Props) {
             const pl = preview.lines.find((l) => l.chargeId === c.id);
             const open = outstandingOf(c);
             return (
-              <div key={c.id} className={cx("flex items-center gap-3 rounded-[14px] border bg-surface p-3", on ? "border-ink" : "border-line")}>
+              <div key={c.id} className={cx("flex items-center gap-3 rounded-card border bg-surface p-3", on ? "border-ink" : "border-line")}>
                 <input
                   type="checkbox"
                   aria-label={`Apply to ${c.label}`}
@@ -443,7 +443,7 @@ export function RecordPaymentForm(props: Props) {
                 />
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold">{c.label}</p>
-                  <p className="text-[0.78125rem] text-muted">
+                  <p className="text-caption text-muted">
                     {pl ? (
                       <>
                         {formatAmount(pl.before)} left → <span className={pl.after <= 0 ? "font-semibold text-success" : ""}>{formatAmount(Math.max(0, pl.after))} left{pl.after <= 0 ? " · Paid" : ""}</span>
@@ -466,19 +466,19 @@ export function RecordPaymentForm(props: Props) {
                     setLinesEdited(true);
                     setLines((x) => ({ ...x, [c.id]: e.target.value }));
                   }}
-                  className="w-24 rounded-[10px] border border-input px-2 py-2 text-right font-mono text-[0.9375rem]"
+                  className="w-24 rounded-control border border-input px-2 py-2 text-right tabular-nums text-body"
                 />
               </div>
             );
           })
         )}
-        {errors.allocations ? <p className="text-[0.84375rem] font-semibold text-error">{errors.allocations}</p> : null}
-        <p className="text-[0.8125rem] text-muted">
+        {errors.allocations ? <p className="text-label font-semibold text-error">{errors.allocations}</p> : null}
+        <p className="text-caption text-muted">
           Not applied: {formatMoney(preview.credit)}. Any extra is kept as tenant credit.
           {linesEdited ? (
             <>
               {" "}
-              <button type="button" className="font-semibold text-ink underline" onClick={() => setLinesEdited(false)}>
+              <button type="button" className="link-action" onClick={() => setLinesEdited(false)}>
                 Apply oldest first
               </button>
             </>
@@ -487,7 +487,7 @@ export function RecordPaymentForm(props: Props) {
       </fieldset>
 
       <fieldset>
-        <legend className="mb-1.5 text-[0.875rem] font-semibold">
+        <legend className="mb-1.5 text-label font-semibold">
           How they paid <span className="font-normal text-muted">(optional)</span>
         </legend>
         <div className="flex flex-wrap gap-2" role="radiogroup">
@@ -498,13 +498,13 @@ export function RecordPaymentForm(props: Props) {
               role="radio"
               aria-checked={method === m.value}
               onClick={() => setMethod(method === m.value ? "" : m.value)}
-              className={cx("min-h-11 rounded-full border-[1.5px] px-4 text-[0.90625rem] font-semibold", method === m.value ? "border-ink bg-ink text-white" : "border-line bg-surface")}
+              className={cx("min-h-11 rounded-full border-strong px-4 text-body font-semibold", method === m.value ? "border-ink bg-ink text-white" : "border-line bg-surface")}
             >
               {m.label}
             </button>
           ))}
         </div>
-        <p className="mt-1.5 text-[0.8125rem] text-muted">For your records only. No account is connected.</p>
+        <p className="mt-1.5 text-caption text-muted">For your records only. No account is connected.</p>
       </fieldset>
 
       <Field label="Reference" htmlFor="reference" optional hint="For example the M-PESA code or bank slip number.">
@@ -515,19 +515,19 @@ export function RecordPaymentForm(props: Props) {
       </Field>
 
       <section id="evidence" aria-labelledby="evidence-title" className="flex flex-col gap-2">
-        <h2 id="evidence-title" className="text-[0.875rem] font-semibold">
+        <h2 id="evidence-title" className="text-label font-semibold">
           Receipt or evidence <span className="font-normal text-muted">{props.evidenceRequired ? "(required by this property)" : "(optional)"}</span>
         </h2>
         {attachments.map((a) => (
-          <div key={a.id} className="flex items-center gap-3 rounded-[14px] border border-line bg-surface p-3">
+          <div key={a.id} className="surface flex items-center gap-3 p-3">
             <Icon name={a.mime_type === "application/pdf" ? "file" : "image"} className="text-deep" />
             <div className="min-w-0 flex-1">
               <p className="truncate font-semibold">{a.file_name}</p>
-              <p className="text-[0.78125rem] text-muted">Private · visible to {props.propertyName} staff only</p>
+              <p className="text-caption text-muted">Private · visible to {props.propertyName} staff only</p>
             </div>
             <button
               type="button"
-              className="min-h-11 px-2 text-[0.875rem] font-semibold underline"
+              className="link-action min-h-11 px-2 text-label"
               onClick={async () => {
                 const r = await removeAttachment(a.id);
                 if (r.ok) setAttachments((x) => x.filter((y) => y.id !== a.id));
@@ -538,19 +538,19 @@ export function RecordPaymentForm(props: Props) {
           </div>
         ))}
         {uploads.map((u) => (
-          <div key={u.key} className={cx("flex items-center gap-3 rounded-[14px] border bg-surface p-3", u.state === "failed" ? "border-error" : "border-line")}>
+          <div key={u.key} className={cx("flex items-center gap-3 rounded-card border bg-surface p-3", u.state === "failed" ? "border-error" : "border-line")}>
             <Icon name={u.state === "failed" ? "alert" : "upload"} className={u.state === "failed" ? "text-error" : "text-muted"} />
             <div className="min-w-0 flex-1" aria-live="polite">
               <p className="truncate font-semibold">{u.name}</p>
-              <p className={cx("text-[0.78125rem]", u.state === "failed" ? "text-error" : "text-muted")}>{u.state === "failed" ? `Upload failed. ${u.error ?? ""}` : "Uploading…"}</p>
+              <p className={cx("text-caption", u.state === "failed" ? "text-error" : "text-muted")}>{u.state === "failed" ? `Upload failed. ${u.error ?? ""}` : "Uploading…"}</p>
             </div>
             {u.state === "failed" && u.file && entry ? (
-              <button type="button" className="min-h-11 px-2 text-[0.875rem] font-semibold underline" onClick={() => void uploadOne(u.file as File, entry.id, u.key)}>
+              <button type="button" className="link-action min-h-11 px-2 text-label" onClick={() => void uploadOne(u.file as File, entry.id, u.key)}>
                 Retry
               </button>
             ) : null}
             {u.state === "failed" ? (
-              <button type="button" className="min-h-11 px-2 text-[0.875rem] font-semibold underline" onClick={() => setUploads((x) => x.filter((y) => y.key !== u.key))}>
+              <button type="button" className="link-action min-h-11 px-2 text-label" onClick={() => setUploads((x) => x.filter((y) => y.key !== u.key))}>
                 Remove
               </button>
             ) : null}
@@ -566,8 +566,8 @@ export function RecordPaymentForm(props: Props) {
         </div>
         <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="sr-only" tabIndex={-1} aria-hidden="true" aria-label="Take a photo of the receipt" onChange={(e) => { const files = Array.from(e.target.files ?? []); e.target.value = ""; void addFiles(files); }} />
         <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" multiple className="sr-only" tabIndex={-1} aria-hidden="true" aria-label="Choose receipt files" onChange={(e) => { const files = Array.from(e.target.files ?? []); e.target.value = ""; void addFiles(files); }} />
-        <p className="text-[0.78125rem] text-muted">JPG, PNG, HEIC or PDF, up to 15 MB. Files stay private. A photo is evidence supplied by staff; it is not proof of payment.</p>
-        {errors.evidence ? <p className="text-[0.84375rem] font-semibold text-error">{errors.evidence}</p> : null}
+        <p className="text-caption text-muted">JPG, PNG, HEIC or PDF, up to 15 MB. Files stay private. A photo is evidence supplied by staff; it is not proof of payment.</p>
+        {errors.evidence ? <p className="text-label font-semibold text-error">{errors.evidence}</p> : null}
       </section>
 
       {dupes && !dupesAccepted ? (
@@ -603,20 +603,20 @@ export function RecordPaymentForm(props: Props) {
       ) : null}
 
       {props.canConfirm ? (
-        <div id="ack" className="rounded-[14px] border border-[#f0d9ad] bg-waiting-tint/60 p-4">
+        <div id="ack" className="rounded-card border border-waiting-line bg-waiting-tint/60 p-4">
           <Checkbox
             checked={ack}
             onChange={(e) => setAck(e.target.checked)}
             label="I have checked this payment using our property's external records and confirm this entry is accurate."
           />
-          {errors.ack ? <p className="mt-2 text-[0.84375rem] font-semibold text-error">{errors.ack}</p> : null}
+          {errors.ack ? <p className="mt-2 text-label font-semibold text-error">{errors.ack}</p> : null}
         </div>
       ) : (
         <Notice tone="info">You submit this entry; an authorised manager checks it externally and confirms it. It won&apos;t count until then.</Notice>
       )}
 
       {props.canConfirm && current && currentAfter && props.periodTotals ? (
-        <p className="text-[0.84375rem] text-muted" aria-live="polite">
+        <p className="text-label text-muted" aria-live="polite">
           After confirming: {props.unitLabel} becomes{" "}
           <strong className={currentAfter.after <= 0 ? "text-success" : "text-waiting"}>{currentAfter.after <= 0 ? "Paid" : "Partial"}</strong>. {props.periodTotals.label} total{" "}
           {formatAmount(props.periodTotals.settled + currentAfter.applied)} of {formatAmount(props.periodTotals.billed)}.

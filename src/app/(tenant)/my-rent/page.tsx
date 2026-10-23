@@ -17,7 +17,7 @@ export default async function MyRentPage() {
   const tenancies = await getMyTenancies(await createClient());
 
   return (
-    <div className="mx-auto flex max-w-[720px] flex-col gap-5 px-4 pt-5 pb-10">
+    <div className="mx-auto flex max-w-reading flex-col gap-5 px-4 pt-5 pb-10">
       <PageHeader icon="wallet" title="My rent" meta={tenancies.length ? "Shared by your landlord or agent · confirmed records only" : null} />
       <TenantJumps current="/my-rent" />
       {tenancies.length === 0 ? (
@@ -31,25 +31,25 @@ export default async function MyRentPage() {
             const b = balanceWords(t.balance);
             return (
               <li key={t.tenancy_id}>
-                <Link href={`/my-rent/${t.tenancy_id}`} className="flex flex-col gap-3 rounded-[18px] border border-line bg-surface p-4 hover:border-ink">
+                <Link href={`/my-rent/${t.tenancy_id}`} className="surface flex flex-col gap-3 p-4 hover:border-ink">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="truncate font-display text-[1.25rem] font-bold">{t.property_name} · Unit {t.unit_label}</p>
-                      <p className="text-[0.84375rem] text-muted">
+                      <p className="truncate font-display text-title-sm font-bold">{t.property_name} · Unit {t.unit_label}</p>
+                      <p className="text-label text-muted">
                         {[t.area, t.org_name].filter(Boolean).join(" · ")}
                       </p>
                     </div>
                     <Icon name="arrowRight" size={20} className="mt-1 shrink-0 text-primary" />
                   </div>
                   <div className="flex flex-wrap items-end justify-between gap-3">
-                    <p className="text-[0.84375rem] text-muted">
+                    <p className="text-label text-muted">
                       {t.status === "active"
                         ? `${t.current_rent ? `${formatMoney(t.current_rent)} a month · ` : ""}due on day ${t.due_day}`
                         : `Ended ${formatDate(t.end_date)}`}
                     </p>
                     <p className="text-right">
-                      <span className="block text-[0.78125rem] text-muted">{b.label}</span>
-                      <span className={cx("font-display text-[1.375rem] font-extrabold", b.tone === "owed" ? "text-error" : "text-success")}>
+                      <span className="block text-caption text-muted">{b.label}</span>
+                      <span className={cx("font-display text-title font-extrabold", b.tone === "owed" ? "text-error" : "text-success")}>
                         {formatMoney(Math.abs(t.balance))}
                       </span>
                     </p>
@@ -60,7 +60,7 @@ export default async function MyRentPage() {
           })}
         </ul>
       )}
-      <p className="text-[0.8125rem] text-muted">
+      <p className="text-caption text-muted">
         nyumbani never collects rent. Pay through your property&apos;s usual arrangements; a payment shows here once your landlord or agent
         has checked and confirmed it. If something looks wrong, message them.
       </p>

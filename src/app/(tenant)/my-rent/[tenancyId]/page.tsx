@@ -21,34 +21,34 @@ export default async function MyStatementPage({ params }: PageProps<"/my-rent/[t
   const b = balanceWords(t.balance);
 
   return (
-    <div className="mx-auto flex max-w-[860px] flex-col gap-5 px-4 pt-5 pb-10">
+    <div className="mx-auto flex max-w-standard flex-col gap-5 px-4 pt-5 pb-10">
       <BackLink href="/my-rent">My rent</BackLink>
       <Card className="flex flex-wrap items-start justify-between gap-4 p-4">
         <div className="min-w-0">
-          <h1 className="font-display text-[1.625rem] leading-tight font-bold">{t.property_name} · Unit {t.unit_label}</h1>
-          <p className="text-[0.875rem] text-muted">{[t.area, t.org_name].filter(Boolean).join(" · ")}</p>
-          <p className="mt-1 text-[0.875rem]">
+          <h1 className="heading-page">{t.property_name} · Unit {t.unit_label}</h1>
+          <p className="text-label text-muted">{[t.area, t.org_name].filter(Boolean).join(" · ")}</p>
+          <p className="mt-1 text-label">
             Since {formatDate(t.start_date)}
             {t.status === "ended" ? ` · ended ${formatDate(t.end_date)}` : ` · ${t.current_rent ? `${formatMoney(t.current_rent)} a month, ` : ""}due on day ${t.due_day}`}
           </p>
         </div>
         <div className="text-right">
-          <p className="text-[0.78125rem] text-muted">{b.label}</p>
-          <p className={cx("font-display text-[1.75rem] font-extrabold", b.tone === "owed" ? "text-error" : "text-success")}>{formatMoney(Math.abs(t.balance))}</p>
-          <p className="text-[0.75rem] text-muted">Confirmed records only</p>
+          <p className="text-caption text-muted">{b.label}</p>
+          <p className={cx("font-display text-title-lg font-extrabold", b.tone === "owed" ? "text-error" : "text-success")}>{formatMoney(Math.abs(t.balance))}</p>
+          <p className="text-micro text-muted">Confirmed records only</p>
         </div>
       </Card>
 
       <section aria-labelledby="stmt" className="flex flex-col gap-2">
-        <h2 id="stmt" className="font-display text-[1.125rem] font-bold">Statement</h2>
+        <h2 id="stmt" className="heading-section">Statement</h2>
         {lines.length === 0 ? (
-          <p className="rounded-[14px] border border-dashed border-line bg-surface p-4 text-[0.875rem] text-muted">No charges or payments recorded yet.</p>
+          <p className="surface-empty p-4">No charges or payments recorded yet.</p>
         ) : (
-          <div className="overflow-x-auto rounded-[16px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Statement (scrolls sideways)">
-            <table className="w-full min-w-[520px] text-[0.875rem]">
+          <div className="surface overflow-x-auto" tabIndex={0} role="region" aria-label="Statement (scrolls sideways)">
+            <table className="w-full min-w-[520px] text-label">
               <caption className="sr-only">Charges and confirmed payments with the running balance</caption>
               <thead>
-                <tr className="border-b border-line text-left font-mono text-[0.75rem] text-muted">
+                <tr className="border-b border-line text-left font-mono text-micro text-muted">
                   <th scope="col" className="px-3 py-2 font-medium">Date</th>
                   <th scope="col" className="px-3 py-2 font-medium">Description</th>
                   <th scope="col" className="px-3 py-2 text-right font-medium">Charge</th>
@@ -60,17 +60,17 @@ export default async function MyStatementPage({ params }: PageProps<"/my-rent/[t
                 {lines.map((l, i) => (
                   <tr key={i} className="border-b border-divider last:border-0">
                     <td className="px-3 py-2 whitespace-nowrap">{formatDate(l.line_date)}</td>
-                    <td className="px-3 py-2">{l.description}{l.ref ? <span className="font-mono text-[0.75rem] text-muted"> · {l.ref}</span> : null}</td>
-                    <td className="px-3 py-2 text-right font-mono">{Number(l.charge) ? formatAmount(Number(l.charge)) : ""}</td>
-                    <td className="px-3 py-2 text-right font-mono">{Number(l.payment) ? formatAmount(Number(l.payment)) : ""}</td>
-                    <td className="px-3 py-2 text-right font-mono font-medium">{formatAmount(Number(l.balance))}</td>
+                    <td className="px-3 py-2">{l.description}{l.ref ? <span className="font-mono text-micro text-muted"> · {l.ref}</span> : null}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">{Number(l.charge) ? formatAmount(Number(l.charge)) : ""}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">{Number(l.payment) ? formatAmount(Number(l.payment)) : ""}</td>
+                    <td className="px-3 py-2 text-right tabular-nums font-medium">{formatAmount(Number(l.balance))}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         )}
-        <p className="text-[0.8125rem] text-muted">
+        <p className="text-caption text-muted">
           A payment appears once your landlord or agent has checked and confirmed it. Balance: positive means owed, negative means credit.
         </p>
       </section>

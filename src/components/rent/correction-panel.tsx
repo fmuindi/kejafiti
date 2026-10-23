@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { applyCredit, correctEntry, reverseEntry } from "@/app/w/[orgId]/rent/actions";
 import { Checkbox, Field, MoneyInput, TextArea, TextInput } from "@/components/ui/form";
-import { Button, Notice } from "@/components/ui/primitives";
+import { Button, Notice, InlineError } from "@/components/ui/primitives";
 import { formatAmount, formatMoney, parseAmount } from "@/lib/money";
 import { previewAllocation, suggestAllocation, type OpenCharge } from "@/lib/rent/allocation";
 import { todayEAT } from "@/lib/dates";
@@ -55,8 +55,8 @@ export function CorrectionPanel({
   if (done) return <Notice tone="success" role="status" title={done} />;
 
   return (
-    <section aria-labelledby="fix" className="flex flex-col gap-3 rounded-[20px] border border-line bg-surface p-4">
-      <h2 id="fix" className="font-display text-[1.125rem] font-bold">
+    <section aria-labelledby="fix" className="surface flex flex-col gap-3 p-4">
+      <h2 id="fix" className="heading-section">
         Fix or apply this record
       </h2>
       {!mode ? (
@@ -77,15 +77,15 @@ export function CorrectionPanel({
             </Button>
           ) : null}
           {!canCorrect && !(canConfirm && entry.unallocated > 0) ? (
-            <p className="text-[0.875rem] text-muted">Corrections need the &quot;Correct confirmed records&quot; permission.</p>
+            <p className="text-label text-muted">Corrections need the &quot;Correct confirmed records&quot; permission.</p>
           ) : null}
         </div>
       ) : null}
 
       {mode === "credit" ? (
         <>
-          <p className="text-[0.875rem]">Apply the credit oldest-first to open charges:</p>
-          <ul className="text-[0.875rem]">
+          <p className="text-label">Apply the credit oldest-first to open charges:</p>
+          <ul className="text-label">
             {creditPreview.lines.map((l) => (
               <li key={l.chargeId}>
                 {l.label}: {formatAmount(l.applied)} → {l.after <= 0 ? "Paid" : `${formatAmount(l.after)} left`}
@@ -126,7 +126,7 @@ export function CorrectionPanel({
               <Field label="Reference" htmlFor="corr-ref" optional>
                 <TextInput id="corr-ref" value={reference} onChange={(e) => setReference(e.target.value.toUpperCase())} className="font-mono" />
               </Field>
-              <div className="rounded-[14px] bg-cool p-3 text-[0.875rem]">
+              <div className="rounded-card bg-cool p-3 text-label">
                 <p className="font-semibold">The replacement will apply to:</p>
                 <ul>
                   {correctionPreview.lines.map((l) => (
@@ -140,7 +140,7 @@ export function CorrectionPanel({
               {canConfirm ? (
                 <Checkbox checked={ack} onChange={(e) => setAck(e.target.checked)} label="I have checked the corrected payment using our property's external records and confirm it is accurate." />
               ) : (
-                <p className="text-[0.84375rem] text-muted">The replacement will wait for an authorised manager to confirm it.</p>
+                <p className="text-label text-muted">The replacement will wait for an authorised manager to confirm it.</p>
               )}
             </>
           ) : (
@@ -148,7 +148,7 @@ export function CorrectionPanel({
               Reversing removes {formatMoney(entry.amount)} from confirmed totals and restores the affected balances. The original record stays visible.
             </Notice>
           )}
-          {error ? <p role="alert" className="text-[0.875rem] font-semibold text-error">{error}</p> : null}
+          {error ? <InlineError>{error}</InlineError> : null}
           <div className="flex gap-2">
             <Button variant="secondary" onClick={() => { setMode(null); setError(null); }} className="flex-1">
               Cancel

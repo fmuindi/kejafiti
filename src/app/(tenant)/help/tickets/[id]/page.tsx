@@ -25,25 +25,25 @@ export default async function TicketPage({ params, searchParams }: PageProps<"/h
   const signed = files?.length ? (await supabase.storage.from("support-files").createSignedUrls(files.map((f) => f.storage_path), 600)).data ?? [] : [];
   const isNew = (await searchParams).new === "1";
   return (
-    <div className="mx-auto flex max-w-[720px] flex-col gap-4 px-4 pt-5 pb-10">
+    <div className="mx-auto flex max-w-reading flex-col gap-5 px-4 pt-5 pb-10">
       <BackLink href="/help">Help and support</BackLink>
       {isNew ? <Notice tone="success" role="status" title={`Request ${t.ref} sent`}>Support will reply here, and you&apos;ll see it in Updates.</Notice> : null}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="font-mono text-[0.75rem] text-muted">{t.ref} · {categoryLabel(t.category)} · opened {formatDateTime(t.created_at)}</p>
+          <p className="font-mono text-micro text-muted">{t.ref} · {categoryLabel(t.category)} · opened {formatDateTime(t.created_at)}</p>
           <PageTitle className="mt-1">{t.subject}</PageTitle>
         </div>
         <StatusBadge tone={SUPPORT_STATUS[t.status]?.tone ?? "neutral"}>{SUPPORT_STATUS[t.status]?.label ?? t.status}</StatusBadge>
       </div>
-      <p className="whitespace-pre-line rounded-[14px] border border-line bg-surface p-3 text-[0.90625rem]">{t.description}</p>
+      <p className="surface whitespace-pre-line p-3 text-body">{t.description}</p>
       {signed.length ? (
-        <ul className="flex flex-col gap-1 text-[0.875rem]">
+        <ul className="flex flex-col gap-1 text-label">
           {(files ?? []).map((f, i) => (
-            <li key={f.id}><a href={signed[i]?.signedUrl ?? "#"} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold underline"><Icon name="file" size={16} /> {f.file_name}</a></li>
+            <li key={f.id}><a href={signed[i]?.signedUrl ?? "#"} target="_blank" rel="noreferrer" className="link-action inline-flex items-center gap-1"><Icon name="file" size={16} /> {f.file_name}</a></li>
           ))}
         </ul>
       ) : null}
-      {t.status === "resolved" ? <p className="text-[0.84375rem] text-muted">Resolved. Replying reopens the request.</p> : null}
+      {t.status === "resolved" ? <p className="text-label text-muted">Resolved. Replying reopens the request.</p> : null}
       <TicketThread ticketId={t.id} messages={messages ?? []} viewer="user" />
     </div>
   );
