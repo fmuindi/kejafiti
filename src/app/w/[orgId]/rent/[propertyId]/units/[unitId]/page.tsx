@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { EntryStatusBadge } from "@/components/rent/badges";
 import { TenancyActions, TenancySetup } from "@/components/rent/tenancy-forms";
 import { ChargeAdjust } from "@/components/rent/charge-adjust";
+import { TenantAccess } from "@/components/rent/tenant-access";
 import { ButtonLink, Card, EmptyState, Eyebrow, Notice } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
 import { formatDate, formatPeriod, parsePeriodParam, periodParam, todayEAT } from "@/lib/dates";
@@ -27,7 +28,7 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
 
   const { data: tenancies } = await supabase
     .from("tenancies")
-    .select("id, status, start_date, end_date, due_day, deposit_held, ended_reason, tenants(full_name, phone, email), tenancy_rent_rates(effective_from, amount)")
+    .select("id, status, start_date, end_date, due_day, deposit_held, ended_reason, tenants(id, full_name, phone, email, user_id, access_email, access_token_hash, access_expires_at), tenancy_rent_rates(effective_from, amount)")
     .eq("unit_id", unitId)
     .order("start_date", { ascending: false });
   const current = (tenancies ?? []).find((t) => t.status === "active");
@@ -52,7 +53,10 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
         .filter((r) => r.effective_from <= todayEAT())
         .sort((a, b) => b.effective_from.localeCompare(a.effective_from))[0]
     : null;
-  const tenant = current?.tenants as unknown as { full_name: string; phone: string | null; email: string | null } | null;
+  const tenant = current?.tenants as unknown as {
+    id: string; full_name: string; phone: string | null; email: string | null;
+    user_id: string | null; access_email: string | null; access_token_hash: string | null; access_expires_at: string | null;
+  } | null;
   const balance = statement.length ? Number(statement[statement.length - 1].balance) : 0;
   const today = todayEAT();
 
@@ -94,6 +98,17 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
               </div>
             </div>
             {ws.can_manage_tenancies ? <TenancyActions orgId={orgId} propertyId={propertyId} tenancyId={current.id} currentRent={rate ? Number(rate.amount) : null} /> : null}
+            {ws.can_manage_tenancies && tenant ? (
+              <TenantAccess
+                orgId={orgId}
+                propertyId={propertyId}
+                tenantId={tenant.id}
+                tenantName={tenant.full_name}
+                linked={!!tenant.user_id}
+                pending={tenant.access_token_hash && tenant.access_email && tenant.access_expires_at && tenant.access_expires_at > new Date().toISOString() ? { email: tenant.access_email, expiresAt: tenant.access_expires_at } : null}
+                defaultEmail={tenant.email}
+              />
+            ) : null}
           </Card>
 
           <section aria-labelledby="stmt">
