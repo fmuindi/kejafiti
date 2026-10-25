@@ -114,6 +114,7 @@ function placeholderPng(seed, w = 960, h = 600) {
 const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Nairobi" }).format(new Date());
 const period = `${today.slice(0, 7)}-01`;
 const prev = (() => { const [y, m] = period.split("-").map(Number); return new Date(Date.UTC(y, m - 2, 1)).toISOString().slice(0, 10); })();
+const monthsBefore = (p, n) => { const [y, m] = p.split("-").map(Number); return new Date(Date.UTC(y, m - 1 - n, 1)).toISOString().slice(0, 10); };
 const paidOn = (p, day) => { const d = `${p.slice(0, 8)}${String(day).padStart(2, "0")}`; return d > today ? today : d; };
 
 async function main() {
@@ -141,6 +142,9 @@ async function main() {
   for (const [label, name] of Object.entries(tenants)) {
     tenancy[label] = must(`tenancy ${label}`, await felix.rpc("create_tenancy", { p: { unit_id: unitId[label], tenant_name: name, start_date: "2025-03-01", rent_amount: 15000, due_day: 5 } }));
   }
+  // Ten earlier months of history, so payment habits have something to show.
+  const history = Array.from({ length: 10 }, (_, i) => monthsBefore(period, 11 - i));
+  for (const p of history) must(`charges ${p}`, await felix.rpc("generate_rent_charges", { p_property: sunrise, p_period: p }));
   must("prev charges", await felix.rpc("generate_rent_charges", { p_property: sunrise, p_period: prev }));
   must("charges", await felix.rpc("generate_rent_charges", { p_property: sunrise, p_period: period }));
   const { data: charges } = await felix.from("rent_charges").select("id, tenancy_id, period_start").eq("property_id", sunrise);
@@ -150,6 +154,15 @@ async function main() {
       client_request_id: crypto.randomUUID(), tenancy_id: tenancy[label], amount, paid_on: paidOn(p, day), method: "mpesa",
       reference: ref ?? `S${label}${p.slice(5, 7)}${Math.floor(amount / 1000)}K`, allocations: [{ charge_id: chargeFor(label, p), amount }],
       action, acknowledged: action === "confirm" } }));
+
+  // The earlier months, by habit (day of the month each paid; rent is due on the 5th): Peter,
+  // Lucy, Mercy and John always on time; Daniel and Samuel usually; Grace, Faith and Kevin often late.
+  const days = {
+    A1: [3, 2, 4, 3, 1, 3, 4, 2, 3, 3], A3: [4, 5, 3, 9, 4, 2, 5, 4, 3, 4], A4: [1, 2, 1, 3, 2, 1, 2, 4, 1, 2],
+    B1: [5, 7, 4, 11, 3, 5, 8, 4, 5, 3], B4: [2, 3, 2, 4, 5, 3, 2, 1, 3, 4], B5: [5, 4, 5, 3, 5, 4, 5, 5, 4, 5],
+    A2: [12, 4, 20, 9, 15, 3, 25, 8, 14, 4], B2: [15, 18, 9, 22, 12, 6, 16, 19, 11, 14], B3: [6, 3, 10, 4, 13, 2, 8, 5, 17, 9],
+  };
+  for (const [i, p] of history.entries()) for (const [label, d] of Object.entries(days)) await pay(felix, label, p, 15000, d[i]);
 
   // Previous month: everyone paid in full.
   for (const label of Object.keys(tenants)) await pay(felix, label, prev, 15000, 4);

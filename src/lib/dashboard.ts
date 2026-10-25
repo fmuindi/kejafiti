@@ -2,6 +2,7 @@ import "server-only";
 import type { Workspace } from "@/lib/auth";
 import { daysSince, todayEAT } from "@/lib/dates";
 import type { ServerClient } from "@/lib/supabase/server";
+import { toHabitRow, type HabitRow } from "@/lib/rent/habits";
 import { STAFF_ACTION_STATES, viewingRows } from "@/lib/viewings";
 
 // Data for the workspace home (blueprint pages 7-8). Every figure comes from the same database
@@ -142,6 +143,12 @@ export async function getDueFollowUps(supabase: ServerClient, orgId: string, use
       assigned_to: f.assigned_to,
     };
   });
+}
+
+/** How each current tenant pays, over the last twelve rent months. */
+export async function getHabits(supabase: ServerClient, orgId: string, propertyId: string | null): Promise<HabitRow[]> {
+  const { data } = await supabase.rpc("tenant_payment_habits", { p_org: orgId, p_property: propertyId ?? undefined });
+  return ((data ?? []) as unknown as Array<Record<string, unknown>>).map(toHabitRow);
 }
 
 /** Payments tenants say they made that nobody has answered yet, oldest first. */

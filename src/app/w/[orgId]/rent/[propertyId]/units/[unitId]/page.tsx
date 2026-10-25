@@ -7,6 +7,9 @@ import { TenantAccess } from "@/components/rent/tenant-access";
 import { TenantContact } from "@/components/rent/tenant-contact";
 import { FollowUps, type FollowUp } from "@/components/rent/follow-ups";
 import { PaymentReportsPanel, type StaffReport } from "@/components/rent/payment-reports";
+import { ActivityTimeline, HabitFigures, HabitSummary, MonthStrip, type Activity } from "@/components/rent/payment-habits";
+import { getHabits } from "@/lib/dashboard";
+import { toMonth } from "@/lib/rent/habits";
 import { ExplainBalance } from "@/components/rent/explain-balance";
 import { explainBalance } from "@/lib/rent/explain";
 import { SendToTenants } from "@/components/rent/send-to-tenants";
@@ -43,7 +46,7 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
   const current = (tenancies ?? []).find((t) => t.status === "active");
   const former = (tenancies ?? []).filter((t) => t.status === "ended");
 
-  const [statement, charges, entries, formerBalances, messages, followUpRows, reportRows] = await Promise.all([
+  const [statement, charges, entries, formerBalances, messages, followUpRows, reportRows, months, activity, habits] = await Promise.all([
     current ? supabase.rpc("tenancy_statement", { p_tenancy: current.id }).then((r) => (r.data ?? []) as unknown as Statement[]) : Promise.resolve([] as Statement[]),
     current ? getOpenCharges(supabase, current.id) : Promise.resolve([]),
     current
@@ -67,7 +70,15 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
       ? supabase.from("payment_reports").select("id, amount, paid_on, method, reference, note, status, reply, created_at, answered_at, answered_by, payment_entries(id, ref, status)")
           .eq("tenancy_id", current.id).order("created_at", { ascending: false }).limit(30).then((r) => r.data ?? [])
       : Promise.resolve([]),
+    current
+      ? supabase.rpc("tenancy_payment_record", { p_tenancy: current.id, p_months: 12 }).then((r) => ((r.data ?? []) as unknown as Array<Record<string, unknown>>).map(toMonth))
+      : Promise.resolve([]),
+    current
+      ? supabase.rpc("tenancy_activity", { p_tenancy: current.id, p_limit: 60 }).then((r) => (r.data ?? []) as unknown as Activity[])
+      : Promise.resolve([] as Activity[]),
+    current ? getHabits(supabase, orgId, propertyId) : Promise.resolve([]),
   ]);
+  const habit = current ? habits.find((h) => h.tenancy_id === current.id) ?? null : null;
   // Names for who added each follow-up and who it is for (colleagues are readable within the workspace).
   const people = [...new Set([...followUpRows.flatMap((f) => [f.assigned_to, f.created_by]), ...reportRows.map((r) => r.answered_by)].filter(Boolean) as string[])];
   const { data: names } = people.length ? await supabase.from("profiles").select("id, full_name").in("id", people) : { data: [] };
@@ -167,6 +178,19 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
             ) : null}
           </Card>
 
+          <section aria-labelledby="habits-h" id="habits" className="flex scroll-mt-24 flex-col gap-3">
+            <h2 id="habits-h" className="heading-section">Payment habits</h2>
+            <div className="surface flex flex-col gap-4 p-4">
+              {habit ? <HabitSummary row={habit} /> : null}
+              <MonthStrip months={months} />
+              {habit && habit.months_due ? <HabitFigures row={habit} /> : null}
+              <p className="text-caption text-muted">
+                A month is on time when confirmed payments dated on or before its due date cover it, oldest charges first.
+                Payments awaiting confirmation don&apos;t count yet.
+              </p>
+            </div>
+          </section>
+
           {reports.length ? (
             <section aria-labelledby="reported-h" id="reported" className="flex scroll-mt-24 flex-col gap-2">
               <h2 id="reported-h" className="heading-section">Reported missing by the tenant</h2>
@@ -195,6 +219,21 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
               closed={followUps.filter((f) => f.resolved_at).slice(0, 10)}
               canAct={ws.can_manage_tenancies || ws.can_enter_payments || ws.can_confirm}
             />
+          </section>
+
+          <section aria-labelledby="activity-h" id="activity" className="flex scroll-mt-24 flex-col gap-2">
+            <h2 id="activity-h" className="heading-section">Activity</h2>
+            <div className="surface p-4">
+              <ActivityTimeline items={activity.slice(0, 8)} entryHref={(id) => `${base}/entries/${id}`} />
+              {activity.length > 8 ? (
+                <details className="group mt-4 border-t border-divider pt-3">
+                  <summary className="link-action inline-flex min-h-11 cursor-pointer list-none items-center text-label">Show {activity.length - 8} earlier</summary>
+                  <div className="mt-3">
+                    <ActivityTimeline items={activity.slice(8)} entryHref={(id) => `${base}/entries/${id}`} />
+                  </div>
+                </details>
+              ) : null}
+            </div>
           </section>
 
           {ws.can_manage_tenancies || messages.length ? (

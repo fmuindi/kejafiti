@@ -1782,6 +1782,16 @@ isOneToOne: false
               "all_properties": boolean,"can_confirm": boolean,"can_correct": boolean,"can_enter_payments": boolean,"can_export": boolean,"can_manage_listings": boolean,"can_manage_tenancies": boolean,"can_view_attachments": boolean,"display_name": string,"email": string,"invite_expires_at": string,"last_active_at": string,"last_sign_in_at": string,"membership_id": string,"open_work": number,"property_ids": (string)[],"property_names": (string)[],"role": string,"status": string,"status_changed_at": string,"submitted_pending": number,"user_id": string
             }[]
                            },
+"tenancy_activity":
+{ Args: { "p_limit"?: number,"p_tenancy": string }; Returns: {
+              "at": string,"detail": string,"kind": string,"ref_id": string,"title": string,"tone": string
+            }[]
+                           },
+"tenancy_payment_record":
+{ Args: { "p_months"?: number,"p_tenancy": string }; Returns: {
+              "amount": number,"days_late": number,"due_date": string,"paid": number,"paid_by_due": number,"period_start": string,"settled_on": string,"state": string
+            }[]
+                           },
 "tenancy_statement":
 { Args: { "p_tenancy": string }; Returns: {
               "balance": number,"charge": number,"description": string,"kind": string,"line_date": string,"payment": number,"ref": string
@@ -1789,6 +1799,11 @@ isOneToOne: false
                            },
 "tenant_access_preview":
 { Args: { "p_token": string }; Returns: Json
+                           },
+"tenant_payment_habits":
+{ Args: { "p_months"?: number,"p_org": string,"p_property"?: string }; Returns: {
+              "avg_days_late": number,"last_paid_on": string,"late": number,"max_days_late": number,"months_due": number,"on_time": number,"on_time_streak": number,"overdue": number,"owed": number,"promises_broken": number,"promises_kept": number,"property_id": string,"property_name": string,"recent": (string)[],"reports": number,"start_date": string,"tenancy_id": string,"tenant_name": string,"unit_id": string,"unit_label": string
+            }[]
                            },
 "tenant_viewing_action":
 { Args: { "p_action": string,"p_reason"?: string,"p_time"?: string,"p_viewing": string }; Returns: undefined

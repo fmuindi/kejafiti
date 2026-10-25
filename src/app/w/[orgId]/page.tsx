@@ -14,9 +14,10 @@ import {
   RentSnapshot,
   type ActionCardItem,
 } from "@/components/workspace/home";
+import { HabitDistribution } from "@/components/rent/payment-habits";
 import { ButtonLink, Eyebrow, StatusBadge } from "@/components/ui/primitives";
 import { getProfile, getSessionUser, isOrgAdmin, requireWorkspace } from "@/lib/auth";
-import { getDueFollowUps, getMarketplaceWork, getReportedPayments, getMyWork, getOwing, getPosition, getReviewQueue, totalPosition } from "@/lib/dashboard";
+import { getDueFollowUps, getHabits, getMarketplaceWork, getReportedPayments, getMyWork, getOwing, getPosition, getReviewQueue, totalPosition } from "@/lib/dashboard";
 import { formatDate, formatPeriod, formatTime, parsePeriodParam, periodParam } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import { getVisibleProperties } from "@/lib/rent/queries";
@@ -50,7 +51,7 @@ export default async function HomePage({ params, searchParams }: PageProps<"/w/[
   const property = properties.find((p) => p.id === propertyId) ?? null;
 
   const canFollowUp = admin || ws.can_manage_tenancies || ws.can_enter_payments || ws.can_confirm;
-  const [position, owing, followUps, review, work, market, { data: changedAt }, reported] = await Promise.all([
+  const [position, owing, followUps, review, work, market, { data: changedAt }, reported, habits] = await Promise.all([
     getPosition(supabase, orgId, period),
     getOwing(supabase, orgId, propertyId, 200),
     getDueFollowUps(supabase, orgId, user!.id, admin, propertyId),
@@ -59,6 +60,7 @@ export default async function HomePage({ params, searchParams }: PageProps<"/w/[
     getMarketplaceWork(supabase, ws),
     supabase.rpc("records_changed_at", { p_org: orgId, p_property: propertyId ?? undefined }),
     canFollowUp ? getReportedPayments(supabase, orgId, propertyId) : Promise.resolve([]),
+    getHabits(supabase, orgId, propertyId),
   ]);
   const rows = propertyId ? position.filter((r) => r.property_id === propertyId) : position;
   const t = totalPosition(rows);
@@ -119,6 +121,24 @@ export default async function HomePage({ params, searchParams }: PageProps<"/w/[
     </div>
   );
 
+  const habitsHref = (show?: string | null) => {
+    const u = new URLSearchParams();
+    if (propertyId) u.set("property", propertyId);
+    if (show) u.set("show", show);
+    return `${base}/habits${u.size ? `?${u}` : ""}`;
+  };
+  const habitsPanel = habits.length ? (
+    <section aria-labelledby="habits-h" className="flex flex-col gap-2">
+      <div className="flex items-baseline justify-between gap-3">
+        <h2 id="habits-h" className="heading-section">Payment habits</h2>
+        <Link href={habitsHref()} className="link-action inline-flex min-h-11 items-center text-label">All {habits.length} tenants</Link>
+      </div>
+      <div className="surface p-4">
+        <HabitDistribution rows={habits} hrefFor={habitsHref} />
+      </div>
+    </section>
+  ) : null;
+
   const market_ = market ? <Marketplace orgId={orgId} market={market} /> : null;
 
   if (admin) {
@@ -166,6 +186,7 @@ export default async function HomePage({ params, searchParams }: PageProps<"/w/[
             {market_}
           </section>
         </div>
+        {habitsPanel}
         {!propertyId && position.length > 1 ? (
           <section aria-labelledby="compare-h" className="flex flex-col gap-2">
             <h2 id="compare-h" className="heading-section">Properties compared · {formatPeriod(period)}</h2>
@@ -201,6 +222,7 @@ export default async function HomePage({ params, searchParams }: PageProps<"/w/[
               <OwingList orgId={orgId} rows={owingActive.slice(0, 4)} showProperty={!propertyId} />
             </section>
           ) : null}
+          {habitsPanel}
           {marketCards.length ? <ActionCards items={marketCards} /> : null}
           {market_}
         </div>

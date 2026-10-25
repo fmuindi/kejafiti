@@ -160,6 +160,9 @@ From the blueprint's acceptance tests:
 - **Dashboards and follow-ups**: "who owes" counts only due charges, capped by credit, and never counts submitted
   payments; follow-ups need rent or tenancy permission, never change a balance and stay inside the team; search and
   the property position only cover properties the person can see; wildcards in search are literal.
+- **Payment habits**: a month counts as paid only by confirmed payments applied oldest charge first (unallocated
+  credit counts, a reversed payment never did, submitted ones don't yet); on time means covered by the due date; a
+  month waived to nothing is neither paid nor late; only people who can see the property see habits and activity.
 - **Missing-payment reports**: only the tenant on the tenancy can report, a report never changes the balance, only
   the people who confirm payments are alerted, a report can only be matched to that tenant's own entry (one entry per
   report), "not found" needs a reason, an answered report can't be changed or withdrawn, and the tenant sees the
@@ -176,7 +179,8 @@ and share images, layouts at 200% text size, a tenant's saved-search alert arriv
 importing units and sharing a tenancy that the tenant then opens, and a landlord emailing an invoice, a message
 and a reminder that arrive by email and that the tenant then finds in My rent. The workspace home is checked for
 each role (no sideways scroll on a phone, figures matching Performance, a follow-up reaching the manager's queue).
-A tenant reports a missing payment that the landlord records from their queue and the tenant sees confirmed, and a
+The owner goes from the home's payment habits to the tenants who are often late and opens one tenant's twelve months
+and activity. A tenant reports a missing payment that the landlord records from their queue and the tenant sees confirmed, and a
 second one the landlord can't find, with the reason the tenant reads.
 
 ---
@@ -257,6 +261,13 @@ Operating cost at launch: Supabase Pro (from USD 25/month) plus app hosting (USD
   follow-ups due, returned entries and tenants owing. **Who owes** lists every overdue balance with what is being
   done about it. **Follow-ups** on the unit page record a contact, a promise to pay (by a date) or a reported payment,
   assigned to a person; they never change a balance.
+- **Payment habits**: how each tenant pays, for managers and owners. On the unit page, twelve rent months in a row
+  (on time, paid late with the days, overdue so far), a plain label (pays on time, usually on time, often late, too new
+  to tell) and the figures behind it: months on time, average and longest days late, the on-time run, promises to pay
+  kept, last payment. An **Activity** timeline brings payments, invoices and reminders, follow-ups, tenant reports and
+  adjustments together, newest first. **Payment habits** (from the home) lists every current tenant with the last six
+  months at a glance, most in need of attention first, filtered by habit, by who is overdue now or by property. The
+  demo seed now includes a year of history with different habits.
 - **Missing payments reported by tenants**: a tenant with online access says "I paid, but it isn't on my statement"
   (amount, date, M-PESA/bank/cash and the reference) from My rent. The people who confirm payments are alerted and it
   shows on the home queue. On the unit page staff see the likely matching entry (same reference, or same amount within
