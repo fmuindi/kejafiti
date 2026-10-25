@@ -6,6 +6,8 @@ import { ChargeAdjust } from "@/components/rent/charge-adjust";
 import { TenantAccess } from "@/components/rent/tenant-access";
 import { TenantContact } from "@/components/rent/tenant-contact";
 import { FollowUps, type FollowUp } from "@/components/rent/follow-ups";
+import { ExplainBalance } from "@/components/rent/explain-balance";
+import { explainBalance } from "@/lib/rent/explain";
 import { SendToTenants } from "@/components/rent/send-to-tenants";
 import { Icon } from "@/components/ui/icon";
 import { ButtonLink, Card, EmptyState, Eyebrow, Notice, StatusBadge } from "@/components/ui/primitives";
@@ -123,6 +125,21 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
                 <p className="text-micro text-muted">Confirmed records only</p>
               </div>
             </div>
+            {statement.length ? (
+              <details className="group mt-4 border-t border-divider pt-3">
+                <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 font-semibold">
+                  How this balance is made up · {formatPeriod(period)}
+                  <Icon name="chevronDown" size={18} className="text-muted transition-transform group-open:rotate-180" />
+                </summary>
+                <div className="mt-2 max-w-reading">
+                  <ExplainBalance
+                    e={explainBalance(statement, period)}
+                    period={period}
+                    pending={entries.filter((x) => x.status === "awaiting_confirmation").reduce((a, x) => a + Number(x.amount), 0)}
+                  />
+                </div>
+              </details>
+            ) : null}
             {ws.can_manage_tenancies ? <TenancyActions orgId={orgId} propertyId={propertyId} tenancyId={current.id} currentRent={rate ? Number(rate.amount) : null} /> : null}
             {ws.can_manage_tenancies && tenant ? (
               <TenantAccess

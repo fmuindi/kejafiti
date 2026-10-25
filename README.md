@@ -251,6 +251,11 @@ Operating cost at launch: Supabase Pro (from USD 25/month) plus app hosting (USD
   follow-ups due, returned entries and tenants owing. **Who owes** lists every overdue balance with what is being
   done about it. **Follow-ups** on the unit page record a contact, a promise to pay (by a date) or a reported payment,
   assigned to a person; they never change a balance.
+- **Rent register**: natural unit order (A2 before A10), sort by most owed, due date or latest confirmation, a table
+  view on wider screens and a Vacant filter; filters, search, sort and view stay in the link. **How this balance is
+  made up** (unit page, and My rent for tenants) breaks a balance into what was owed before the month, the month's
+  charges, adjustments, confirmed payments, reversals and later lines, from the statement itself; the rows always add
+  up to the balance.
 - **Tenant communications**: staff with tenancy permission email tenants an **invoice** for a month (charges, earlier
   balance, amount due; numbered INV-000123), a **reminder** of what is owed, or a **message** (repairs, water cuts,
   how to pay). One tenant from the unit page, or many from the property's **Tenants** page (filter by who owes, who

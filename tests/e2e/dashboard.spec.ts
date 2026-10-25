@@ -81,3 +81,38 @@ test("a manager finds a tenant, adds a promise to pay, and it lands in their que
   await expect(page.locator("#queue").getByText(note)).toBeHidden();
   await ctx.close();
 });
+
+test("the register sorts and switches view without losing filters, and a balance explains itself", async ({ browser }) => {
+  const { ctx, page, org } = await home(browser, "felix@nyumbani.test", { width: 1366, height: 860 });
+  await page.goto(`/w/${org}/rent`);
+  await page.getByRole("link", { name: /Sunrise Apartments/ }).first().click();
+  await page.waitForURL(/\/rent\/[0-9a-f-]{36}/);
+  const base = page.url().split("?")[0];
+
+  // Table view, most owed first; the choice survives a filter change.
+  await page.goto(`${base}?view=table&sort=owed`);
+  const table = page.getByRole("region", { name: /Rent register table/ });
+  await expect(table.locator("tbody tr").first()).toBeVisible();
+  const remaining = await table.locator("tbody tr td:nth-child(4)").allInnerTexts();
+  const owed = remaining.map((t) => Number(t.replace(/[^\d.]/g, "")) || 0);
+  expect(owed, "most owed first").toEqual([...owed].sort((a, b) => b - a));
+  await page.getByRole("link", { name: /^Unpaid \d+/ }).click();
+  await expect(page).toHaveURL(/view=table/);
+  await expect(page).toHaveURL(/sort=owed/);
+
+  // Natural unit order: A2 comes before A10-style labels, never after.
+  await page.goto(`${base}?view=table`);
+  await expect(page).not.toHaveURL(/sort=/);
+  await expect(table.locator("tbody th a").first()).toBeVisible();
+  const units = (await table.locator("tbody th a span.font-mono").allInnerTexts()).filter((u) => /^[AB]\d$/.test(u));
+  expect(units.slice(0, 5)).toEqual(["A1", "A2", "A3", "A4", "A5"]);
+
+  // The breakdown adds up to the balance on the card.
+  await table.getByRole("link", { name: /A2 · Grace Atieno/ }).click();
+  await page.waitForURL(/\/units\//);
+  const cardBalance = (await page.getByText(/^KSh [\d,]+$/).first().innerText()).trim();
+  await page.getByText(/How this balance is made up/).click();
+  const row = page.getByRole("row", { name: /Balance owed now|Tenant credit now/ });
+  await expect(row).toContainText(cardBalance);
+  await ctx.close();
+});

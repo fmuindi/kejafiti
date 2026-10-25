@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BackLink } from "@/components/shell/back-link";
+import { ExplainBalance } from "@/components/rent/explain-balance";
 import { Icon } from "@/components/ui/icon";
 import { Card, cx } from "@/components/ui/primitives";
 import { requireUser } from "@/lib/auth";
-import { formatDate, formatDateTime } from "@/lib/dates";
+import { currentPeriod, formatDate, formatDateTime, formatPeriod } from "@/lib/dates";
+import { explainBalance } from "@/lib/rent/explain";
 import { formatAmount, formatMoney } from "@/lib/money";
 import { balanceWords, getMyTenancies, type StatementLine } from "@/lib/my-rent";
 import { createClient } from "@/lib/supabase/server";
@@ -44,6 +46,18 @@ export default async function MyStatementPage({ params }: PageProps<"/my-rent/[t
           <p className="text-micro text-muted">Confirmed records only</p>
         </div>
       </Card>
+
+      {lines.length ? (
+        <details className="surface group p-4">
+          <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 font-semibold">
+            How your balance is made up · {formatPeriod(currentPeriod())}
+            <Icon name="chevronDown" size={18} className="text-muted transition-transform group-open:rotate-180" />
+          </summary>
+          <div className="mt-2">
+            <ExplainBalance e={explainBalance(lines, currentPeriod())} period={currentPeriod()} tenantView />
+          </div>
+        </details>
+      ) : null}
 
       {messages?.length ? (
         <section aria-labelledby="from" className="flex flex-col gap-2">
