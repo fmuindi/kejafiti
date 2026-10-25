@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { ButtonLink, Eyebrow, StatusBadge, cx } from "@/components/ui/primitives";
-import { FOLLOW_UP_LABEL, type DueFollowUp, type OwingRow, type PositionRow, type ReviewItem, type WorkItem } from "@/lib/dashboard";
+import { FOLLOW_UP_LABEL, type DueFollowUp, type OwingRow, type PositionRow, type ReportedItem, type ReviewItem, type WorkItem } from "@/lib/dashboard";
 import { formatDate, formatDateTime, formatPeriod, periodParam, timeAgo, todayEAT } from "@/lib/dates";
 import { formatAmount, formatMoney } from "@/lib/money";
 import { formatRate } from "@/lib/rent/status";
@@ -229,7 +229,7 @@ export function PropertyComparison({ orgId, rows, period }: { orgId: string; row
 }
 
 /** The manager's own queue: what to review, fix and follow up, each with its next action. */
-export function QueueList({ orgId, review, work, followUps }: { orgId: string; review: ReviewItem[]; work: WorkItem[]; followUps: DueFollowUp[] }) {
+export function QueueList({ orgId, review, work, followUps, reported = [] }: { orgId: string; review: ReviewItem[]; work: WorkItem[]; followUps: DueFollowUp[]; reported?: ReportedItem[] }) {
   const today = todayEAT();
   const rows: Array<{ key: string; title: string; detail: string; action: string; href: string; tone: "waiting" | "error" | "info" }> = [
     ...work.filter((w) => w.grp === "returned").map((w) => ({
@@ -239,6 +239,14 @@ export function QueueList({ orgId, review, work, followUps }: { orgId: string; r
       action: "Fix",
       href: `/w/${orgId}/rent/mine#returned`,
       tone: "error" as const,
+    })),
+    ...reported.map((r) => ({
+      key: `p${r.id}`,
+      title: `${r.unit_label} · ${r.tenant_name}`,
+      detail: `Missing payment reported: ${formatMoney(r.amount)} on ${formatDate(r.paid_on, { year: false })}${r.reference ? ` · ${r.reference}` : ""}`,
+      action: "Check",
+      href: `/w/${orgId}/rent/${r.property_id}/units/${r.unit_id}#reported`,
+      tone: "waiting" as const,
     })),
     ...review.map((e) => ({
       key: `r${e.id}`,

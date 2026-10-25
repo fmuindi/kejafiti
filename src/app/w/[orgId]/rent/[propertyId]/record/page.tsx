@@ -5,6 +5,8 @@ import { Icon } from "@/components/ui/icon";
 import { Notice } from "@/components/ui/primitives";
 import { requireUser, requireWorkspace } from "@/lib/auth";
 import { currentPeriod, formatDate, formatPeriod, parsePeriodParam } from "@/lib/dates";
+import { formatMoney } from "@/lib/money";
+import { METHOD_LABEL } from "@/lib/payment-reports";
 import { getOpenCharges, getProperty, getSummary } from "@/lib/rent/queries";
 import { createClient } from "@/lib/supabase/server";
 
@@ -18,6 +20,7 @@ export default async function RecordPaymentPage({ params, searchParams }: PagePr
   const property = await getProperty(supabase, ws, propertyId);
   const tenancyId = typeof sp.tenancy === "string" ? sp.tenancy : null;
   const entryId = typeof sp.entry === "string" ? sp.entry : null;
+  const reportId = typeof sp.report === "string" && /^[0-9a-f-]{36}$/.test(sp.report) ? sp.report : null;
   const period = parsePeriodParam(sp.period);
 
   if (!ws.can_enter_payments) {
@@ -55,6 +58,11 @@ export default async function RecordPaymentPage({ params, searchParams }: PagePr
     .maybeSingle();
   if (!tenancy) notFound();
 
+  // Recording a payment a tenant reported missing: start from what they said, and link the entry to it.
+  const { data: report } = reportId && !entry
+    ? await supabase.from("payment_reports").select("id, amount, paid_on, method, reference, note").eq("id", reportId).eq("tenancy_id", tId).eq("status", "open").maybeSingle()
+    : { data: null };
+
   const [charges, { summary }, { data: attachments }] = await Promise.all([
     getOpenCharges(supabase, tId),
     getSummary(supabase, orgId, propertyId, period),
@@ -90,6 +98,14 @@ export default async function RecordPaymentPage({ params, searchParams }: PagePr
         <h1 className="heading-compact">{entry ? `Edit ${entry.ref}` : "Record payment"}</h1>
         <span className="w-11" />
       </div>
+      {report ? (
+        <Notice tone="info" title={`${tenantName.split(" ")[0]} reported this payment`} className="mb-4">
+          {formatMoney(Number(report.amount))} paid {formatDate(report.paid_on)}
+          {report.method ? ` by ${METHOD_LABEL[report.method]}` : ""}
+          {report.reference ? `, reference ${report.reference}` : ""}.
+          {report.note ? ` "${report.note}"` : ""} Check it against your records before saving; the entry will answer their report.
+        </Notice>
+      ) : null}
       {entry?.status === "returned" && entry.decision_reason ? (
         <Notice tone="waiting" title="Returned for changes" className="mb-4">
           &quot;{entry.decision_reason}&quot; Edit the entry and submit it again. The history is kept.
@@ -116,6 +132,11 @@ export default async function RecordPaymentPage({ params, searchParams }: PagePr
           evidenceRequired={property.evidence_policy === "required"}
           periodTotals={summary ? { billed: summary.billed, settled: summary.settled, label: formatPeriod(period) } : null}
           today={currentPeriod()}
+          fromReport={
+            report
+              ? { id: report.id, amount: Number(report.amount), paidOn: report.paid_on, method: report.method, reference: report.reference }
+              : null
+          }
           existing={
             entry
               ? {

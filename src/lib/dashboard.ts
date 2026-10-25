@@ -63,6 +63,7 @@ export type DueFollowUp = {
   assigned_to: string | null;
 };
 
+export type ReportedItem = { id: string; amount: number; paid_on: string; reference: string | null; created_at: string; property_id: string; unit_id: string; unit_label: string; tenant_name: string };
 export type ReviewItem = { id: string; amount: number; property_id: string; unit_label: string; tenant_name: string; submitted_by_name: string | null };
 export type WorkItem = { entry_id: string; ref: string; grp: "returned" | "drafts" | "submitted"; amount: number; property_id: string; property_name: string; unit_label: string; tenancy_id: string; decision_reason: string | null };
 
@@ -139,6 +140,33 @@ export async function getDueFollowUps(supabase: ServerClient, orgId: string, use
       unit_label: t?.units?.label ?? "",
       tenant_name: t?.tenants?.full_name ?? "",
       assigned_to: f.assigned_to,
+    };
+  });
+}
+
+/** Payments tenants say they made that nobody has answered yet, oldest first. */
+export async function getReportedPayments(supabase: ServerClient, orgId: string, propertyId: string | null): Promise<ReportedItem[]> {
+  let q = supabase
+    .from("payment_reports")
+    .select("id, amount, paid_on, reference, created_at, property_id, tenancies(unit_id, units(label), tenants(full_name))")
+    .eq("org_id", orgId)
+    .eq("status", "open")
+    .order("created_at")
+    .limit(50);
+  if (propertyId) q = q.eq("property_id", propertyId);
+  const { data } = await q;
+  return (data ?? []).map((r) => {
+    const t = r.tenancies as unknown as { unit_id: string; units: { label: string } | null; tenants: { full_name: string } | null } | null;
+    return {
+      id: r.id,
+      amount: num(r.amount),
+      paid_on: r.paid_on,
+      reference: r.reference,
+      created_at: r.created_at,
+      property_id: r.property_id,
+      unit_id: t?.unit_id ?? "",
+      unit_label: t?.units?.label ?? "",
+      tenant_name: t?.tenants?.full_name ?? "",
     };
   });
 }

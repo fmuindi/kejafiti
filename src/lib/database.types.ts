@@ -759,6 +759,62 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"payment_reports": {
+                  Row: {
+                    "amount": number,"answered_at": string | null,"answered_by": string | null,"client_request_id": string,"created_at": string,"created_by": string,"entry_id": string | null,"id": string,"method": string | null,"note": string | null,"org_id": string,"paid_on": string,"property_id": string,"reference": string | null,"reply": string | null,"status": string,"tenancy_id": string,"tenant_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount": number,"answered_at"?: string | null,"answered_by"?: string | null,"client_request_id": string,"created_at"?: string,"created_by": string,"entry_id"?: string | null,"id"?: string,"method"?: string | null,"note"?: string | null,"org_id": string,"paid_on": string,"property_id": string,"reference"?: string | null,"reply"?: string | null,"status"?: string,"tenancy_id": string,"tenant_id": string
+                  }
+                  Update: {
+                    "amount"?: number,"answered_at"?: string | null,"answered_by"?: string | null,"client_request_id"?: string,"created_at"?: string,"created_by"?: string,"entry_id"?: string | null,"id"?: string,"method"?: string | null,"note"?: string | null,"org_id"?: string,"paid_on"?: string,"property_id"?: string,"reference"?: string | null,"reply"?: string | null,"status"?: string,"tenancy_id"?: string,"tenant_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "payment_reports_answered_by_fkey"
+      columns: ["answered_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payment_reports_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payment_reports_entry_id_fkey"
+      columns: ["entry_id"]
+isOneToOne: false
+      referencedRelation: "payment_entries"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payment_reports_org_id_fkey"
+      columns: ["org_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payment_reports_property_id_fkey"
+      columns: ["property_id"]
+isOneToOne: false
+      referencedRelation: "properties"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payment_reports_tenancy_id_fkey"
+      columns: ["tenancy_id"]
+isOneToOne: false
+      referencedRelation: "tenancies"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payment_reports_tenant_id_fkey"
+      columns: ["tenant_id"]
+isOneToOne: false
+      referencedRelation: "tenants"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"platform_admins": {
                   Row: {
                     "created_at": string,"role": string,"user_id": string
@@ -1438,6 +1494,9 @@ isOneToOne: false
 "ai_take":
 { Args: { "p_client": string,"p_client_cap": number,"p_feature": string,"p_global_cap": number }; Returns: string
                            },
+"answer_payment_report":
+{ Args: { "p": Json }; Returns: undefined
+                           },
 "apply_credit":
 { Args: { "p_allocations": Json,"p_entry": string }; Returns: Json
                            },
@@ -1561,6 +1620,11 @@ isOneToOne: false
               "advertiser_role": string,"area": string,"assigned_membership_id": string,"follow_up": string,"id": string,"last_message": string,"last_message_at": string,"last_side": string,"listing_ref": string,"listing_status": string,"listing_title": string,"needs_reply": boolean,"org_name": string,"property_id": string,"tenant_name": string,"unit_label": string,"unread": number
             }[]
                            },
+"my_payment_reports":
+{ Args: { "p_tenancy": string }; Returns: {
+              "amount": number,"answered_at": string,"created_at": string,"id": string,"method": string,"note": string,"paid_on": string,"payment_state": string,"reference": string,"reply": string,"status": string
+            }[]
+                           },
 "my_rent_work":
 { Args: { "p_org": string }; Returns: {
               "amount": number,"decision_reason": string,"entry_id": string,"grp": string,"paid_on": string,"property_id": string,"property_name": string,"ref": string,"status": string,"tenancy_id": string,"unit_label": string,"updated_at": string
@@ -1652,6 +1716,9 @@ isOneToOne: false
 "report_listing":
 { Args: { "p_details": string,"p_reason": string,"p_ref": string }; Returns: string
                            },
+"report_missing_payment":
+{ Args: { "p": Json }; Returns: string
+                           },
 "report_prefinalize":
 { Args: { "p_period": string,"p_property": string }; Returns: Json
                            },
@@ -1739,6 +1806,9 @@ isOneToOne: false
 { Args: { "p_viewing": string }; Returns: {
               "address": string,"confirmed_start": string,"landmark": string,"latitude": number,"longitude": number,"meeting_instructions": string,"property_name": string
             }[]
+                           },
+"withdraw_payment_report":
+{ Args: { "p_id": string }; Returns: undefined
                            },
 "workspace_search":
 { Args: { "p_org": string,"p_q": string }; Returns: {

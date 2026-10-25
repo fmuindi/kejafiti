@@ -16,7 +16,7 @@ import {
 } from "@/components/workspace/home";
 import { ButtonLink, Eyebrow, StatusBadge } from "@/components/ui/primitives";
 import { getProfile, getSessionUser, isOrgAdmin, requireWorkspace } from "@/lib/auth";
-import { getDueFollowUps, getMarketplaceWork, getMyWork, getOwing, getPosition, getReviewQueue, totalPosition } from "@/lib/dashboard";
+import { getDueFollowUps, getMarketplaceWork, getReportedPayments, getMyWork, getOwing, getPosition, getReviewQueue, totalPosition } from "@/lib/dashboard";
 import { formatDate, formatPeriod, formatTime, parsePeriodParam, periodParam } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import { getVisibleProperties } from "@/lib/rent/queries";
@@ -49,7 +49,8 @@ export default async function HomePage({ params, searchParams }: PageProps<"/w/[
   const propertyId = typeof sp.property === "string" && properties.some((p) => p.id === sp.property) ? sp.property : properties.length === 1 ? properties[0].id : null;
   const property = properties.find((p) => p.id === propertyId) ?? null;
 
-  const [position, owing, followUps, review, work, market, { data: changedAt }] = await Promise.all([
+  const canFollowUp = admin || ws.can_manage_tenancies || ws.can_enter_payments || ws.can_confirm;
+  const [position, owing, followUps, review, work, market, { data: changedAt }, reported] = await Promise.all([
     getPosition(supabase, orgId, period),
     getOwing(supabase, orgId, propertyId, 200),
     getDueFollowUps(supabase, orgId, user!.id, admin, propertyId),
@@ -57,6 +58,7 @@ export default async function HomePage({ params, searchParams }: PageProps<"/w/[
     getMyWork(supabase, ws),
     getMarketplaceWork(supabase, ws),
     supabase.rpc("records_changed_at", { p_org: orgId, p_property: propertyId ?? undefined }),
+    canFollowUp ? getReportedPayments(supabase, orgId, propertyId) : Promise.resolve([]),
   ]);
   const rows = propertyId ? position.filter((r) => r.property_id === propertyId) : position;
   const t = totalPosition(rows);
@@ -80,6 +82,11 @@ export default async function HomePage({ params, searchParams }: PageProps<"/w/[
       ? [{ label: "Awaiting your review", count: review.length, icon: "inbox" as const, href: inboxHref,
            detail: review.length ? `${formatMoney(review.reduce((s, e) => s + e.amount, 0))} submitted` : "Nothing to confirm" }]
       : []),
+    ...(canFollowUp
+      ? [{ label: "Missing payments reported", count: reported.length, icon: "alert" as const,
+           href: reported.length === 1 ? `${base}/rent/${reported[0].property_id}/units/${reported[0].unit_id}#reported` : "#queue",
+           detail: reported.length ? "Tenants say they paid" : "None reported" }]
+      : []),
     { label: "Follow-ups due", count: followUps.length, icon: "clock", href: "#queue",
       detail: followUps.length ? "Today or earlier" : "None due today" },
     ...(ws.can_enter_payments && !admin
@@ -95,7 +102,7 @@ export default async function HomePage({ params, searchParams }: PageProps<"/w/[
         { label: "Viewing requests", count: market.requests, icon: "calendar", href: `${base}/enquiries?tab=viewings`, detail: market.requests ? "Accept, move or decline" : "None waiting" },
       ]
     : [];
-  const needsYou = review.length + followUps.length + returned.length + drafts.length + (market ? market.unanswered + market.requests + market.staleListings.length + market.draftListings.length : 0);
+  const needsYou = review.length + reported.length + followUps.length + returned.length + drafts.length + (market ? market.unanswered + market.requests + market.staleListings.length + market.draftListings.length : 0);
 
   const heading = (
     <div className="flex flex-col gap-3">
@@ -155,7 +162,7 @@ export default async function HomePage({ params, searchParams }: PageProps<"/w/[
           </section>
           <section aria-labelledby="queue-h" id="queue" className="flex scroll-mt-24 flex-col gap-2">
             <h2 id="queue-h" className="heading-section">Your queue</h2>
-            <QueueList orgId={orgId} review={review} work={work} followUps={followUps} />
+            <QueueList orgId={orgId} review={review} work={work} followUps={followUps} reported={reported} />
             {market_}
           </section>
         </div>
@@ -181,7 +188,7 @@ export default async function HomePage({ params, searchParams }: PageProps<"/w/[
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <section aria-labelledby="queue-h" id="queue" className="flex scroll-mt-24 flex-col gap-2">
           <h2 id="queue-h" className="heading-section">Your queue</h2>
-          <QueueList orgId={orgId} review={review} work={work} followUps={followUps} />
+          <QueueList orgId={orgId} review={review} work={work} followUps={followUps} reported={reported} />
         </section>
         <div className="flex flex-col gap-4">
           <RentSnapshot href={perf} t={t} period={period} />

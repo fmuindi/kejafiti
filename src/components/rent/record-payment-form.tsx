@@ -34,6 +34,8 @@ type Props = {
   evidenceRequired: boolean;
   periodTotals: { billed: number; settled: number; label: string } | null;
   today: string;
+  /** A tenant's missing-payment report this entry answers: prefills the form and links on save. */
+  fromReport?: null | { id: string; amount: number; paidOn: string; method: string | null; reference: string | null };
   existing: null | {
     id: string;
     ref: string;
@@ -82,14 +84,15 @@ export function RecordPaymentForm(props: Props) {
   );
 
   const [clientRequestId, setClientRequestId] = useState(existing?.clientRequestId ?? "");
-  const [amount, setAmount] = useState(existing ? String(existing.amount) : "");
+  const report = existing ? null : props.fromReport ?? null;
+  const [amount, setAmount] = useState(existing ? String(existing.amount) : report ? String(report.amount) : "");
   const [paidOn, setPaidOn] = useState(existing?.paidOn ?? "");
   const [lines, setLines] = useState<Record<string, string>>(
     Object.fromEntries((existing?.allocations ?? []).map((a) => [a.chargeId, String(a.amount)])),
   );
   const [linesEdited, setLinesEdited] = useState(!!existing);
-  const [method, setMethod] = useState(existing?.method ?? "");
-  const [reference, setReference] = useState(existing?.reference ?? "");
+  const [method, setMethod] = useState(existing?.method ?? report?.method ?? "");
+  const [reference, setReference] = useState(existing?.reference ?? report?.reference ?? "");
   const [notes, setNotes] = useState(existing?.notes ?? "");
   const [ack, setAck] = useState(false);
   const [entry, setEntry] = useState<{ id: string; ref: string; version: number } | null>(
@@ -121,9 +124,9 @@ export function RecordPaymentForm(props: Props) {
     if (found) setOffer(found);
     if (!existing) {
       setClientRequestId(newId());
-      setPaidOn(todayEAT());
+      setPaidOn(report?.paidOn ?? todayEAT());
     }
-  }, [props.userId, draftScope, existing]);
+  }, [props.userId, draftScope, existing, report?.paidOn]);
 
   function resumeDraft() {
     if (!offer) return;
@@ -213,6 +216,7 @@ export function RecordPaymentForm(props: Props) {
       allocations: allocLines.map((l) => ({ charge_id: l.chargeId, amount: l.amount })),
       action,
       acknowledged: action === "confirm" ? ack : undefined,
+      report_id: report?.id,
     };
   }
 

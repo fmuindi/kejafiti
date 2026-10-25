@@ -160,6 +160,10 @@ From the blueprint's acceptance tests:
 - **Dashboards and follow-ups**: "who owes" counts only due charges, capped by credit, and never counts submitted
   payments; follow-ups need rent or tenancy permission, never change a balance and stay inside the team; search and
   the property position only cover properties the person can see; wildcards in search are literal.
+- **Missing-payment reports**: only the tenant on the tenancy can report, a report never changes the balance, only
+  the people who confirm payments are alerted, a report can only be matched to that tenant's own entry (one entry per
+  report), "not found" needs a reason, an answered report can't be changed or withdrawn, and the tenant sees the
+  payment's progress without seeing staff-only entry details.
 - **Tenant communications**: only staff with tenancy permission send, for every tenant in the send; invoices show the
   month's charges, the earlier balance and the amount due from confirmed records; tenants with no email, no charges
   that month or nothing owed are skipped with a reason; one reminder a day at most; a retry never sends twice; the
@@ -172,6 +176,8 @@ and share images, layouts at 200% text size, a tenant's saved-search alert arriv
 importing units and sharing a tenancy that the tenant then opens, and a landlord emailing an invoice, a message
 and a reminder that arrive by email and that the tenant then finds in My rent. The workspace home is checked for
 each role (no sideways scroll on a phone, figures matching Performance, a follow-up reaching the manager's queue).
+A tenant reports a missing payment that the landlord records from their queue and the tenant sees confirmed, and a
+second one the landlord can't find, with the reason the tenant reads.
 
 ---
 
@@ -251,6 +257,12 @@ Operating cost at launch: Supabase Pro (from USD 25/month) plus app hosting (USD
   follow-ups due, returned entries and tenants owing. **Who owes** lists every overdue balance with what is being
   done about it. **Follow-ups** on the unit page record a contact, a promise to pay (by a date) or a reported payment,
   assigned to a person; they never change a balance.
+- **Missing payments reported by tenants**: a tenant with online access says "I paid, but it isn't on my statement"
+  (amount, date, M-PESA/bank/cash and the reference) from My rent. The people who confirm payments are alerted and it
+  shows on the home queue. On the unit page staff see the likely matching entry (same reference, or same amount within
+  a week) and either **record it** (the form starts from what the tenant said and the entry answers the report),
+  match it to an entry already recorded, or say they **couldn't find it** and why. The tenant sees "Being checked",
+  "Found · being confirmed", "Confirmed" or "Not found" with the reply. A report is never a payment.
 - **Rent register**: natural unit order (A2 before A10), sort by most owed, due date or latest confirmation, a table
   view on wider screens and a Vacant filter; filters, search, sort and view stay in the link. **How this balance is
   made up** (unit page, and My rent for tenants) breaks a balance into what was owed before the month, the month's

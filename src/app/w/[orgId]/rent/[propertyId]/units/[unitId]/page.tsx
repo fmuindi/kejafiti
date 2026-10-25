@@ -6,6 +6,7 @@ import { ChargeAdjust } from "@/components/rent/charge-adjust";
 import { TenantAccess } from "@/components/rent/tenant-access";
 import { TenantContact } from "@/components/rent/tenant-contact";
 import { FollowUps, type FollowUp } from "@/components/rent/follow-ups";
+import { PaymentReportsPanel, type StaffReport } from "@/components/rent/payment-reports";
 import { ExplainBalance } from "@/components/rent/explain-balance";
 import { explainBalance } from "@/lib/rent/explain";
 import { SendToTenants } from "@/components/rent/send-to-tenants";
@@ -42,11 +43,11 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
   const current = (tenancies ?? []).find((t) => t.status === "active");
   const former = (tenancies ?? []).filter((t) => t.status === "ended");
 
-  const [statement, charges, entries, formerBalances, messages, followUpRows] = await Promise.all([
+  const [statement, charges, entries, formerBalances, messages, followUpRows, reportRows] = await Promise.all([
     current ? supabase.rpc("tenancy_statement", { p_tenancy: current.id }).then((r) => (r.data ?? []) as unknown as Statement[]) : Promise.resolve([] as Statement[]),
     current ? getOpenCharges(supabase, current.id) : Promise.resolve([]),
     current
-      ? supabase.from("payment_entries").select("id, ref, amount, paid_on, status").eq("tenancy_id", current.id).order("created_at", { ascending: false }).limit(20).then((r) => r.data ?? [])
+      ? supabase.from("payment_entries").select("id, ref, amount, paid_on, status, reference").eq("tenancy_id", current.id).order("created_at", { ascending: false }).limit(20).then((r) => r.data ?? [])
       : Promise.resolve([]),
     Promise.all(
       former.map((t) => supabase.rpc("tenancy_statement", { p_tenancy: t.id }).then((r) => {
@@ -62,9 +63,13 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
       ? supabase.from("rent_follow_ups").select("id, kind, note, due_on, promised_amount, assigned_to, created_by, created_at, resolved_at, resolution")
           .eq("tenancy_id", current.id).order("created_at", { ascending: false }).limit(40).then((r) => r.data ?? [])
       : Promise.resolve([]),
+    current
+      ? supabase.from("payment_reports").select("id, amount, paid_on, method, reference, note, status, reply, created_at, answered_at, answered_by, payment_entries(id, ref, status)")
+          .eq("tenancy_id", current.id).order("created_at", { ascending: false }).limit(30).then((r) => r.data ?? [])
+      : Promise.resolve([]),
   ]);
   // Names for who added each follow-up and who it is for (colleagues are readable within the workspace).
-  const people = [...new Set(followUpRows.flatMap((f) => [f.assigned_to, f.created_by]).filter(Boolean) as string[])];
+  const people = [...new Set([...followUpRows.flatMap((f) => [f.assigned_to, f.created_by]), ...reportRows.map((r) => r.answered_by)].filter(Boolean) as string[])];
   const { data: names } = people.length ? await supabase.from("profiles").select("id, full_name").in("id", people) : { data: [] };
   const me = (await getSessionUser())?.id;
   const nameOf = (uid: string | null) => (!uid ? "anyone on the team" : uid === me ? "you" : (names ?? []).find((n) => n.id === uid)?.full_name || "a colleague");
@@ -72,6 +77,14 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
     id: f.id, kind: f.kind as FollowUp["kind"], note: f.note, due_on: f.due_on, promised_amount: f.promised_amount === null ? null : Number(f.promised_amount),
     assigned: nameOf(f.assigned_to), created_by: f.created_by === me ? "You" : nameOf(f.created_by), created_at: f.created_at,
     resolved_at: f.resolved_at, resolution: f.resolution,
+  }));
+
+  const reports: StaffReport[] = reportRows.map((r) => ({
+    ...r,
+    amount: Number(r.amount),
+    status: r.status as StaffReport["status"],
+    answered_by: r.answered_by ? nameOf(r.answered_by) : null,
+    entry: r.payment_entries as unknown as StaffReport["entry"],
   }));
 
   const rate = current
@@ -153,6 +166,23 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
               />
             ) : null}
           </Card>
+
+          {reports.length ? (
+            <section aria-labelledby="reported-h" id="reported" className="flex scroll-mt-24 flex-col gap-2">
+              <h2 id="reported-h" className="heading-section">Reported missing by the tenant</h2>
+              <PaymentReportsPanel
+                orgId={orgId}
+                propertyId={propertyId}
+                tenantFirstName={tenant?.full_name.split(" ")[0] ?? "The tenant"}
+                open={reports.filter((r) => r.status === "open")}
+                answered={reports.filter((r) => r.status !== "open").slice(0, 10)}
+                entries={entries.map((e) => ({ ...e, amount: Number(e.amount) }))}
+                recordHref={`${base}/record?tenancy=${current.id}&period=${periodParam(period)}`}
+                canAct={ws.can_manage_tenancies || ws.can_enter_payments || ws.can_confirm}
+                canRecord={ws.can_enter_payments}
+              />
+            </section>
+          ) : null}
 
           <section aria-labelledby="fu-h" id="follow-ups" className="flex scroll-mt-24 flex-col gap-2">
             <h2 id="fu-h" className="heading-section">Follow-ups</h2>

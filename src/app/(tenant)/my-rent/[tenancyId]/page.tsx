@@ -3,13 +3,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BackLink } from "@/components/shell/back-link";
 import { ExplainBalance } from "@/components/rent/explain-balance";
+import { PaymentReports } from "@/components/tenant/payment-reports";
 import { Icon } from "@/components/ui/icon";
 import { Card, cx } from "@/components/ui/primitives";
 import { requireUser } from "@/lib/auth";
-import { currentPeriod, formatDate, formatDateTime, formatPeriod } from "@/lib/dates";
+import { currentPeriod, formatDate, formatDateTime, formatPeriod, todayEAT } from "@/lib/dates";
 import { explainBalance } from "@/lib/rent/explain";
 import { formatAmount, formatMoney } from "@/lib/money";
 import { balanceWords, getMyTenancies, type StatementLine } from "@/lib/my-rent";
+import { toReport } from "@/lib/payment-reports";
 import { createClient } from "@/lib/supabase/server";
 import { KIND_LABEL, type MessageKind } from "@/lib/tenant-messages";
 
@@ -21,10 +23,12 @@ export default async function MyStatementPage({ params }: PageProps<"/my-rent/[t
   const supabase = await createClient();
   const t = (await getMyTenancies(supabase)).find((x) => x.tenancy_id === tenancyId);
   if (!t) notFound();
-  const [{ data }, { data: messages }] = await Promise.all([
+  const [{ data }, { data: messages }, { data: reportRows }] = await Promise.all([
     supabase.rpc("tenancy_statement", { p_tenancy: tenancyId }),
     supabase.from("tenant_messages").select("id, kind, ref, subject, created_at").eq("tenancy_id", tenancyId).order("created_at", { ascending: false }).limit(30),
+    supabase.rpc("my_payment_reports", { p_tenancy: tenancyId }),
   ]);
+  const reports = (reportRows ?? []).map((r) => toReport(r));
   const lines = (data ?? []) as unknown as StatementLine[];
   const b = balanceWords(t.balance);
 
@@ -58,6 +62,16 @@ export default async function MyStatementPage({ params }: PageProps<"/my-rent/[t
           </div>
         </details>
       ) : null}
+
+      <section aria-labelledby="reports-h" id="reports" className="flex scroll-mt-24 flex-col gap-2">
+        <h2 id="reports-h" className="heading-section">Paid but not showing?</h2>
+        {reports.length ? null : (
+          <p className="text-label text-muted">
+            Payments appear once {t.org_name} has checked and confirmed them. If one you made is still missing after that, tell them here.
+          </p>
+        )}
+        <PaymentReports tenancyId={tenancyId} orgName={t.org_name} reports={reports} today={todayEAT()} />
+      </section>
 
       {messages?.length ? (
         <section aria-labelledby="from" className="flex flex-col gap-2">

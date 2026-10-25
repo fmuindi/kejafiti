@@ -29,6 +29,8 @@ const entrySchema = z.object({
   allocations: z.array(z.object({ charge_id: uuid, amount: z.number().nonnegative().multipleOf(0.01) })).max(24),
   action: z.enum(["draft", "submit", "confirm"]),
   acknowledged: z.boolean().optional(),
+  /** A tenant's missing-payment report this entry answers; linked once the entry is saved. */
+  report_id: uuid.optional(),
 });
 
 export type EntryInput = z.infer<typeof entrySchema>;
@@ -51,7 +53,7 @@ export async function savePaymentEntry(orgId: string, propertyId: string, input:
     }
     return { ok: false, message: "Check the highlighted fields.", fieldErrors };
   }
-  const p = parsed.data;
+  const { report_id, ...p } = parsed.data;
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("save_payment_entry", {
     p: {
@@ -62,8 +64,11 @@ export async function savePaymentEntry(orgId: string, propertyId: string, input:
     },
   });
   if (error) return fail(error);
+  const saved = data as unknown as EntryResult;
+  // The entry is saved either way; if the report was answered meanwhile, the unit page shows it.
+  if (report_id) await supabase.rpc("answer_payment_report", { p: { report_id, outcome: "matched", entry_id: saved.id } });
   revalidateRent(orgId, propertyId);
-  return { ok: true, data: data as unknown as EntryResult };
+  return { ok: true, data: saved };
 }
 
 export async function findDuplicates(input: { tenancyId: string; amount: number; paidOn: string; reference?: string; excludeId?: string }) {
@@ -352,6 +357,28 @@ export async function resolveFollowUp(orgId: string, propertyId: string, id: str
   if (!uuid.safeParse(id).success) return { ok: false, message: "This follow-up wasn't found." };
   const supabase = await createClient();
   const { error } = await supabase.rpc("resolve_follow_up", { p_id: id, p_resolution: outcome.slice(0, 500) });
+  if (error) return fail(error);
+  revalidateRent(orgId, propertyId);
+  return { ok: true };
+}
+
+// Tenant-reported missing payments --------------------------------------------------------------
+
+const answerSchema = z.object({
+  report_id: uuid,
+  outcome: z.enum(["matched", "not_found"]),
+  entry_id: uuid.optional(),
+  reply: z.string().max(1000).optional(),
+});
+export type AnswerInput = z.infer<typeof answerSchema>;
+
+/** Match a tenant's report to a payment entry, or tell them it couldn't be found. Never confirms anything. */
+export async function answerPaymentReport(orgId: string, propertyId: string, input: AnswerInput): Promise<ActionResult> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}`);
+  const parsed = answerSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, message: "Something in the answer isn't valid. Reload and try again." };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("answer_payment_report", { p: { ...parsed.data, reply: parsed.data.reply?.trim() || null } });
   if (error) return fail(error);
   revalidateRent(orgId, propertyId);
   return { ok: true };
