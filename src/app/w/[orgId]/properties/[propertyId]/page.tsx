@@ -66,6 +66,7 @@ export default async function PropertyPage({ params }: PageProps<"/w/[orgId]/pro
       </div>
       <div className="flex flex-wrap gap-2">
         <ButtonLink href={`/w/${orgId}/rent/${propertyId}`} variant="secondary" icon="wallet">Rent records</ButtonLink>
+        <ButtonLink href={`/w/${orgId}/rent/${propertyId}/tenants`} variant="secondary" icon="team">Tenants</ButtonLink>
         {ws.can_manage_listings ? <ButtonLink href={`/w/${orgId}/listings/new`} icon="plus">List a home</ButtonLink> : null}
       </div>
       <UnitsTable orgId={orgId} propertyId={propertyId} rows={rows} canListings={ws.can_manage_listings} canTenancies={ws.can_manage_tenancies} />

@@ -157,12 +157,17 @@ From the blueprint's acceptance tests:
 - **Saved-search alerts**: only homes published since the last alert, never twice, only the job can run them.
 - **Tenant self-view**: link accepted only by the invited email, neighbours' records and staff notes stay hidden,
   removing access hides everything again.
+- **Tenant communications**: only staff with tenancy permission send, for every tenant in the send; invoices show the
+  month's charges, the earlier balance and the amount due from confirmed records; tenants with no email, no charges
+  that month or nothing owed are skipped with a reason; one reminder a day at most; a retry never sends twice; the
+  tenant sees only their own, and only while they have online access.
 - **Listing edits**: wording, contact or photo changes to a live listing are held for review; price and dates stay live.
 - **Spreadsheet import**: dry runs change nothing, imports are all or nothing, every failing row is reported.
 
 Browser tests (`tests/e2e`, run in CI): search and listing under the Content Security Policy, robots/sitemap/manifest
 and share images, layouts at 200% text size, a tenant's saved-search alert arriving by email, and a landlord
-importing units and sharing a tenancy that the tenant then opens.
+importing units and sharing a tenancy that the tenant then opens, and a landlord emailing an invoice, a message
+and a reminder that arrive by email and that the tenant then finds in My rent.
 
 ---
 
@@ -234,7 +239,12 @@ Operating cost at launch: Supabase Pro (from USD 25/month) plus app hosting (USD
   by email.
 - **Tenant self-view**: staff with tenancy permission send a tenant a one-time link (unit page → Tenant's online
   access); the tenant sees their tenancy, balance and statement under My rent (confirmed records only, never staff
-  notes). Access can be removed at any time.
+  notes). Access can be removed at any time. Several tenants can be invited at once from the Tenants page.
+- **Tenant communications**: staff with tenancy permission email tenants an **invoice** for a month (charges, earlier
+  balance, amount due; numbered INV-000123), a **reminder** of what is owed, or a **message** (repairs, water cuts,
+  how to pay). One tenant from the unit page, or many from the property's **Tenants** page (filter by who owes, who
+  has no email, who isn't online yet). Each is kept with its figures as sent and shows whether the email went; tenants
+  with online access also find it in My rent with an in-app update. Staff can change a tenant's email and phone.
 - **Spreadsheet import**: units and tenancies from a CSV file or cells pasted from Excel or Google Sheets (property
   page), with a template, a row-by-row check against the real rules, and an all-or-nothing import.
 - **Help and support desk** with tickets and replies; **map**: approximate area map on listings and a live map with

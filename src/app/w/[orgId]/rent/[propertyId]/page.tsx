@@ -89,6 +89,9 @@ export default async function RegisterPage({ params, searchParams }: PageProps<"
           )}
         </div>
         <div className="hidden gap-2 md:flex">
+          <ButtonLink href={`${base}/tenants?period=${periodParam(period)}`} variant="secondary" size="sm">
+            Tenants
+          </ButtonLink>
           <ButtonLink href={`${base}/charges?period=${periodParam(period)}`} variant="secondary" size="sm">
             Charges
           </ButtonLink>

@@ -56,7 +56,7 @@ insert into ctx values ('token', public.invite_tenant_access((select v::uuid fro
 reset role;
 select is((select count(*)::int from public.delivery_tasks where template = 'tenant_access_invitation' and destination = 'amina13@example.test'), 2,
   'Each invitation emails the tenant a link');
-select is((select payload ->> 'unit_label' from public.delivery_tasks where template = 'tenant_access_invitation' limit 1), 'B1',
+select is((select payload ->> 'unit_label' from public.delivery_tasks where template = 'tenant_access_invitation' and destination = 'amina13@example.test' limit 1), 'B1',
   'The email says which unit it is about');
 select is((select access_token_hash from public.tenants where id = (select v::uuid from ctx where k = 'tenant')),
   app.hash_token((select v from ctx where k = 'token')), 'Only a hash of the newest link is stored');

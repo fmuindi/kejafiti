@@ -7,6 +7,7 @@ import { emailConfigured, kickDelivery } from "@/lib/delivery";
 import { SITE_URL } from "@/lib/env";
 import { fail, type ActionResult } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/server";
+import type { SendResult } from "@/lib/tenant-messages";
 
 // Every action re-reads the session and calls a SECURITY DEFINER function that checks
 // membership, property assignment and the specific permission again. The browser never
@@ -255,6 +256,60 @@ export async function revokeTenantAccess(orgId: string, propertyId: string, tena
   if (!uuid.safeParse(tenantId).success) return { ok: false, message: "This tenant record wasn't found." };
   const supabase = await createClient();
   const { error } = await supabase.rpc("revoke_tenant_access", { p_tenant: tenantId });
+  if (error) return fail(error);
+  revalidateRent(orgId, propertyId);
+  return { ok: true };
+}
+
+// Tenant communications ------------------------------------------------------------------------
+
+const sendSchema = z.object({
+  client_request_id: uuid,
+  kind: z.enum(["invoice", "reminder", "message"]),
+  tenancy_ids: z.array(uuid).min(1).max(200),
+  period: z.string().regex(/^\d{4}-\d{2}-01$/).optional(),
+  subject: z.string().max(150).optional(),
+  body: z.string().max(5000).optional(),
+});
+export type SendInput = z.infer<typeof sendSchema>;
+
+/** Invoices, reminders or a message to one or more tenants. Tenants who can't get it are skipped and listed. */
+export async function sendTenantMessages(orgId: string, propertyId: string, input: SendInput): Promise<ActionResult<SendResult>> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}/tenants`);
+  const parsed = sendSchema.safeParse(input);
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const issue of parsed.error.issues) {
+      const k = String(issue.path[0] ?? "form");
+      fieldErrors[k] ??= k === "subject" ? "Keep the subject to 150 characters." : k === "body" ? "Keep the message to 5,000 characters." : k === "tenancy_ids" ? "Choose between 1 and 200 tenants." : "Check this field.";
+    }
+    return { ok: false, message: "Check the highlighted fields.", fieldErrors };
+  }
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("send_tenant_messages", { p: parsed.data });
+  if (error) return fail(error);
+  await kickDelivery();
+  revalidateRent(orgId, propertyId);
+  return { ok: true, data: data as unknown as SendResult };
+}
+
+export async function inviteTenants(orgId: string, propertyId: string, tenantIds: string[]): Promise<ActionResult<{ sent: number; skipped: SendResult["skipped"] }>> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}/tenants`);
+  if (!z.array(uuid).min(1).max(200).safeParse(tenantIds).success) return { ok: false, message: "Choose between 1 and 200 tenants." };
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("invite_tenants_access", { p_tenants: tenantIds });
+  if (error) return fail(error);
+  await kickDelivery();
+  revalidateRent(orgId, propertyId);
+  const r = data as unknown as { sent: number; skipped: Array<{ tenant_id: string; name: string; reason: string }> };
+  return { ok: true, data: { sent: r.sent, skipped: r.skipped.map((s) => ({ tenancy_id: s.tenant_id, name: s.name, unit_label: "", reason: s.reason })) } };
+}
+
+export async function updateTenantContact(orgId: string, propertyId: string, tenantId: string, email: string, phone: string): Promise<ActionResult> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}`);
+  if (!uuid.safeParse(tenantId).success) return { ok: false, message: "This tenant record wasn't found." };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("update_tenant_contact", { p_tenant: tenantId, p_email: email, p_phone: phone });
   if (error) return fail(error);
   revalidateRent(orgId, propertyId);
   return { ok: true };

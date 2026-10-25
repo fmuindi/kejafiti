@@ -1089,6 +1089,50 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"tenant_messages": {
+                  Row: {
+                    "body": string | null,"client_request_id": string,"created_at": string,"delivery_error": string | null,"delivery_status": string,"details": NonNullable<Json>,"email": string,"id": string,"kind": string,"org_id": string,"period_start": string | null,"property_id": string,"ref": string | null,"sent_by": string | null,"subject": string,"tenancy_id": string,"tenant_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body"?: string | null,"client_request_id": string,"created_at"?: string,"delivery_error"?: string | null,"delivery_status"?: string,"details"?: NonNullable<Json>,"email": string,"id"?: string,"kind": string,"org_id": string,"period_start"?: string | null,"property_id": string,"ref"?: string | null,"sent_by"?: string | null,"subject": string,"tenancy_id": string,"tenant_id": string
+                  }
+                  Update: {
+                    "body"?: string | null,"client_request_id"?: string,"created_at"?: string,"delivery_error"?: string | null,"delivery_status"?: string,"details"?: NonNullable<Json>,"email"?: string,"id"?: string,"kind"?: string,"org_id"?: string,"period_start"?: string | null,"property_id"?: string,"ref"?: string | null,"sent_by"?: string | null,"subject"?: string,"tenancy_id"?: string,"tenant_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "tenant_messages_org_id_fkey"
+      columns: ["org_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "tenant_messages_property_id_fkey"
+      columns: ["property_id"]
+isOneToOne: false
+      referencedRelation: "properties"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "tenant_messages_sent_by_fkey"
+      columns: ["sent_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "tenant_messages_tenancy_id_fkey"
+      columns: ["tenancy_id"]
+isOneToOne: false
+      referencedRelation: "tenancies"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "tenant_messages_tenant_id_fkey"
+      columns: ["tenant_id"]
+isOneToOne: false
+      referencedRelation: "tenants"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"tenants": {
                   Row: {
                     "access_email": string | null,"access_expires_at": string | null,"access_invited_by": string | null,"access_token_hash": string | null,"created_at": string,"created_by": string | null,"email": string | null,"full_name": string,"id": string,"notes": string | null,"org_id": string,"phone": string | null,"updated_at": string,"user_id": string | null
@@ -1441,6 +1485,9 @@ isOneToOne: false
 "invite_tenant_access":
 { Args: { "p_email": string,"p_tenant": string }; Returns: Json
                            },
+"invite_tenants_access":
+{ Args: { "p_tenants": (string)[] }; Returns: Json
+                           },
 "listing_problem_items":
 { Args: { "p_listing": string }; Returns: Json
                            },
@@ -1499,6 +1546,11 @@ isOneToOne: false
 "preview_rent_charges":
 { Args: { "p_period": string,"p_property": string }; Returns: {
               "already_exists": boolean,"amount": number,"due_date": string,"tenancy_id": string,"tenant_name": string,"unit_id": string,"unit_label": string
+            }[]
+                           },
+"property_tenants":
+{ Args: { "p_property": string }; Returns: {
+              "access": string,"balance": number,"email": string,"end_date": string,"last_message_at": string,"last_message_kind": string,"phone": string,"start_date": string,"status": string,"tenancy_id": string,"tenant_id": string,"tenant_name": string,"unit_id": string,"unit_label": string
             }[]
                            },
 "record_saved_search_alert":
@@ -1566,6 +1618,9 @@ isOneToOne: false
 "send_message":
 { Args: { "p_body": string,"p_client_ref": string,"p_conversation": string }; Returns: string
                            },
+"send_tenant_messages":
+{ Args: { "p": Json }; Returns: Json
+                           },
 "set_conversation_follow_up":
 { Args: { "p_assign_membership"?: string,"p_conversation": string,"p_stage"?: string,"p_unassign"?: boolean }; Returns: undefined
                            },
@@ -1610,6 +1665,9 @@ isOneToOne: false
                            },
 "update_member_access":
 { Args: { "p": Json,"p_membership": string }; Returns: undefined
+                           },
+"update_tenant_contact":
+{ Args: { "p_email": string,"p_phone": string,"p_tenant": string }; Returns: undefined
                            },
 "viewing_location":
 { Args: { "p_viewing": string }; Returns: {

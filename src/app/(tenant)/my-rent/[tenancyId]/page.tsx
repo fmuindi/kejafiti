@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BackLink } from "@/components/shell/back-link";
+import { Icon } from "@/components/ui/icon";
 import { Card, cx } from "@/components/ui/primitives";
 import { requireUser } from "@/lib/auth";
-import { formatDate } from "@/lib/dates";
+import { formatDate, formatDateTime } from "@/lib/dates";
 import { formatAmount, formatMoney } from "@/lib/money";
 import { balanceWords, getMyTenancies, type StatementLine } from "@/lib/my-rent";
 import { createClient } from "@/lib/supabase/server";
+import { KIND_LABEL, type MessageKind } from "@/lib/tenant-messages";
 
 export const metadata: Metadata = { title: "My statement" };
 
@@ -16,7 +19,10 @@ export default async function MyStatementPage({ params }: PageProps<"/my-rent/[t
   const supabase = await createClient();
   const t = (await getMyTenancies(supabase)).find((x) => x.tenancy_id === tenancyId);
   if (!t) notFound();
-  const { data } = await supabase.rpc("tenancy_statement", { p_tenancy: tenancyId });
+  const [{ data }, { data: messages }] = await Promise.all([
+    supabase.rpc("tenancy_statement", { p_tenancy: tenancyId }),
+    supabase.from("tenant_messages").select("id, kind, ref, subject, created_at").eq("tenancy_id", tenancyId).order("created_at", { ascending: false }).limit(30),
+  ]);
   const lines = (data ?? []) as unknown as StatementLine[];
   const b = balanceWords(t.balance);
 
@@ -38,6 +44,27 @@ export default async function MyStatementPage({ params }: PageProps<"/my-rent/[t
           <p className="text-micro text-muted">Confirmed records only</p>
         </div>
       </Card>
+
+      {messages?.length ? (
+        <section aria-labelledby="from" className="flex flex-col gap-2">
+          <h2 id="from" className="heading-section">From {t.org_name}</h2>
+          <ul className="surface-list">
+            {messages.map((m) => (
+              <li key={m.id}>
+                <Link href={`/my-rent/${tenancyId}/messages/${m.id}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-cool">
+                  <span className="min-w-0">
+                    <span className="block truncate font-semibold">{m.subject}</span>
+                    <span className="block text-caption text-muted">
+                      {KIND_LABEL[m.kind as MessageKind]}{m.ref ? ` ${m.ref}` : ""} · {formatDateTime(m.created_at)}
+                    </span>
+                  </span>
+                  <Icon name="chevronRight" className="shrink-0 text-muted" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section aria-labelledby="stmt" className="flex flex-col gap-2">
         <h2 id="stmt" className="heading-section">Statement</h2>

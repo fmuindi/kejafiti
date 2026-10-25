@@ -4,13 +4,18 @@ import { EntryStatusBadge } from "@/components/rent/badges";
 import { TenancyActions, TenancySetup } from "@/components/rent/tenancy-forms";
 import { ChargeAdjust } from "@/components/rent/charge-adjust";
 import { TenantAccess } from "@/components/rent/tenant-access";
-import { ButtonLink, Card, EmptyState, Eyebrow, Notice } from "@/components/ui/primitives";
+import { TenantContact } from "@/components/rent/tenant-contact";
+import { SendToTenants } from "@/components/rent/send-to-tenants";
+import { Icon } from "@/components/ui/icon";
+import { ButtonLink, Card, EmptyState, Eyebrow, Notice, StatusBadge } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
-import { formatDate, formatPeriod, parsePeriodParam, periodParam, todayEAT } from "@/lib/dates";
+import { addMonths, currentPeriod, formatDate, formatDateTime, formatPeriod, parsePeriodParam, periodParam, todayEAT } from "@/lib/dates";
+import { emailConfigured } from "@/lib/delivery";
 import { formatAmount, formatMoney } from "@/lib/money";
 import { getOpenCharges, getProperty } from "@/lib/rent/queries";
 import { OCCUPANCY, type Occupancy } from "@/lib/rent/status";
 import { createClient } from "@/lib/supabase/server";
+import { KIND_LABEL, MESSAGE_COLUMNS, deliveryLabel, type TenantMessage } from "@/lib/tenant-messages";
 import { BackLink } from "@/components/shell/back-link";
 
 type Statement = { line_date: string; kind: string; description: string; charge: number; payment: number; balance: number; ref: string | null };
@@ -34,7 +39,7 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
   const current = (tenancies ?? []).find((t) => t.status === "active");
   const former = (tenancies ?? []).filter((t) => t.status === "ended");
 
-  const [statement, charges, entries, formerBalances] = await Promise.all([
+  const [statement, charges, entries, formerBalances, messages] = await Promise.all([
     current ? supabase.rpc("tenancy_statement", { p_tenancy: current.id }).then((r) => (r.data ?? []) as unknown as Statement[]) : Promise.resolve([] as Statement[]),
     current ? getOpenCharges(supabase, current.id) : Promise.resolve([]),
     current
@@ -46,6 +51,10 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
         return rows.length ? Number(rows[rows.length - 1].balance) : 0;
       })),
     ),
+    current
+      ? supabase.from("tenant_messages").select(MESSAGE_COLUMNS).eq("tenancy_id", current.id).order("created_at", { ascending: false }).limit(20)
+          .then((r) => (r.data ?? []) as unknown as TenantMessage[])
+      : Promise.resolve([] as TenantMessage[]),
   ]);
 
   const rate = current
@@ -88,7 +97,9 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
                 <p className="text-label text-muted">
                   Tenancy since {formatDate(current.start_date)} · {rate ? `${formatMoney(Number(rate.amount))} / month` : "rent not set"} · due day {current.due_day}
                 </p>
-                {tenant?.phone || tenant?.email ? <p className="text-label text-muted">{[tenant.phone, tenant.email].filter(Boolean).join(" · ")}</p> : null}
+                {tenant ? (
+                  <TenantContact orgId={orgId} propertyId={propertyId} tenantId={tenant.id} email={tenant.email} phone={tenant.phone} canEdit={ws.can_manage_tenancies} />
+                ) : null}
                 {current.deposit_held ? <p className="text-label text-muted">Deposit held: {formatMoney(Number(current.deposit_held))} (tracked separately from rent)</p> : null}
               </div>
               <div className="text-right">
@@ -110,6 +121,53 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
               />
             ) : null}
           </Card>
+
+          {ws.can_manage_tenancies || messages.length ? (
+            <section aria-labelledby="msgs" className="flex flex-col gap-2">
+              <h2 id="msgs" className="heading-section">Invoices, reminders and messages</h2>
+              {ws.can_manage_tenancies && tenant ? (
+                <details className="surface group">
+                  <summary className="flex min-h-row cursor-pointer list-none items-center gap-3 px-4 font-semibold">
+                    <Icon name="mail" className="text-muted" />
+                    <span className="flex-1">Email {tenant.full_name.split(" ")[0]} an invoice, reminder or message</span>
+                    <Icon name="chevronDown" size={18} className="text-muted transition-transform group-open:rotate-180" />
+                  </summary>
+                  <div className="border-t border-divider p-4">
+                    <SendToTenants
+                      orgId={orgId}
+                      propertyId={propertyId}
+                      tenancyIds={[current.id]}
+                      recipients={tenant.full_name.split(" ")[0]}
+                      periods={[addMonths(currentPeriod(), 1), currentPeriod(), ...[1, 2, 3, 4, 5].map((n) => addMonths(currentPeriod(), -n))]}
+                      defaultPeriod={period}
+                    />
+                  </div>
+                </details>
+              ) : null}
+              {messages.length ? (
+                <ul className="surface-list">
+                  {messages.map((m) => {
+                    const d = deliveryLabel(m.delivery_status, emailConfigured());
+                    return (
+                      <li key={m.id}>
+                        <Link href={`${base}/messages/${m.id}`} className="flex items-start justify-between gap-3 px-4 py-3 hover:bg-cool">
+                          <span className="min-w-0">
+                            <span className="block truncate font-semibold">{m.subject}</span>
+                            <span className="block text-caption text-muted">
+                              {KIND_LABEL[m.kind]}{m.ref ? ` ${m.ref}` : ""} · {formatDateTime(m.created_at)}
+                            </span>
+                          </span>
+                          <StatusBadge tone={d.tone} className="shrink-0">{d.label}</StatusBadge>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="text-label text-muted">Nothing sent to this tenant yet.</p>
+              )}
+            </section>
+          ) : null}
 
           <section aria-labelledby="stmt">
             <div className="flex items-baseline justify-between">
