@@ -43,7 +43,7 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
   ).length;
 
   const sidebar: NavItem[] = [
-    { href: base, label: "Overview", icon: "home", exact: true },
+    { href: base, label: "Home", icon: "home", exact: true },
     ...(listings || admin ? [{ href: `${base}/properties`, label: "Properties", icon: "building" as const }] : []),
     { href: `${base}/rent`, label: "Rent records", icon: "wallet", badge: pending ?? 0 },
     ...(enterOnly ? [{ href: `${base}/rent/mine`, label: "My entries", icon: "inbox" as const, badge: myOpenWork }] : []),
@@ -55,28 +55,31 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps<
     { href: `${base}/activity`, label: "Updates", icon: "bell", badge: unreadUpdates },
   ];
 
-  // Phone tabs hold five items. Viewings stay one tap away inside Enquiries.
+  // Phone tabs hold five items. Viewings stay one tap away inside Enquiries; Performance is one
+  // tap from Home.
   const ownerTabs: NavItem[] = [
-    { href: base, label: "Overview", icon: "home", exact: true },
+    { href: base, label: "Home", icon: "home", exact: true },
     { href: `${base}/rent`, label: "Rent", icon: "wallet", badge: pending ?? 0 },
     { href: `${base}/dashboard`, label: "Performance", icon: "chart" },
     { href: `${base}/enquiries`, label: "Enquiries", icon: "message", badge: unanswered },
     { href: `${base}/account`, label: "Account", icon: "user", avatar: me },
   ];
+  // Staff start from their work queue (Home); at most five tabs.
   const staffTabs: NavItem[] = [
+    { href: base, label: "Home", icon: "home", exact: true },
     { href: `${base}/rent`, label: "Rent", icon: "wallet" },
     ...(ws.can_confirm ? [{ href: `${base}/rent/inbox`, label: "Inbox", icon: "inbox" as const, badge: pending ?? 0 }] : []),
     ...(enterOnly ? [{ href: `${base}/rent/mine`, label: "My entries", icon: "inbox" as const, badge: myOpenWork }] : []),
     ...(listings ? [{ href: `${base}/enquiries`, label: "Enquiries", icon: "message" as const, badge: unanswered }] : []),
-    { href: `${base}/dashboard`, label: "Performance", icon: "chart" },
+    ...(!ws.can_confirm && !enterOnly && !listings ? [{ href: `${base}/dashboard`, label: "Performance", icon: "chart" as const }] : []),
     { href: `${base}/account`, label: "Account", icon: "user", avatar: me },
-  ];
+  ].slice(0, 5);
   const tabs = admin ? ownerTabs : staffTabs;
 
   return (
     <div className="min-h-dvh md:grid md:grid-cols-[248px_1fr]">
       <aside className="no-print hidden border-r border-line bg-cream md:sticky md:top-0 md:flex md:h-dvh md:flex-col md:px-4 md:py-5">
-        <Link href={base} aria-label="Workspace overview" className="px-2">
+        <Link href={base} aria-label="Workspace home" className="px-2">
           <Logo />
         </Link>
         <div className="surface mt-5 px-3 py-2.5">

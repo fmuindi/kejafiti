@@ -314,3 +314,45 @@ export async function updateTenantContact(orgId: string, propertyId: string, ten
   revalidateRent(orgId, propertyId);
   return { ok: true };
 }
+
+// Follow-ups ---------------------------------------------------------------------------------
+
+const followUpSchema = z.object({
+  client_request_id: uuid,
+  tenancy_id: uuid,
+  kind: z.enum(["contacted", "promised", "reported", "note"]),
+  note: z.string().max(1000).optional(),
+  due_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  promised_amount: money.optional(),
+  anyone: z.boolean().optional(),
+});
+export type FollowUpInput = z.infer<typeof followUpSchema>;
+
+/** A contact note, promise to pay or reported payment: a task, never a change to the balance. */
+export async function addFollowUp(orgId: string, propertyId: string, input: FollowUpInput): Promise<ActionResult<{ id: string }>> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}`);
+  const parsed = followUpSchema.safeParse(input);
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const issue of parsed.error.issues) {
+      const k = String(issue.path[0] ?? "form");
+      fieldErrors[k] ??= k === "promised_amount" ? "Enter the amount in KSh, or leave it empty." : k === "due_on" ? "Choose a date." : k === "note" ? "Keep the note to 1,000 characters." : "Check this field.";
+    }
+    return { ok: false, message: "Check the highlighted fields.", fieldErrors };
+  }
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("add_follow_up", { p: parsed.data });
+  if (error) return fail(error);
+  revalidateRent(orgId, propertyId);
+  return { ok: true, data: { id: data as unknown as string } };
+}
+
+export async function resolveFollowUp(orgId: string, propertyId: string, id: string, outcome: string): Promise<ActionResult> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}`);
+  if (!uuid.safeParse(id).success) return { ok: false, message: "This follow-up wasn't found." };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("resolve_follow_up", { p_id: id, p_resolution: outcome.slice(0, 500) });
+  if (error) return fail(error);
+  revalidateRent(orgId, propertyId);
+  return { ok: true };
+}

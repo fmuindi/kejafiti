@@ -5,10 +5,11 @@ import { TenancyActions, TenancySetup } from "@/components/rent/tenancy-forms";
 import { ChargeAdjust } from "@/components/rent/charge-adjust";
 import { TenantAccess } from "@/components/rent/tenant-access";
 import { TenantContact } from "@/components/rent/tenant-contact";
+import { FollowUps, type FollowUp } from "@/components/rent/follow-ups";
 import { SendToTenants } from "@/components/rent/send-to-tenants";
 import { Icon } from "@/components/ui/icon";
 import { ButtonLink, Card, EmptyState, Eyebrow, Notice, StatusBadge } from "@/components/ui/primitives";
-import { requireWorkspace } from "@/lib/auth";
+import { getSessionUser, requireWorkspace } from "@/lib/auth";
 import { addMonths, currentPeriod, formatDate, formatDateTime, formatPeriod, parsePeriodParam, periodParam, todayEAT } from "@/lib/dates";
 import { emailConfigured } from "@/lib/delivery";
 import { formatAmount, formatMoney } from "@/lib/money";
@@ -39,7 +40,7 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
   const current = (tenancies ?? []).find((t) => t.status === "active");
   const former = (tenancies ?? []).filter((t) => t.status === "ended");
 
-  const [statement, charges, entries, formerBalances, messages] = await Promise.all([
+  const [statement, charges, entries, formerBalances, messages, followUpRows] = await Promise.all([
     current ? supabase.rpc("tenancy_statement", { p_tenancy: current.id }).then((r) => (r.data ?? []) as unknown as Statement[]) : Promise.resolve([] as Statement[]),
     current ? getOpenCharges(supabase, current.id) : Promise.resolve([]),
     current
@@ -55,7 +56,21 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
       ? supabase.from("tenant_messages").select(MESSAGE_COLUMNS).eq("tenancy_id", current.id).order("created_at", { ascending: false }).limit(20)
           .then((r) => (r.data ?? []) as unknown as TenantMessage[])
       : Promise.resolve([] as TenantMessage[]),
+    current
+      ? supabase.from("rent_follow_ups").select("id, kind, note, due_on, promised_amount, assigned_to, created_by, created_at, resolved_at, resolution")
+          .eq("tenancy_id", current.id).order("created_at", { ascending: false }).limit(40).then((r) => r.data ?? [])
+      : Promise.resolve([]),
   ]);
+  // Names for who added each follow-up and who it is for (colleagues are readable within the workspace).
+  const people = [...new Set(followUpRows.flatMap((f) => [f.assigned_to, f.created_by]).filter(Boolean) as string[])];
+  const { data: names } = people.length ? await supabase.from("profiles").select("id, full_name").in("id", people) : { data: [] };
+  const me = (await getSessionUser())?.id;
+  const nameOf = (uid: string | null) => (!uid ? "anyone on the team" : uid === me ? "you" : (names ?? []).find((n) => n.id === uid)?.full_name || "a colleague");
+  const followUps: FollowUp[] = followUpRows.map((f) => ({
+    id: f.id, kind: f.kind as FollowUp["kind"], note: f.note, due_on: f.due_on, promised_amount: f.promised_amount === null ? null : Number(f.promised_amount),
+    assigned: nameOf(f.assigned_to), created_by: f.created_by === me ? "You" : nameOf(f.created_by), created_at: f.created_at,
+    resolved_at: f.resolved_at, resolution: f.resolution,
+  }));
 
   const rate = current
     ? [...((current.tenancy_rent_rates as unknown as Array<{ effective_from: string; amount: number }>) ?? [])]
@@ -121,6 +136,19 @@ export default async function UnitPage({ params, searchParams }: PageProps<"/w/[
               />
             ) : null}
           </Card>
+
+          <section aria-labelledby="fu-h" id="follow-ups" className="flex scroll-mt-24 flex-col gap-2">
+            <h2 id="fu-h" className="heading-section">Follow-ups</h2>
+            <FollowUps
+              orgId={orgId}
+              propertyId={propertyId}
+              tenancyId={current.id}
+              today={today}
+              open={followUps.filter((f) => !f.resolved_at).sort((a, b) => (a.due_on ?? "9999").localeCompare(b.due_on ?? "9999"))}
+              closed={followUps.filter((f) => f.resolved_at).slice(0, 10)}
+              canAct={ws.can_manage_tenancies || ws.can_enter_payments || ws.can_confirm}
+            />
+          </section>
 
           {ws.can_manage_tenancies || messages.length ? (
             <section aria-labelledby="msgs" className="flex flex-col gap-2">

@@ -138,21 +138,32 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
         </section>
       ) : s ? (
         <>
-          <dl className="surface grid grid-cols-2 divide-divider sm:grid-cols-3 lg:grid-cols-6 lg:divide-x">
-            {[
-              ["Rent billed", formatAmount(s.billed), ""],
-              ["Confirmed settled", formatAmount(s.settled), ""],
-              ["Collection rate", formatRate(s.collection_rate), ""],
-              [`Outstanding${s.outstanding && s.overdue === s.outstanding ? " · all overdue" : ` · ${formatAmount(s.overdue)} overdue`}`, formatAmount(s.outstanding), s.outstanding ? "text-error" : ""],
-              ["Awaiting confirmation", `${s.pending_count} · ${formatAmount(s.pending_amount)}`, s.pending_count ? "text-waiting" : ""],
-              [`Occupancy · ${s.occupied} of ${s.lettable}`, s.lettable ? `${Math.round((s.occupied / s.lettable) * 100)}%` : "N/A", ""],
-            ].map(([label, value, tone]) => (
-              <div key={label} className="p-4">
-                <dd className={cx("font-display text-title-lg font-bold", tone)}>{value}</dd>
-                <dt className="text-caption text-muted">{label}</dt>
-              </div>
-            ))}
-          </dl>
+          <ul className="surface grid grid-cols-2 divide-divider sm:grid-cols-3 lg:grid-cols-6 lg:divide-x" aria-label="Key figures">
+            {(() => {
+              const reg = propertyId ? `/w/${orgId}/rent/${propertyId}?period=${periodParam(period)}` : null;
+              const tiles: Array<[string, string, string, string | null]> = [
+                ["Rent billed", formatAmount(s.billed), "", reg],
+                ["Confirmed settled", formatAmount(s.settled), "", reg ? `${reg}&filter=paid` : null],
+                ["Collection rate", formatRate(s.collection_rate), "", null],
+                [`Outstanding${s.outstanding && s.overdue === s.outstanding ? " · all overdue" : ` · ${formatAmount(s.overdue)} overdue`}`, formatAmount(s.outstanding), s.outstanding ? "text-error" : "", reg ? `${reg}&filter=unpaid` : `/w/${orgId}/owing`],
+                ["Awaiting confirmation", `${s.pending_count} · ${formatAmount(s.pending_amount)}`, s.pending_count ? "text-waiting" : "", `/w/${orgId}/rent/inbox${propertyId ? `?property=${propertyId}` : ""}`],
+                [`Occupancy · ${s.occupied} of ${s.lettable}`, s.lettable ? `${Math.round((s.occupied / s.lettable) * 100)}%` : "Not applicable", "", propertyId ? `/w/${orgId}/properties/${propertyId}` : `/w/${orgId}/properties`],
+              ];
+              return tiles.map(([label, value, tone, href]) => {
+                const body = (
+                  <>
+                    <span className={cx("font-display text-title-lg font-bold", tone)}>{value}</span>
+                    <span className="flex items-center gap-1 text-caption text-muted">{label}{href ? <Icon name="chevronRight" size={14} /> : null}</span>
+                  </>
+                );
+                return (
+                  <li key={label} className="flex">
+                    {href ? <Link href={href} className="flex flex-1 flex-col p-4 hover:bg-cool">{body}</Link> : <div className="flex flex-1 flex-col p-4">{body}</div>}
+                  </li>
+                );
+              });
+            })()}
+          </ul>
           <p className="-mt-4 text-caption text-muted">All amounts in KSh.{s.unavailable ? ` ${s.unavailable} unavailable unit${s.unavailable === 1 ? " is" : "s are"} excluded from the lettable base.` : ""}</p>
 
           <div className="grid gap-6 xl:grid-cols-[1.4fr_1fr]">
