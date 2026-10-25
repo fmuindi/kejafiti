@@ -59,6 +59,8 @@ export type WizardData = {
     viewing_instructions: string;
     house_rules: string;
   };
+  /** The earlier listing in this building that this draft was filled in from. */
+  copiedFrom: { ref: string; unitLabel: string; charges: number; buildingPhotos: number } | null;
   /** Review checklist from listing_problem_items: required items block submission. */
   issues: Array<{ code: string; message: string; step: number; field: string; required: boolean }>;
 };
@@ -142,6 +144,14 @@ export function Wizard({ data, step, focus, fromReview = false }: { data: Wizard
       ) : null}
       {data.status === "needs_correction" && data.reviewNote ? (
         <Notice tone="waiting" title="Our team asked for a correction">&quot;{data.reviewNote}&quot; Fix it, then submit again.</Notice>
+      ) : null}
+      {data.status === "draft" && data.copiedFrom ? (
+        <Notice tone="info" title={`Filled in from unit ${data.copiedFrom.unitLabel}'s listing`}>
+          The building&apos;s location, {data.copiedFrom.charges ? `costs and ${data.copiedFrom.charges} charge${data.copiedFrom.charges === 1 ? "" : "s"}` : "costs"}, deposit,
+          contact and viewing details, house rules and building features are already here
+          {data.copiedFrom.buildingPhotos ? `, with ${data.copiedFrom.buildingPhotos} building photo${data.copiedFrom.buildingPhotos === 1 ? "" : "s"}` : ""}. Add what&apos;s
+          different about unit {data.location.unit_label}: its layout, features, rent and photos.
+        </Notice>
       ) : null}
       <nav aria-label="Listing steps">
         <p className="font-mono text-micro tracking-caps text-muted uppercase">

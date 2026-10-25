@@ -15,7 +15,12 @@ function revalidateListing(orgId: string, listingId?: string) {
   revalidatePath("/search");
 }
 
-export async function startListing(orgId: string, input: { propertyId?: string; unitId?: string; area?: string; road?: string; town?: string; county?: string; landmark?: string; propertyName?: string; unitLabel?: string; layout?: string; bedrooms?: number | null; rentalScope?: string }): Promise<ActionResult<{ listingId: string }>> {
+/**
+ * Start a listing. In a building that already has listings, the building's details are copied
+ * from the latest one (or `copyFrom`; "none" starts blank): costs, contact, viewing, house
+ * rules and building facts in the database, and building photos here.
+ */
+export async function startListing(orgId: string, input: { propertyId?: string; unitId?: string; area?: string; road?: string; town?: string; county?: string; landmark?: string; propertyName?: string; unitLabel?: string; layout?: string; bedrooms?: number | null; rentalScope?: string; copyFrom?: string }): Promise<ActionResult<{ listingId: string }>> {
   await requireUser(`/w/${orgId}/listings/new`);
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("start_listing", {
@@ -33,11 +38,45 @@ export async function startListing(orgId: string, input: { propertyId?: string; 
       layout: input.layout ?? null,
       bedrooms: input.bedrooms ?? null,
       rental_scope: input.rentalScope ?? null,
+      copy_from: input.copyFrom ?? null,
     },
   });
   if (error) return fail(error);
+  const listingId = data as unknown as string;
+  await copyBuildingPhotos(supabase, orgId, listingId);
   revalidateListing(orgId);
-  return { ok: true, data: { listingId: data as unknown as string } };
+  return { ok: true, data: { listingId } };
+}
+
+/** Building photos from the listing this one was copied from, as new files in this listing's folder. */
+async function copyBuildingPhotos(supabase: Awaited<ReturnType<typeof createClient>>, orgId: string, listingId: string) {
+  const { data: l } = await supabase.from("listings").select("copied_from").eq("id", listingId).maybeSingle();
+  if (!l?.copied_from) return;
+  const { count } = await supabase.from("listing_photos").select("id", { count: "exact", head: true }).eq("listing_id", listingId);
+  if (count) return; // Already has photos (a resumed draft): never add twice.
+  const { data: photos } = await supabase
+    .from("listing_photos")
+    .select("storage_path, thumb_path, width, height, size_bytes, alt_text")
+    .eq("listing_id", l.copied_from)
+    .eq("media_label", "building")
+    .order("position")
+    .limit(12);
+  const bucket = supabase.storage.from("listing-media");
+  const user = (await supabase.auth.getUser()).data.user;
+  let position = 0;
+  for (const ph of photos ?? []) {
+    const to = (path: string) => `${orgId}/${listingId}/${crypto.randomUUID()}${path.slice(path.lastIndexOf("."))}`;
+    const main = to(ph.storage_path);
+    if ((await bucket.copy(ph.storage_path, main)).error) continue;
+    const thumb = ph.thumb_path ? to(ph.thumb_path) : null;
+    const thumbOk = thumb ? !(await bucket.copy(ph.thumb_path!, thumb)).error : false;
+    const { error } = await supabase.from("listing_photos").insert({
+      listing_id: listingId, org_id: orgId, storage_path: main, thumb_path: thumbOk ? thumb : null, width: ph.width, height: ph.height,
+      size_bytes: ph.size_bytes, media_label: "building", alt_text: ph.alt_text, position, is_cover: false, uploaded_by: user?.id ?? null,
+    });
+    if (error) await bucket.remove([main, ...(thumbOk && thumb ? [thumb] : [])]);
+    else position++;
+  }
 }
 
 // ---------------------------------------------------------------------------

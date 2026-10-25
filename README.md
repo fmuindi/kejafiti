@@ -172,6 +172,9 @@ From the blueprint's acceptance tests:
   that month or nothing owed are skipped with a reason; one reminder a day at most; a retry never sends twice; the
   tenant sees only their own, and only while they have online access.
 - **Listing edits**: wording, contact or photo changes to a live listing are held for review; price and dates stay live.
+- **Listing another unit**: only details from the same building are copied, never the unit's own facts, title or
+  description; a unit's own answers are never overwritten; rent is suggested only for the same kind of unit; "start
+  blank" copies nothing; building photos are copied as new files, so removing one never affects the other listing.
 - **Spreadsheet import**: dry runs change nothing, imports are all or nothing, every failing row is reported.
 
 Browser tests (`tests/e2e`, run in CI): search and listing under the Content Security Policy, robots/sitemap/manifest
@@ -181,7 +184,8 @@ and a reminder that arrive by email and that the tenant then finds in My rent. T
 each role (no sideways scroll on a phone, figures matching Performance, a follow-up reaching the manager's queue).
 The owner goes from the home's payment habits to the tenants who are often late and opens one tenant's twelve months
 and activity. A tenant reports a missing payment that the landlord records from their queue and the tenant sees confirmed, and a
-second one the landlord can't find, with the reason the tenant reads.
+second one the landlord can't find, with the reason the tenant reads. A second unit in a listed building starts on
+the Home step with the building's costs, viewing details and building photos already filled in.
 
 ---
 
@@ -235,7 +239,10 @@ Operating cost at launch: Supabase Pro (from USD 25/month) plus app hosting (USD
 - **Marketplace**: guided 6-step listing wizard with autosave, structured costs and a live "Tenants will see"
   total, photos (camera or file, resized to a full image plus a thumbnail, labelled actual, building or sample,
   move earlier or later, cover, retry), submit for review, pause, resume, mark let and withdraw, one-tap and bulk
-  "Still available". Search by area, budget (rent only or rent + fixed charges), home type, must-haves with
+  "Still available". **Another unit in a building that has been listed before** skips the location (it is saved on
+  the building) and starts from that building's earlier listing: costs and charges, deposit, contact and viewing
+  details, house rules, building features and building photos, ready to change; staff pick which listing to copy or
+  start blank. Search by area, budget (rent only or rent + fixed charges), home type, must-haves with
   "Include unconfirmed", furnishing, advertiser role, move-in date and category, with sort, pagination, a live
   count in the filter sheet and no-results recovery with real counts. Listing detail with gallery, Yes/No/Unknown
   facts, full cost breakdown, dated checks, report, call and WhatsApp handoff (logged as an attempt only) and an
