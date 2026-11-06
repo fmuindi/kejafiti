@@ -4,10 +4,10 @@
     "town": "Kitengela",
     "area": "EPZ",
     "home_type": "3_plus_bedrooms",
-    "n": 1,
-    "median_rent": 35000,
+    "n": 2,
+    "median_rent": 47500,
     "min_rent": 35000,
-    "max_rent": 35000
+    "max_rent": 60000
   },
   {
     "county": "Kajiado",
@@ -31,6 +31,26 @@
   },
   {
     "county": "Kajiado",
+    "town": "Ngong",
+    "area": "Kibiku",
+    "home_type": "3_plus_bedrooms",
+    "n": 2,
+    "median_rent": 100000,
+    "min_rent": 70000,
+    "max_rent": 130000
+  },
+  {
+    "county": "Kajiado",
+    "town": "Ngong",
+    "area": "Kibiku (opposite KIHBT)",
+    "home_type": "single_room",
+    "n": 1,
+    "median_rent": 3200,
+    "min_rent": 3200,
+    "max_rent": 3200
+  },
+  {
+    "county": "Kajiado",
     "town": "Kiserian",
     "area": "Kiserian",
     "home_type": "3_plus_bedrooms",
@@ -38,6 +58,56 @@
     "median_rent": 35000,
     "min_rent": 35000,
     "max_rent": 35000
+  },
+  {
+    "county": "Kajiado",
+    "town": "Kitengela",
+    "area": "Kitengela",
+    "home_type": "bedsitter_studio",
+    "n": 2,
+    "median_rent": 6750,
+    "min_rent": 6500,
+    "max_rent": 7000
+  },
+  {
+    "county": "Kajiado",
+    "town": "Kitengela",
+    "area": "Kitengela",
+    "home_type": "1_bedroom",
+    "n": 3,
+    "median_rent": 14000,
+    "min_rent": 12000,
+    "max_rent": 22500
+  },
+  {
+    "county": "Kajiado",
+    "town": "Kitengela",
+    "area": "Kitengela",
+    "home_type": "2_bedrooms",
+    "n": 4,
+    "median_rent": 22500,
+    "min_rent": 18000,
+    "max_rent": 26500
+  },
+  {
+    "county": "Kajiado",
+    "town": "Kitengela",
+    "area": "Kitengela",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 80000,
+    "min_rent": 80000,
+    "max_rent": 80000
+  },
+  {
+    "county": "Kajiado",
+    "town": "Kitengela",
+    "area": "Kyangombe",
+    "home_type": "single_room",
+    "n": 1,
+    "median_rent": 3500,
+    "min_rent": 3500,
+    "max_rent": 3500
   },
   {
     "county": "Kajiado",
@@ -51,8 +121,28 @@
   },
   {
     "county": "Kajiado",
+    "town": "Ongata Rongai",
+    "area": "Maasai Lodge",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 130000,
+    "min_rent": 130000,
+    "max_rent": 130000
+  },
+  {
+    "county": "Kajiado",
     "town": "Kitengela",
     "area": "Muigai",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 40000,
+    "min_rent": 40000,
+    "max_rent": 40000
+  },
+  {
+    "county": "Kajiado",
+    "town": "Kitengela",
+    "area": "New Valley",
     "home_type": "3_plus_bedrooms",
     "n": 1,
     "median_rent": 40000,
@@ -81,6 +171,46 @@
   },
   {
     "county": "Kajiado",
+    "town": "Ongata Rongai",
+    "area": "Ongata Rongai",
+    "home_type": "bedsitter_studio",
+    "n": 3,
+    "median_rent": 6000,
+    "min_rent": 5500,
+    "max_rent": 15000
+  },
+  {
+    "county": "Kajiado",
+    "town": "Ongata Rongai",
+    "area": "Ongata Rongai",
+    "home_type": "1_bedroom",
+    "n": 4,
+    "median_rent": 17000,
+    "min_rent": 13000,
+    "max_rent": 35000
+  },
+  {
+    "county": "Kajiado",
+    "town": "Ongata Rongai",
+    "area": "Ongata Rongai",
+    "home_type": "2_bedrooms",
+    "n": 4,
+    "median_rent": 27500,
+    "min_rent": 17000,
+    "max_rent": 35000
+  },
+  {
+    "county": "Kajiado",
+    "town": "Ongata Rongai",
+    "area": "Rimpa",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 90000,
+    "min_rent": 90000,
+    "max_rent": 90000
+  },
+  {
+    "county": "Kajiado",
     "town": "Kiserian",
     "area": "Township",
     "home_type": "1_bedroom",
@@ -98,6 +228,26 @@
     "median_rent": 100000,
     "min_rent": 100000,
     "max_rent": 100000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Kikuyu",
+    "area": "Gikambura",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 90000,
+    "min_rent": 90000,
+    "max_rent": 90000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Thika",
+    "area": "Githingiri",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 60000,
+    "min_rent": 60000,
+    "max_rent": 60000
   },
   {
     "county": "Kiambu",
@@ -122,6 +272,36 @@
   {
     "county": "Kiambu",
     "town": "Juja",
+    "area": "Juja",
+    "home_type": "bedsitter_studio",
+    "n": 4,
+    "median_rent": 8250,
+    "min_rent": 5500,
+    "max_rent": 11500
+  },
+  {
+    "county": "Kiambu",
+    "town": "Juja",
+    "area": "Juja",
+    "home_type": "1_bedroom",
+    "n": 3,
+    "median_rent": 15000,
+    "min_rent": 13000,
+    "max_rent": 25000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Juja",
+    "area": "Juja",
+    "home_type": "2_bedrooms",
+    "n": 2,
+    "median_rent": 22500,
+    "min_rent": 20000,
+    "max_rent": 25000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Juja",
     "area": "Juja South",
     "home_type": "3_plus_bedrooms",
     "n": 1,
@@ -138,6 +318,16 @@
     "median_rent": 8000,
     "min_rent": 8000,
     "max_rent": 8000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Limuru",
+    "area": "Kabuku (near St Paul's University)",
+    "home_type": "bedsitter_studio",
+    "n": 1,
+    "median_rent": 5000,
+    "min_rent": 5000,
+    "max_rent": 5000
   },
   {
     "county": "Kiambu",
@@ -162,12 +352,32 @@
   {
     "county": "Kiambu",
     "town": "Ruiru",
+    "area": "Kamakis",
+    "home_type": "3_plus_bedrooms",
+    "n": 2,
+    "median_rent": 150000,
+    "min_rent": 130000,
+    "max_rent": 170000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Ruiru",
     "area": "Kamakis (Corner)",
     "home_type": "bedsitter_studio",
     "n": 1,
     "median_rent": 8000,
     "min_rent": 8000,
     "max_rent": 8000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Kikuyu",
+    "area": "Kamangu",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 80000,
+    "min_rent": 80000,
+    "max_rent": 80000
   },
   {
     "county": "Kiambu",
@@ -178,6 +388,16 @@
     "median_rent": 10000,
     "min_rent": 10000,
     "max_rent": 10000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Kikuyu",
+    "area": "Kikuyu",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 120000,
+    "min_rent": 120000,
+    "max_rent": 120000
   },
   {
     "county": "Kiambu",
@@ -212,6 +432,16 @@
   {
     "county": "Kiambu",
     "town": "Thika",
+    "area": "Landless",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 30000,
+    "min_rent": 30000,
+    "max_rent": 30000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Thika",
     "area": "Makongeni",
     "home_type": "1_bedroom",
     "n": 1,
@@ -221,12 +451,52 @@
   },
   {
     "county": "Kiambu",
+    "town": "Ruiru",
+    "area": "Membley",
+    "home_type": "3_plus_bedrooms",
+    "n": 2,
+    "median_rent": 125000,
+    "min_rent": 100000,
+    "max_rent": 150000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Thika",
+    "area": "Ngoingwa",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 75000,
+    "min_rent": 75000,
+    "max_rent": 75000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Ruaka",
+    "area": "Ruaka",
+    "home_type": "bedsitter_studio",
+    "n": 3,
+    "median_rent": 10000,
+    "min_rent": 9000,
+    "max_rent": 11000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Ruaka",
+    "area": "Ruaka",
+    "home_type": "1_bedroom",
+    "n": 3,
+    "median_rent": 25000,
+    "min_rent": 20000,
+    "max_rent": 35000
+  },
+  {
+    "county": "Kiambu",
     "town": "Ruaka",
     "area": "Ruaka",
     "home_type": "2_bedrooms",
-    "n": 2,
-    "median_rent": 75500,
-    "min_rent": 65000,
+    "n": 5,
+    "median_rent": 45000,
+    "min_rent": 35000,
     "max_rent": 86000
   },
   {
@@ -238,6 +508,36 @@
     "median_rent": 12000,
     "min_rent": 12000,
     "max_rent": 12000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Ruiru",
+    "area": "Ruiru",
+    "home_type": "bedsitter_studio",
+    "n": 3,
+    "median_rent": 15000,
+    "min_rent": 12000,
+    "max_rent": 39000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Ruiru",
+    "area": "Ruiru",
+    "home_type": "1_bedroom",
+    "n": 3,
+    "median_rent": 22000,
+    "min_rent": 19000,
+    "max_rent": 45000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Ruiru",
+    "area": "Ruiru",
+    "home_type": "2_bedrooms",
+    "n": 2,
+    "median_rent": 31500,
+    "min_rent": 30000,
+    "max_rent": 33000
   },
   {
     "county": "Kiambu",
@@ -258,6 +558,16 @@
     "median_rent": 60000,
     "min_rent": 60000,
     "max_rent": 60000
+  },
+  {
+    "county": "Kiambu",
+    "town": "Thika",
+    "area": "Thika Greens",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 120000,
+    "min_rent": 120000,
+    "max_rent": 120000
   },
   {
     "county": "Kiambu",
@@ -290,6 +600,16 @@
     "max_rent": 7000
   },
   {
+    "county": "Kiambu",
+    "town": "Juja",
+    "area": "Witeithie",
+    "home_type": "single_room",
+    "n": 1,
+    "median_rent": 4300,
+    "min_rent": 4300,
+    "max_rent": 4300
+  },
+  {
     "county": "Machakos",
     "town": "Athi River",
     "area": "Chester",
@@ -311,6 +631,16 @@
   },
   {
     "county": "Machakos",
+    "town": "Athi River",
+    "area": "Greenpark",
+    "home_type": "3_plus_bedrooms",
+    "n": 2,
+    "median_rent": 83000,
+    "min_rent": 76000,
+    "max_rent": 90000
+  },
+  {
+    "county": "Machakos",
     "town": "Machakos",
     "area": "Kimangu",
     "home_type": "2_bedrooms",
@@ -322,12 +652,72 @@
   {
     "county": "Machakos",
     "town": "Athi River",
+    "area": "Lukenya Plains",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 120000,
+    "min_rent": 120000,
+    "max_rent": 120000
+  },
+  {
+    "county": "Machakos",
+    "town": "Athi River",
     "area": "Makadara",
     "home_type": "2_bedrooms",
     "n": 1,
     "median_rent": 28000,
     "min_rent": 28000,
     "max_rent": 28000
+  },
+  {
+    "county": "Machakos",
+    "town": "Athi River",
+    "area": "Senior Staff Estate",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 110000,
+    "min_rent": 110000,
+    "max_rent": 110000
+  },
+  {
+    "county": "Machakos",
+    "town": "Syokimau",
+    "area": "Syokimau",
+    "home_type": "1_bedroom",
+    "n": 2,
+    "median_rent": 14000,
+    "min_rent": 12000,
+    "max_rent": 16000
+  },
+  {
+    "county": "Machakos",
+    "town": "Syokimau",
+    "area": "Syokimau",
+    "home_type": "bedsitter_studio",
+    "n": 1,
+    "median_rent": 16000,
+    "min_rent": 16000,
+    "max_rent": 16000
+  },
+  {
+    "county": "Machakos",
+    "town": "Syokimau",
+    "area": "Syokimau",
+    "home_type": "2_bedrooms",
+    "n": 3,
+    "median_rent": 53000,
+    "min_rent": 33000,
+    "max_rent": 60000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Avenue Park",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 100000,
+    "min_rent": 100000,
+    "max_rent": 100000
   },
   {
     "county": "Nairobi",
@@ -364,20 +754,20 @@
     "town": "Nairobi",
     "area": "Embakasi",
     "home_type": "1_bedroom",
-    "n": 1,
-    "median_rent": 15000,
+    "n": 2,
+    "median_rent": 16500,
     "min_rent": 15000,
-    "max_rent": 15000
+    "max_rent": 18000
   },
   {
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "Embakasi",
     "home_type": "2_bedrooms",
-    "n": 1,
-    "median_rent": 20000,
+    "n": 2,
+    "median_rent": 24000,
     "min_rent": 20000,
-    "max_rent": 20000
+    "max_rent": 28000
   },
   {
     "county": "Nairobi",
@@ -442,6 +832,36 @@
   {
     "county": "Nairobi",
     "town": "Nairobi",
+    "area": "Kahawa Sukari",
+    "home_type": "2_bedrooms",
+    "n": 1,
+    "median_rent": 40000,
+    "min_rent": 40000,
+    "max_rent": 40000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kahawa Sukari",
+    "home_type": "3_plus_bedrooms",
+    "n": 4,
+    "median_rent": 90000,
+    "min_rent": 70000,
+    "max_rent": 130000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kahawa West",
+    "home_type": "1_bedroom",
+    "n": 2,
+    "median_rent": 10999.5,
+    "min_rent": 9999,
+    "max_rent": 12000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
     "area": "Kahawa West",
     "home_type": "bedsitter_studio",
     "n": 1,
@@ -454,9 +874,9 @@
     "town": "Nairobi",
     "area": "Kahawa West",
     "home_type": "2_bedrooms",
-    "n": 1,
-    "median_rent": 20000,
-    "min_rent": 20000,
+    "n": 2,
+    "median_rent": 19000,
+    "min_rent": 18000,
     "max_rent": 20000
   },
   {
@@ -483,6 +903,26 @@
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "Karen",
+    "home_type": "single_room",
+    "n": 1,
+    "median_rent": 10000,
+    "min_rent": 10000,
+    "max_rent": 10000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Karen",
+    "home_type": "bedsitter_studio",
+    "n": 2,
+    "median_rent": 45000,
+    "min_rent": 30000,
+    "max_rent": 60000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Karen",
     "home_type": "1_bedroom",
     "n": 1,
     "median_rent": 50000,
@@ -493,20 +933,10 @@
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "Karen",
-    "home_type": "bedsitter_studio",
-    "n": 1,
-    "median_rent": 60000,
-    "min_rent": 60000,
-    "max_rent": 60000
-  },
-  {
-    "county": "Nairobi",
-    "town": "Nairobi",
-    "area": "Karen",
     "home_type": "2_bedrooms",
-    "n": 1,
-    "median_rent": 85000,
-    "min_rent": 85000,
+    "n": 2,
+    "median_rent": 70000,
+    "min_rent": 55000,
     "max_rent": 85000
   },
   {
@@ -514,10 +944,20 @@
     "town": "Nairobi",
     "area": "Karen",
     "home_type": "3_plus_bedrooms",
-    "n": 1,
-    "median_rent": 220000,
-    "min_rent": 220000,
+    "n": 2,
+    "median_rent": 190000,
+    "min_rent": 160000,
     "max_rent": 220000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Karen (Hardy)",
+    "home_type": "2_bedrooms",
+    "n": 1,
+    "median_rent": 60000,
+    "min_rent": 60000,
+    "max_rent": 60000
   },
   {
     "county": "Nairobi",
@@ -534,20 +974,20 @@
     "town": "Nairobi",
     "area": "Kasarani",
     "home_type": "1_bedroom",
-    "n": 1,
-    "median_rent": 13000,
+    "n": 2,
+    "median_rent": 14000,
     "min_rent": 13000,
-    "max_rent": 13000
+    "max_rent": 15000
   },
   {
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "Kasarani",
     "home_type": "2_bedrooms",
-    "n": 1,
-    "median_rent": 22000,
+    "n": 2,
+    "median_rent": 28500,
     "min_rent": 22000,
-    "max_rent": 22000
+    "max_rent": 35000
   },
   {
     "county": "Nairobi",
@@ -573,11 +1013,31 @@
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "Kileleshwa",
-    "home_type": "1_bedroom",
-    "n": 1,
+    "home_type": "bedsitter_studio",
+    "n": 3,
     "median_rent": 55000,
+    "min_rent": 45000,
+    "max_rent": 100000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kileleshwa",
+    "home_type": "1_bedroom",
+    "n": 3,
+    "median_rent": 65000,
     "min_rent": 55000,
-    "max_rent": 55000
+    "max_rent": 75000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kileleshwa",
+    "home_type": "2_bedrooms",
+    "n": 3,
+    "median_rent": 80000,
+    "min_rent": 70000,
+    "max_rent": 130000
   },
   {
     "county": "Nairobi",
@@ -593,21 +1053,31 @@
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "Kilimani",
+    "home_type": "1_bedroom",
+    "n": 4,
+    "median_rent": 62500,
+    "min_rent": 45000,
+    "max_rent": 80000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kilimani",
     "home_type": "2_bedrooms",
-    "n": 1,
-    "median_rent": 90000,
+    "n": 2,
+    "median_rent": 100000,
     "min_rent": 90000,
-    "max_rent": 90000
+    "max_rent": 110000
   },
   {
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "Kilimani",
     "home_type": "bedsitter_studio",
-    "n": 1,
-    "median_rent": 110000,
+    "n": 2,
+    "median_rent": 115000,
     "min_rent": 110000,
-    "max_rent": 110000
+    "max_rent": 120000
   },
   {
     "county": "Nairobi",
@@ -633,11 +1103,51 @@
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "Lavington",
+    "home_type": "double_room",
+    "n": 1,
+    "median_rent": 55000,
+    "min_rent": 55000,
+    "max_rent": 55000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Lavington",
     "home_type": "3_plus_bedrooms",
     "n": 3,
     "median_rent": 380000,
     "min_rent": 350000,
     "max_rent": 500000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Madaraka (near Strathmore)",
+    "home_type": "bedsitter_studio",
+    "n": 1,
+    "median_rent": 12000,
+    "min_rent": 12000,
+    "max_rent": 12000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Mountain View Estate",
+    "home_type": "1_bedroom",
+    "n": 1,
+    "median_rent": 38000,
+    "min_rent": 38000,
+    "max_rent": 38000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Muthaiga North",
+    "home_type": "2_bedrooms",
+    "n": 1,
+    "median_rent": 55000,
+    "min_rent": 55000,
+    "max_rent": 55000
   },
   {
     "county": "Nairobi",
@@ -648,6 +1158,16 @@
     "median_rent": 13000,
     "min_rent": 13000,
     "max_rent": 13000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Nyayo Estate",
+    "home_type": "3_plus_bedrooms",
+    "n": 1,
+    "median_rent": 64999,
+    "min_rent": 64999,
+    "max_rent": 64999
   },
   {
     "county": "Nairobi",
@@ -683,31 +1203,31 @@
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "Roysambu",
-    "home_type": "2_bedrooms",
-    "n": 1,
-    "median_rent": 20000,
+    "home_type": "1_bedroom",
+    "n": 3,
+    "median_rent": 22000,
     "min_rent": 20000,
-    "max_rent": 20000
+    "max_rent": 45000
   },
   {
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "Roysambu",
-    "home_type": "1_bedroom",
+    "home_type": "2_bedrooms",
     "n": 2,
-    "median_rent": 21000,
+    "median_rent": 27500,
     "min_rent": 20000,
-    "max_rent": 22000
+    "max_rent": 35000
   },
   {
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "Runda",
     "home_type": "3_plus_bedrooms",
-    "n": 2,
-    "median_rent": 275000,
+    "n": 3,
+    "median_rent": 340000,
     "min_rent": 210000,
-    "max_rent": 340000
+    "max_rent": 400000
   },
   {
     "county": "Nairobi",
@@ -744,19 +1264,39 @@
     "town": "Nairobi",
     "area": "South C",
     "home_type": "bedsitter_studio",
-    "n": 1,
-    "median_rent": 28000,
-    "min_rent": 28000,
+    "n": 4,
+    "median_rent": 17500,
+    "min_rent": 15000,
     "max_rent": 28000
   },
   {
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "South C",
+    "home_type": "1_bedroom",
+    "n": 3,
+    "median_rent": 31000,
+    "min_rent": 30800,
+    "max_rent": 35000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "South C",
+    "home_type": "2_bedrooms",
+    "n": 3,
+    "median_rent": 50000,
+    "min_rent": 45000,
+    "max_rent": 55000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "South C",
     "home_type": "3_plus_bedrooms",
-    "n": 2,
-    "median_rent": 110000,
-    "min_rent": 80000,
+    "n": 5,
+    "median_rent": 75000,
+    "min_rent": 60000,
     "max_rent": 140000
   },
   {
@@ -774,9 +1314,9 @@
     "town": "Nairobi",
     "area": "Umoja",
     "home_type": "bedsitter_studio",
-    "n": 1,
-    "median_rent": 10000,
-    "min_rent": 10000,
+    "n": 2,
+    "median_rent": 9500,
+    "min_rent": 9000,
     "max_rent": 10000
   },
   {
@@ -794,9 +1334,9 @@
     "town": "Nairobi",
     "area": "Umoja",
     "home_type": "2_bedrooms",
-    "n": 1,
-    "median_rent": 28000,
-    "min_rent": 28000,
+    "n": 5,
+    "median_rent": 23000,
+    "min_rent": 19000,
     "max_rent": 28000
   },
   {
@@ -823,10 +1363,30 @@
     "county": "Nairobi",
     "town": "Nairobi",
     "area": "Westlands",
+    "home_type": "bedsitter_studio",
+    "n": 3,
+    "median_rent": 50000,
+    "min_rent": 35000,
+    "max_rent": 130000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Westlands",
+    "home_type": "1_bedroom",
+    "n": 3,
+    "median_rent": 70000,
+    "min_rent": 43000,
+    "max_rent": 88000
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Westlands",
     "home_type": "2_bedrooms",
-    "n": 1,
-    "median_rent": 220000,
-    "min_rent": 220000,
+    "n": 3,
+    "median_rent": 150000,
+    "min_rent": 110000,
     "max_rent": 220000
   },
   {
