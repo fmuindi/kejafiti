@@ -6880,6 +6880,8 @@
     "bedrooms": 0,
     "rent_amount": 52000,
     "source_url": "https://elitehostels.co.ke/product/four-sharing-room/",
+    "price_estimated": true,
+    "price_note": "Estimated from the operator's published semester price list (no academic-year label; site last updated about mid-2026, before the Sept 2026 intake). Listed price kept; no adjustment applied.",
     "batch": "rooms_student",
     "home_type": "single_room"
   },
@@ -6921,6 +6923,8 @@
     "bedrooms": 0,
     "rent_amount": 60000,
     "source_url": "https://elitehostels.co.ke/product/two-sharing-room/",
+    "price_estimated": true,
+    "price_note": "Estimated from the operator's published semester price list (no academic-year label; site last updated about mid-2026, before the Sept 2026 intake). Listed price kept; no adjustment applied.",
     "batch": "rooms_student",
     "home_type": "single_room"
   },
@@ -6962,6 +6966,8 @@
     "bedrooms": 0,
     "rent_amount": 62000,
     "source_url": "https://elitehostels.co.ke/product/single-small-room/",
+    "price_estimated": true,
+    "price_note": "Estimated from the operator's published semester price list (no academic-year label; site last updated about mid-2026, before the Sept 2026 intake). Listed price kept; no adjustment applied.",
     "batch": "rooms_student",
     "home_type": "single_room"
   },
@@ -7003,6 +7009,8 @@
     "bedrooms": 0,
     "rent_amount": 68000,
     "source_url": "https://elitehostels.co.ke/product/single-large-room/",
+    "price_estimated": true,
+    "price_note": "Estimated from the operator's published semester price list (no academic-year label; site last updated about mid-2026, before the Sept 2026 intake). Listed price kept; no adjustment applied.",
     "batch": "rooms_student",
     "home_type": "single_room"
   },
@@ -7428,6 +7436,8 @@
     "bedrooms": 0,
     "rent_amount": 64000,
     "source_url": "https://elitehostels.co.ke/product/single-medium-room/",
+    "price_estimated": true,
+    "price_note": "Estimated from the operator's published semester price list (no academic-year label; site last updated about mid-2026, before the Sept 2026 intake). Listed price kept; no adjustment applied.",
     "batch": "rooms_student",
     "home_type": "single_room"
   },

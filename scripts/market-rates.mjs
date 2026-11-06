@@ -4,7 +4,8 @@
 //
 //   node scripts/market-rates.mjs data/market-rates/2026-11
 //
-// Rows record public asking prices only: no photos, names or phone numbers.
+// Rows record public asking prices only: no photos, names or phone numbers. Rows with
+// price_estimated: true carry a price inferred from an undated source (see price_note).
 
 import { readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -71,7 +72,7 @@ for (const r of unique) r.home_type = homeType(r);
 
 writeFileSync(join(out, "listings.json"), JSON.stringify(unique, null, 2) + "\n");
 
-const cols = ["county", "town", "area", "road", "rental_scope", "layout", "home_type", "building_style", "origin", "bedrooms", "bathrooms", "size_sqm", "furnishing", "rent_amount", "price_period", "price_basis", "deposit_months", "student", "advertiser_role", "source_site", "source_url", "posted_on", "observed_on"];
+const cols = ["county", "town", "area", "road", "rental_scope", "layout", "home_type", "building_style", "origin", "bedrooms", "bathrooms", "size_sqm", "furnishing", "rent_amount", "price_period", "price_basis", "deposit_months", "student", "price_estimated", "advertiser_role", "source_site", "source_url", "posted_on", "observed_on"];
 const esc = (v) => (v == null ? "" : /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
 writeFileSync(join(out, "listings.csv"), [cols.join(","), ...unique.map((r) => cols.map((c) => esc(r[c])).join(","))].join("\n") + "\n");
 
