@@ -1,0 +1,1112 @@
+[
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kilimani",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 3,
+    "bathrooms": 3,
+    "size_sqm": null,
+    "furnishing": "fully",
+    "rent_amount": 250000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "parking": "yes",
+      "lift": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/nairobi/kilimani/70499-furnished-3-bedroom-apartment",
+    "posted_on": "2026-11-05",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kilimani",
+    "road": "Marcus Garvey Rd",
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 90000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "parking": "yes",
+      "lift": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/nairobi/kilimani/70260-2-bedroom-luxury-apartment",
+    "posted_on": "2026-11-02",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kilimani",
+    "road": "Ngong Rd",
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 75000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "service_charge",
+        "amount": null,
+        "billing": "included"
+      }
+    ],
+    "facts": {
+      "parking": "yes",
+      "balcony": "yes",
+      "borehole": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/nairobi/kilimani/70229-3-bedroom-apartment-with-balcony",
+    "posted_on": "2026-11-01",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kilimani",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedsitter_studio",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 0,
+    "bathrooms": 1,
+    "size_sqm": null,
+    "furnishing": "fully",
+    "rent_amount": 110000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [],
+    "facts": {
+      "parking": "yes",
+      "lift": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/nairobi/kilimani/70267-studio-fully-furnished-and-serviced",
+    "posted_on": "2026-11-02",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kileleshwa",
+    "road": "Mandera Rd",
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 3,
+    "bathrooms": 4,
+    "size_sqm": null,
+    "furnishing": "partly",
+    "rent_amount": 225000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "service_charge",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "parking": "yes",
+      "lift": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/nairobi/kileleshwa/70512-semi-furnished-unfurnished-3-bedroom-dsq-apartments",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kileleshwa",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "size_sqm": null,
+    "furnishing": "unfurnished",
+    "rent_amount": 55000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "parking": "yes",
+      "lift": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/nairobi/kileleshwa/70326-1-bedroom-apartment",
+    "posted_on": "2026-11-03",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kileleshwa",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "townhouse",
+    "origin": null,
+    "bedrooms": 5,
+    "bathrooms": 5,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 250000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "parking": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/townhouses/nairobi/kileleshwa/70286-5-bedrooms-plus-dsq-villa",
+    "posted_on": "2026-11-02",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Kileleshwa",
+    "road": "Vihiga Rd",
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 4,
+    "bathrooms": 3,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 170000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [],
+    "facts": {
+      "parking": "yes",
+      "lift": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/nairobi/kileleshwa/70261-4-bedroom-apartment-with-dsq",
+    "posted_on": "2026-11-02",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Lavington",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "townhouse",
+    "origin": null,
+    "bedrooms": 5,
+    "bathrooms": 5,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 380000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "service_charge",
+        "amount": null,
+        "billing": "included"
+      }
+    ],
+    "facts": {
+      "parking": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/townhouses/nairobi/lavington/70516-5-bedroom-townhouse",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Lavington",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "other",
+    "origin": null,
+    "bedrooms": 4,
+    "bathrooms": 4,
+    "size_sqm": null,
+    "furnishing": "partly",
+    "rent_amount": 350000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "parking": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes",
+      "own_compound": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/nairobi/lavington/70394-4-bedroom-semi-furnished-house",
+    "posted_on": "2026-11-04",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Lavington",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "other",
+    "origin": null,
+    "bedrooms": 6,
+    "bathrooms": 7,
+    "size_sqm": null,
+    "furnishing": "unfurnished",
+    "rent_amount": 500000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [],
+    "facts": {
+      "parking": "yes",
+      "balcony": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/nairobi/lavington/69420-6-bedroom-family-house-with-dsq",
+    "posted_on": "2026-10-13",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Westlands",
+    "road": "Peponi Rd",
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "size_sqm": null,
+    "furnishing": "fully",
+    "rent_amount": 220000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "parking": "yes",
+      "lift": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/nairobi/westlands/70338-modern-2-bedroom-furnished-apartment",
+    "posted_on": "2026-11-03",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Riverside",
+    "road": "Riverside Dr",
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "size_sqm": null,
+    "furnishing": "fully",
+    "rent_amount": 200000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "parking": "yes",
+      "lift": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes",
+      "pets_allowed": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/nairobi/westlands/70316-modern-2-bedroom-furnished-apartment",
+    "posted_on": "2026-11-03",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Karen",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "townhouse",
+    "origin": null,
+    "bedrooms": 2,
+    "bathrooms": 1,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 85000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [],
+    "facts": {
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes",
+      "own_compound": "no"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/townhouses/nairobi/karen/70436-2-bedroom-house",
+    "posted_on": "2026-11-04",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Karen",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedsitter_studio",
+    "building_style": "other",
+    "origin": null,
+    "bedrooms": 0,
+    "bathrooms": 1,
+    "size_sqm": null,
+    "furnishing": "fully",
+    "rent_amount": 60000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [],
+    "facts": {
+      "borehole": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/nairobi/karen/70056-furnished-studio",
+    "posted_on": "2026-10-28",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Karen",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "cottage",
+    "origin": null,
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 50000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "water",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "garbage",
+        "amount": null,
+        "billing": "included"
+      }
+    ],
+    "facts": {
+      "balcony": "yes",
+      "backup_power": "yes",
+      "own_compound": "no"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/nairobi/karen/69998-1-bedroom-cottage",
+    "posted_on": "2026-10-27",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Karen",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "bungalow",
+    "origin": null,
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 220000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "water",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "security",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "garbage",
+        "amount": null,
+        "billing": "included"
+      }
+    ],
+    "facts": {
+      "parking": "yes",
+      "own_compound": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/nairobi/karen/70248-3-bedroom-house",
+    "posted_on": "2026-11-02",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Upper Hill",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "size_sqm": 70,
+    "furnishing": "fully",
+    "rent_amount": 140000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "service_charge",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "parking": "yes",
+      "lift": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/nairobi/kilimani/69449-1-br-fully-furnished-in-upper-hill",
+    "posted_on": "2026-10-14",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Runda",
+    "road": "Kiambu Rd",
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "other",
+    "origin": null,
+    "bedrooms": 4,
+    "bathrooms": 4,
+    "size_sqm": 215,
+    "furnishing": null,
+    "rent_amount": 210000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [],
+    "facts": {
+      "parking": "yes",
+      "borehole": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/nairobi/westlands/runda/70487-4-bedroom-house",
+    "posted_on": "2026-11-05",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Runda",
+    "road": "Kiambu Rd",
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "villa",
+    "origin": null,
+    "bedrooms": 4,
+    "bathrooms": 4,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 340000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "other",
+        "amount": null,
+        "billing": "included"
+      }
+    ],
+    "facts": {
+      "parking": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/nairobi/westlands/runda/70520-4-bedroom-villa",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Gigiri",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "other",
+    "origin": null,
+    "bedrooms": 5,
+    "bathrooms": 3,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 600000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [],
+    "facts": {
+      "parking": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/semi-detached-duplexes/nairobi/westlands/gigiri/70549-5-bedroom-house-with-dsq",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Lang'ata",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "maisonette",
+    "origin": null,
+    "bedrooms": 3,
+    "bathrooms": 3,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 80000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [],
+    "facts": {
+      "balcony": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/nairobi/mugumo-ini-langata/69520-3-bedroom-maisonette",
+    "posted_on": "2026-10-15",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Spring Valley",
+    "road": "Peponi Rd",
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "townhouse",
+    "origin": null,
+    "bedrooms": 4,
+    "bathrooms": 4,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 400000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "parking": "yes",
+      "borehole": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/townhouses/nairobi/spring-valley/70492-4-bedroom-family-house",
+    "posted_on": "2026-11-05",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Parklands",
+    "road": "Redhill Rd",
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "size_sqm": null,
+    "furnishing": null,
+    "rent_amount": 150000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [],
+    "facts": {
+      "parking": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "cctv": "yes",
+      "pets_allowed": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/mini-flats/nairobi/parklands/70545-1-bedroom-ensuite-apartment",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "Parklands",
+    "road": "Limuru Rd",
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "size_sqm": null,
+    "furnishing": "unfurnished",
+    "rent_amount": 90000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [],
+    "facts": {
+      "parking": "yes",
+      "lift": "yes",
+      "balcony": "yes",
+      "backup_power": "yes",
+      "borehole": "yes",
+      "cctv": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/nairobi/parklands/69357-2-bedroom-unfurnished-apartment",
+    "posted_on": "2026-10-12",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "South C",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedsitter_studio",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 0,
+    "bathrooms": 1,
+    "size_sqm": null,
+    "furnishing": "unfurnished",
+    "rent_amount": 28000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "agency_fee",
+        "amount": 1500,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {},
+    "advertiser_role": "unknown",
+    "source_site": "jiji.co.ke",
+    "source_url": "https://jiji.co.ke/south-c/houses-apartments-for-rent/1bdrm-bedsitter-in-south-c-for-rent-iy4aCwJhcbj91CHBoMN9p9iR.html",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "South C",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "maisonette",
+    "origin": null,
+    "bedrooms": 4,
+    "bathrooms": 4,
+    "size_sqm": null,
+    "furnishing": "unfurnished",
+    "rent_amount": 140000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "agency_fee",
+        "amount": 1500,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {
+      "balcony": "yes"
+    },
+    "advertiser_role": "unknown",
+    "source_site": "jiji.co.ke",
+    "source_url": "https://jiji.co.ke/south-c/houses-apartments-for-rent/4bdrm-maisonette-in-south-c-for-rent-xyxDmltRTOwL3SWwera5eWTa.html",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "South C",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "maisonette",
+    "origin": null,
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "size_sqm": null,
+    "furnishing": "unfurnished",
+    "rent_amount": 80000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "agency_fee",
+        "amount": 1500,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {
+      "own_compound": "yes"
+    },
+    "advertiser_role": "unknown",
+    "source_site": "jiji.co.ke",
+    "source_url": "https://jiji.co.ke/south-c/houses-apartments-for-rent/3bdrm-maisonette-in-south-c-for-rent-aFteyLXngjxIzPiWl7J1Joc5.html",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "South B",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedsitter_studio",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 0,
+    "bathrooms": 1,
+    "size_sqm": null,
+    "furnishing": "unfurnished",
+    "rent_amount": 15000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "parking": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "jiji.co.ke",
+    "source_url": "https://jiji.co.ke/south-b/houses-apartments-for-rent/studio-apartment-in-south-b-for-rent-jToZDXMToZOW8Im0Y4K8uVDu.html",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "South B",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "maisonette",
+    "origin": null,
+    "bedrooms": 4,
+    "bathrooms": 3,
+    "size_sqm": null,
+    "furnishing": "unfurnished",
+    "rent_amount": 85000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      },
+      {
+        "kind": "agency_fee",
+        "amount": 1500,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "balcony": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "jiji.co.ke",
+    "source_url": "https://jiji.co.ke/south-b/houses-apartments-for-rent/4bdrm-maisonette-in-south-b-for-rent-mBn146GdN6AKtSaCVKKDGRWd.html",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "area": "South B",
+    "road": null,
+    "rental_scope": "entire_home",
+    "layout": "bedroom_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "size_sqm": null,
+    "furnishing": "unfurnished",
+    "rent_amount": 45000,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "service_charge",
+        "amount": null,
+        "billing": "unknown"
+      },
+      {
+        "kind": "water",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "internet",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      },
+      {
+        "kind": "agency_fee",
+        "amount": 2000,
+        "billing": "fixed"
+      },
+      {
+        "kind": "other",
+        "amount": 2000,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes",
+      "balcony": "yes"
+    },
+    "advertiser_role": "agent",
+    "source_site": "jiji.co.ke",
+    "source_url": "https://jiji.co.ke/south-b/houses-apartments-for-rent/2bdrm-apartment-in-vilp-south-b-for-rent-wxjJEIXQ9ZfW9aG3vUII5wfJ.html",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06"
+  }
+]
