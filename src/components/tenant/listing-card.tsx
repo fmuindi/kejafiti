@@ -94,7 +94,8 @@ export function ListingCard({
   const price = cardPrice(row);
   return (
     <article id={`home-${row.ref}`} className="relative flex scroll-mt-28 flex-col overflow-hidden rounded-panel border border-line bg-surface">
-      <div className="relative aspect-[16/10] bg-cool">
+      {/* overflow-hidden keeps the 16:10 box: without it a portrait photo stretches the card. */}
+      <div className="relative aspect-[16/10] overflow-hidden bg-cool">
         {photoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={photoUrl} alt="" loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : "auto"} decoding="async" className="size-full object-cover" />

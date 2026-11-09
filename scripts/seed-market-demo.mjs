@@ -1,15 +1,21 @@
 // Demo marketplace for LOCAL development only: ~55 published listings modelled on the
 // researched market-rate dataset (real areas, rents, layouts and charges), advertised by
 // fictional agents and landlords with .test emails and dummy phone numbers, illustrated with
-// labelled sample images. Listings go through the same RPCs as the app (start, submit, admin
+// labelled sample photos. Listings go through the same RPCs as the app (start, submit, admin
 // review), so every check runs for real.
 //
 //   npx supabase start && npm run seed:market-demo
+//   npm run seed:market-demo -- --replace-photos   # re-shoot the photos of existing demo listings
+//
+// Photos are openly licensed stock images (Pexels / Unsplash) listed with credits in
+// data/demo-photos.json and cached in .cache/demo-photos; every one is labelled "sample", never
+// this unit. Without the manifest the seed falls back to drawn illustrations.
 //
 // Safe to run after seed:demo; refuses to run twice. Refuses a non-local Supabase URL.
 
-import { readFileSync } from "node:fs";
-import { as, ensureAdmin, ensureUser, must, sampleImage, ADMIN_PERSON } from "./lib/demo.mjs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { admin, as, ensureAdmin, ensureUser, must, sampleImage, ADMIN_PERSON } from "./lib/demo.mjs";
 
 const DATASET = "data/market-rates/2026-11/listings.json";
 
@@ -79,10 +85,89 @@ function imageKind(r) {
   return "apartment";
 }
 
+// --- photos ------------------------------------------------------------------------------------
+const PHOTO_MANIFEST = "data/demo-photos.json";
+const PHOTO_CACHE = ".cache/demo-photos";
+const EXTERIOR = { apartment: "apartment_exterior", house: "house_exterior", bungalow: "bungalow_exterior", rooms: "rooms_exterior" };
+const ROOM_WORD = { apartment_exterior: "building", house_exterior: "house", bungalow_exterior: "house", rooms_exterior: "building", living_room: "living room", bedroom: "bedroom", kitchen: "kitchen", bathroom: "bathroom", studio: "room" };
+
+async function loadPhotoPool() {
+  if (!existsSync(PHOTO_MANIFEST)) return null;
+  mkdirSync(PHOTO_CACHE, { recursive: true });
+  const pool = {};
+  for (const e of JSON.parse(readFileSync(PHOTO_MANIFEST, "utf8"))) {
+    const file = join(PHOTO_CACHE, e.file);
+    if (!existsSync(file)) {
+      const res = await fetch(e.url);
+      if (!res.ok || !/^image\//.test(res.headers.get("content-type") ?? "")) { console.warn(`skip photo ${e.file}: HTTP ${res.status}`); continue; }
+      writeFileSync(file, Buffer.from(await res.arrayBuffer()));
+    }
+    (pool[e.key] ??= []).push({ ...e, body: readFileSync(file) });
+  }
+  return pool;
+}
+
+// Which shots a home gets: its building type outside, then the rooms it actually has.
+function shotList(r) {
+  const outside = EXTERIOR[imageKind(r)];
+  if (["single_room", "double_room", "bedsitter_studio"].includes(r.layout)) return [outside, "studio", "bathroom", "kitchen"];
+  return [outside, "living_room", "bedroom", "kitchen", "bathroom"];
+}
+
+// Photos for listing number i: each category hands out its photos in turn, so they spread
+// evenly and neighbouring listings rarely share one.
+const nextPhoto = {};
+function photosFor(pool, r, i) {
+  if (!pool) return [0, 1, 2, 3].map((shot) => ({ body: sampleImage(imageKind(r), shot, i * 4 + shot), contentType: "image/png", ext: "png", alt: `Illustration ${shot + 1} (sample image, not this unit)` }));
+  return shotList(r).flatMap((key, n) => {
+    const list = pool[key]?.length ? pool[key] : pool[n === 0 ? "apartment_exterior" : "living_room"];
+    if (!list?.length) return [];
+    const k = list === pool[key] ? key : `fallback-${n}`;
+    const e = list[(nextPhoto[k] = (nextPhoto[k] ?? -1) + 1) % list.length];
+    return [{ body: e.body, contentType: "image/jpeg", ext: "jpg", alt: `Sample photo of a ${ROOM_WORD[key]}, not this unit. Photo: ${e.photographer} / ${e.source}` }];
+  });
+}
+
+async function addPhotos(client, org, listingId, r, i, pool) {
+  const photos = photosFor(pool, r, i);
+  for (const [pos, ph] of photos.entries()) {
+    const path = `${org}/${listingId}/sample-${pos}-${Date.now()}.${ph.ext}`;
+    const up = await client.storage.from("listing-media").upload(path, ph.body, { contentType: ph.contentType, upsert: false });
+    if (up.error) throw new Error(`upload: ${up.error.message}`);
+    must("photo row", await client.from("listing_photos").insert({ listing_id: listingId, org_id: org, storage_path: path, position: pos, is_cover: pos === 0, media_label: "sample", alt_text: ph.alt }));
+  }
+  return photos.length;
+}
+
+// Swap the photos of the demo listings that already exist (service role: local seed only).
+async function replacePhotos(pool) {
+  const { data: listings, error } = await admin.from("listings")
+    .select("id, org_id, organizations!inner(name), units!inner(layout, building_style, origin)")
+    .like("organizations.name", "%(demo)").order("created_at");
+  if (error) throw new Error(error.message);
+  for (const [i, l] of listings.entries()) {
+    const { data: old } = await admin.from("listing_photos").select("id, storage_path").eq("listing_id", l.id);
+    await addPhotos(admin, l.org_id, l.id, l.units, i, pool);
+    if (old?.length) {
+      must("delete photos", await admin.from("listing_photos").delete().in("id", old.map((o) => o.id)));
+      await admin.storage.from("listing-media").remove(old.map((o) => o.storage_path));
+    }
+  }
+  // New photos send a published listing back to review (listing_photo_guard); approve them
+  // the way an admin would.
+  const adminClient = await as(ADMIN_PERSON);
+  const { data: queued } = await admin.from("listings").select("id").in("id", listings.map((l) => l.id)).eq("status", "under_review");
+  for (const { id } of queued ?? []) must("publish", await adminClient.rpc("admin_review_listing", { p_listing: id, p_decision: "publish", p_note: null }));
+  console.log(`Replaced photos on ${listings.length} demo listings and re-published ${queued?.length ?? 0}.`);
+}
+
 const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Nairobi" }).format(new Date());
 const daysFromToday = (n) => new Date(Date.parse(today) + n * 86400000).toISOString().slice(0, 10);
 
 async function main() {
+  const pool = await loadPhotoPool();
+  if (!pool) console.warn(`No ${PHOTO_MANIFEST}: using drawn illustrations.`);
+  if (process.argv.includes("--replace-photos")) return replacePhotos(pool);
   const rows = pick(JSON.parse(readFileSync(DATASET, "utf8")));
   await ensureAdmin();
 
@@ -101,7 +186,6 @@ async function main() {
 
   const created = [];
   const turn = { agent: 0, property_manager: 0, owner: 0 };
-  let seed = 0;
   for (const [i, r] of rows.entries()) {
     const role = BY_ROLE[r.advertiser_role] ? r.advertiser_role : "owner";
     const key = BY_ROLE[role][turn[role]++ % BY_ROLE[role].length];
@@ -128,13 +212,7 @@ async function main() {
       billing: ch.billing, frequency: ONE_OFF.has(ch.kind) ? "one_off" : "monthly",
     }));
     if (charges.length) must("charges", await c.from("listing_charges").insert(charges));
-    const kind = imageKind(r);
-    for (let shot = 0; shot < 4; shot++) {
-      const path = `${org}/${listingId}/sample-${shot}.png`;
-      const up = await c.storage.from("listing-media").upload(path, sampleImage(kind, shot, seed++), { contentType: "image/png", upsert: false });
-      if (up.error) throw new Error(`upload: ${up.error.message}`);
-      must("photo row", await c.from("listing_photos").insert({ listing_id: listingId, org_id: org, storage_path: path, position: shot, is_cover: shot === 0, media_label: "sample", alt_text: `Illustration ${shot + 1} (sample image, not this unit)` }));
-    }
+    await addPhotos(c, org, listingId, r, i, pool);
     must(`submit ${title(r)}`, await c.rpc("submit_listing", { p_listing: listingId }));
     created.push(listingId);
   }
