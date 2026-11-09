@@ -78,6 +78,7 @@ npm install
 npx supabase start          # first run downloads images; applies supabase/migrations
 cp .env.example .env.local  # then paste the values printed by: npx supabase status
 npm run seed:demo           # optional: fictional demo data (the blueprint's Sunrise Apartments example)
+npm run seed:market-demo    # optional: ~55 demo listings modelled on the Nov 2026 market-rate dataset
 npm run dev                 # http://localhost:3200
 ```
 
@@ -122,6 +123,7 @@ insert into public.app_settings (key, value) values ('admin_alert_email', 'you@e
 | `npm run db:reset` | Rebuild the local database from migrations |
 | `npm run db:types` | Regenerate `src/lib/database.types.ts` after schema changes |
 | `npm run seed:demo` | Local demo data (refuses non-local URLs) |
+| `npm run seed:market-demo` | ~55 published demo listings from `data/market-rates/2026-11`: real areas, rents and charges; fictional advertisers, dummy phones, labelled sample images (local only) |
 
 ---
 
