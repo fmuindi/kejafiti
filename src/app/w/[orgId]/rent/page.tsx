@@ -24,7 +24,7 @@ export default async function RentIndex({ params }: PageProps<"/w/[orgId]/rent">
         <Eyebrow>Rent records · {formatPeriod(period)}</Eyebrow>
         <PageTitle className="mt-1">Choose a property</PageTitle>
         <p className="mt-2 max-w-2xl text-body text-muted">
-          Tenants pay through each property&apos;s existing arrangements. Staff check payments outside nyumbani, then record and
+          Tenants pay through each property&apos;s existing arrangements. Staff check payments outside KejaFiti, then record and
           confirm them here.
         </p>
       </div>

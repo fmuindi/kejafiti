@@ -11,14 +11,14 @@ export default async function StartPage() {
   const workspaces = await getWorkspaces();
   return (
     <main id="main" className="mx-auto flex min-h-dvh max-w-narrow flex-col gap-5 px-4 pt-5 pb-10">
-      <Link href="/" aria-label="nyumbani home" className="self-start">
+      <Link href="/" aria-label="KejaFiti home" className="self-start">
         <Logo />
       </Link>
       <div>
         <h1 className="heading-page">Set up your landlord or agent workspace</h1>
         <p className="mt-2 text-body text-muted">
           Listing is free for one vacancy. You can also keep rent records with your team. Tenants keep paying the way they already do;
-          nyumbani never collects rent.
+          KejaFiti never collects rent.
         </p>
       </div>
       {workspaces.length ? (

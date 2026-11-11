@@ -5,7 +5,7 @@ import { recordUsage, takeQuota, visitorKey } from "@/lib/ai/usage";
 
 // POST /api/ai/transcribe-search (AI-02). One short clip in, its transcript out. The clip is
 // checked (real audio, size, length), sent once to the speech provider and never stored by
-// nyumbani. The transcript then goes through the same parser as typed text.
+// KejaFiti. The transcript then goes through the same parser as typed text.
 
 // Hints for place names and housing words (blueprint p.9). They help spelling; they never
 // force a place.

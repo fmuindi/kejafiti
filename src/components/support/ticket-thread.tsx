@@ -23,7 +23,7 @@ export function TicketThread({ ticketId, messages, viewer }: { ticketId: string;
             <li key={m.id} className="text-center text-caption text-muted">{m.body} · {formatDateTime(m.created_at)}</li>
           ) : (
             <li key={m.id} className={cx("max-w-[85%] rounded-card px-3 py-2 text-body", m.side === viewer ? "self-end bg-ink text-white" : "self-start border border-line bg-surface")}>
-              <p className="text-micro opacity-75">{m.side === "support" ? "nyumbani support" : viewer === "support" ? "Requester" : "You"} · {formatDateTime(m.created_at)}</p>
+              <p className="text-micro opacity-75">{m.side === "support" ? "KejaFiti support" : viewer === "support" ? "Requester" : "You"} · {formatDateTime(m.created_at)}</p>
               <p className="whitespace-pre-line">{m.body}</p>
             </li>
           ),

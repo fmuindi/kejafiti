@@ -22,7 +22,7 @@ export default async function MyRentPage() {
       <TenantJumps current="/my-rent" />
       {tenancies.length === 0 ? (
         <EmptyState title="No tenancy linked yet" icon="wallet">
-          When your landlord or agent shares your tenancy on nyumbani, you&apos;ll get an email with a link. Open it while signed in with
+          When your landlord or agent shares your tenancy on KejaFiti, you&apos;ll get an email with a link. Open it while signed in with
           that email, and your rent and statement appear here.
         </EmptyState>
       ) : (
@@ -61,7 +61,7 @@ export default async function MyRentPage() {
         </ul>
       )}
       <p className="text-caption text-muted">
-        nyumbani never collects rent. Pay through your property&apos;s usual arrangements; a payment shows here once your landlord or agent
+        KejaFiti never collects rent. Pay through your property&apos;s usual arrangements; a payment shows here once your landlord or agent
         has checked and confirmed it. If something looks wrong, message them.
       </p>
     </div>

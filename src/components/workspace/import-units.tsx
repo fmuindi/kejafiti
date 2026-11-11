@@ -57,7 +57,7 @@ export function ImportUnits({ orgId, propertyId }: { orgId: string; propertyId: 
           Units already here are matched by their reference.{" "}
           <a
             className="link-action"
-            download="nyumbani-units-template.csv"
+            download="kejafiti-units-template.csv"
             href={`data:text/csv;charset=utf-8,${encodeURIComponent(TEMPLATE_CSV)}`}
           >
             Download the template

@@ -19,14 +19,14 @@ const instrument = Instrument_Sans({ variable: "--font-instrument", subsets: ["l
 const dmMono = DM_Mono({ variable: "--font-dm-mono", subsets: ["latin"], weight: ["400", "500"] });
 
 export const metadata: Metadata = {
-  title: { default: "nyumbani · Find your next home without the hassle", template: "%s · nyumbani" },
+  title: { default: "KejaFiti · Find your next home without the hassle", template: "%s · KejaFiti" },
   description:
     "Search Kenyan rentals with rent, charges and move-in totals shown up front. Landlords and agents list vacancies and keep simple rent records.",
-  applicationName: "nyumbani",
+  applicationName: "KejaFiti",
   metadataBase: new URL(SITE_URL),
-  openGraph: { siteName: "nyumbani", locale: "en_KE", type: "website" },
+  openGraph: { siteName: "KejaFiti", locale: "en_KE", type: "website" },
   twitter: { card: "summary_large_image" },
-  appleWebApp: { capable: true, title: "nyumbani", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "KejaFiti", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {
