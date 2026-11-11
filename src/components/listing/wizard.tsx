@@ -501,7 +501,7 @@ function DetailsStep({ data, onBack, onNext, onReview }: { data: WizardData; onB
       {data.aiDraft ? <DescribeHelper orgId={data.orgId} listingId={data.listingId} onApply={(d) => setV({ ...v, title: d.title || v.title, description: d.description })} /> : null}
       <fieldset id="contact" tabIndex={-1} className="flex flex-col gap-2 rounded-control focus:ring-2 focus:ring-deep/40 focus:outline-none">
         <legend className="mb-1 text-label font-semibold">How tenants can reach you</legend>
-        <p className="text-caption text-muted">In-app messages are always on. Calls and WhatsApp happen outside nyumbani.</p>
+        <p className="text-caption text-muted">In-app messages are always on. Calls and WhatsApp happen outside KejaFiti.</p>
         <Checkbox checked={v.contact_call} onChange={(e) => setV({ ...v, contact_call: e.target.checked })} label="Phone calls" />
         <Checkbox checked={v.contact_whatsapp} onChange={(e) => setV({ ...v, contact_whatsapp: e.target.checked })} label="WhatsApp" />
       </fieldset>

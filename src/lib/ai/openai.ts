@@ -68,7 +68,7 @@ export async function completeJson<T>(opts: { model: string; system: string; use
   }
 }
 
-/** Speech to text for one short clip. The clip is sent once and not stored by nyumbani. */
+/** Speech to text for one short clip. The clip is sent once and not stored by KejaFiti. */
 export async function transcribe(opts: { model: string; audio: Blob; fileName: string; prompt: string; language?: string; timeoutMs: number }): Promise<{ text: string; language?: string }> {
   const form = new FormData();
   form.append("file", opts.audio, opts.fileName);

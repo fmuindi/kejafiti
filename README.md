@@ -1,9 +1,9 @@
-# nyumbani (working name): Kenya rental marketplace and property records
+# KejaFiti: Kenya rental marketplace and property records
 
 Tenants search and compare homes with full costs up front. Landlords and agents list vacancies, answer enquiries,
 manage viewings and keep simple rent records with their team.
 
-**Scope boundary:** nyumbani never collects, routes or verifies rent. Tenants pay through each property's existing
+**Scope boundary:** KejaFiti never collects, routes or verifies rent. Tenants pay through each property's existing
 arrangements. Authorised staff check payments outside the platform, then record and confirm them here. There is no
 payment processing, no bank or M-PESA connection and no automatic payment verification.
 
@@ -317,7 +317,7 @@ Operating cost at launch: Supabase Pro (from USD 25/month) plus app hosting (USD
 
 ### Assumptions to confirm
 
-- The brand name "nyumbani", the colours and the logo come from the handoff (placeholders for now).
+- The brand name is KejaFiti. The colours and the logo mark come from the handoff (placeholders for now). Local demo accounts still use `@nyumbani.test` addresses.
 - Email codes are the default sign-in. Phone codes are off until an SMS provider is configured.
 - At least 4 photos are needed to submit a listing. The upload limit is 15 MB. Invitations expire after 7 days.
   Viewing times must be at least 1 hour ahead and within 60 days. A listing confirmed more than 10 days ago shows

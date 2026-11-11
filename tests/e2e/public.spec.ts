@@ -36,7 +36,7 @@ test("search engines and share previews get what they need", async ({ page, requ
   const sitemap = await (await request.get("/sitemap.xml")).text();
   expect(sitemap).toMatch(/\/homes\/L-\d+/);
   const manifest = await (await request.get("/manifest.webmanifest")).json();
-  expect(manifest.short_name).toBe("nyumbani");
+  expect(manifest.short_name).toBe("KejaFiti");
   for (const icon of manifest.icons) {
     const r = await request.get(icon.src);
     expect(r.headers()["content-type"]).toBe("image/png");

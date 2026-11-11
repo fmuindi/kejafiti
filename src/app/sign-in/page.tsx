@@ -39,7 +39,7 @@ export default async function SignInPage({ searchParams }: PageProps<"/sign-in">
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh max-w-narrow flex-col px-4 pt-5 pb-10">
-      <Link href="/" aria-label="nyumbani home" className="self-start">
+      <Link href="/" aria-label="KejaFiti home" className="self-start">
         <Logo />
       </Link>
       <h1 className="heading-page mt-8">{copy.title}</h1>

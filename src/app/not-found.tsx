@@ -5,7 +5,7 @@ import { ButtonLink } from "@/components/ui/primitives";
 export default function NotFound() {
   return (
     <main id="main" className="mx-auto flex min-h-dvh max-w-narrow flex-col gap-5 px-4 pt-5">
-      <Link href="/" aria-label="nyumbani home">
+      <Link href="/" aria-label="KejaFiti home">
         <Logo />
       </Link>
       <h1 className="heading-page mt-8">We can&apos;t find that page</h1>

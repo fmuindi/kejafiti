@@ -56,26 +56,26 @@ export function renderEmail(t: Task): { subject: string; text: string; html: str
   switch (t.template) {
     case "staff_invitation": {
       const link = `${SITE_URL}/invite/${p.token}`;
-      const text = `${p.inviter ?? "Your landlord"} invited you to help manage properties for ${p.org_name} on nyumbani.\n\nAccept the invitation: ${link}\n\nYou'll sign in with this email address and set your own sign-in. The invitation expires in 7 days. If you weren't expecting this, you can ignore it.`;
+      const text = `${p.inviter ?? "Your landlord"} invited you to help manage properties for ${p.org_name} on KejaFiti.\n\nAccept the invitation: ${link}\n\nYou'll sign in with this email address and set your own sign-in. The invitation expires in 7 days. If you weren't expecting this, you can ignore it.`;
       return {
-        subject: `You're invited to ${p.org_name} on nyumbani`,
+        subject: `You're invited to ${p.org_name} on KejaFiti`,
         text,
-        html: `<p>${escapeHtml(p.inviter ?? "Your landlord")} invited you to help manage properties for <strong>${escapeHtml(p.org_name)}</strong> on nyumbani.</p><p><a href="${link}">Accept the invitation</a></p><p>You'll sign in with this email address and set your own sign-in. The invitation expires in 7 days. If you weren't expecting this, you can ignore it.</p>`,
+        html: `<p>${escapeHtml(p.inviter ?? "Your landlord")} invited you to help manage properties for <strong>${escapeHtml(p.org_name)}</strong> on KejaFiti.</p><p><a href="${link}">Accept the invitation</a></p><p>You'll sign in with this email address and set your own sign-in. The invitation expires in 7 days. If you weren't expecting this, you can ignore it.</p>`,
       };
     }
     case "tenant_access_invitation": {
       const link = `${SITE_URL}/tenant-invite/${p.token}`;
       const where = [p.unit_label ? `unit ${p.unit_label}` : null, p.property_name].filter(Boolean).join(", ");
-      const text = `${p.inviter ?? "Your landlord"} at ${p.org_name} has set up online access to your tenancy${where ? ` (${where})` : ""} on nyumbani. You can see your rent, balance and statement any time.\n\nOpen your tenancy: ${link}\n\nSign in with this email address. The link expires in 7 days. If you weren't expecting this, you can ignore it.`;
+      const text = `${p.inviter ?? "Your landlord"} at ${p.org_name} has set up online access to your tenancy${where ? ` (${where})` : ""} on KejaFiti. You can see your rent, balance and statement any time.\n\nOpen your tenancy: ${link}\n\nSign in with this email address. The link expires in 7 days. If you weren't expecting this, you can ignore it.`;
       return {
         subject: `Your tenancy at ${p.property_name ?? p.org_name}, online`,
         text,
-        html: `<p>${escapeHtml(p.inviter ?? "Your landlord")} at <strong>${escapeHtml(p.org_name ?? "")}</strong> has set up online access to your tenancy${where ? ` (${escapeHtml(where)})` : ""} on nyumbani. You can see your rent, balance and statement any time.</p><p><a href="${link}">Open your tenancy</a></p><p>Sign in with this email address. The link expires in 7 days. If you weren't expecting this, you can ignore it.</p>`,
+        html: `<p>${escapeHtml(p.inviter ?? "Your landlord")} at <strong>${escapeHtml(p.org_name ?? "")}</strong> has set up online access to your tenancy${where ? ` (${escapeHtml(where)})` : ""} on KejaFiti. You can see your rent, balance and statement any time.</p><p><a href="${link}">Open your tenancy</a></p><p>Sign in with this email address. The link expires in 7 days. If you weren't expecting this, you can ignore it.</p>`,
       };
     }
     case "admin_registration": {
       const text = `A new account was registered: ${p.name || "(no name given)"} at ${p.registered_at}.\n\nOpen the admin centre: ${SITE_URL}/admin/onboarding`;
-      return { subject: "New nyumbani registration", text, html: `<p>${escapeHtml(text).replace(/\n/g, "<br>")}</p>` };
+      return { subject: "New KejaFiti registration", text, html: `<p>${escapeHtml(text).replace(/\n/g, "<br>")}</p>` };
     }
     case "admin_onboarding": {
       const text = `A new ${p.kind} workspace needs onboarding review: ${p.name}.\n\nOpen the onboarding queue: ${SITE_URL}/admin/onboarding`;
@@ -85,11 +85,11 @@ export function renderEmail(t: Task): { subject: string; text: string; html: str
       // Any in-app update the person chose to get by email (app.notify).
       const link = safeInternalLink(p.link ?? null);
       const url = link ? `${SITE_URL}${link}` : `${SITE_URL}/updates`;
-      const text = [p.title, p.body, `Open nyumbani: ${url}`].filter(Boolean).join("\n\n") + footerText(p.category);
+      const text = [p.title, p.body, `Open KejaFiti: ${url}`].filter(Boolean).join("\n\n") + footerText(p.category);
       return {
         subject: p.title,
         text,
-        html: `<p><strong>${escapeHtml(p.title)}</strong></p>${p.body ? `<p>${escapeHtml(p.body)}</p>` : ""}<p><a href="${url}">Open nyumbani</a></p>${footerHtml(p.category)}`,
+        html: `<p><strong>${escapeHtml(p.title)}</strong></p>${p.body ? `<p>${escapeHtml(p.body)}</p>` : ""}<p><a href="${url}">Open KejaFiti</a></p>${footerHtml(p.category)}`,
       };
     }
     case "saved_search_alert": {
@@ -147,7 +147,7 @@ function renderTenantMessage(template: string, p: TenantPayload): { subject: str
   }
   const paid = template === "tenant_message" ? null : `If you've paid recently, thank you. Payments show once ${p.org_name} has checked and confirmed them.`;
   const url = p.link ? `${SITE_URL}${safeInternalLink(p.link) ?? "/my-rent"}` : null;
-  const footer = `Sent by ${p.sender} for ${p.org_name} through nyumbani. Replies to this email aren't read; contact ${p.org_name} directly with any questions.`;
+  const footer = `Sent by ${p.sender} for ${p.org_name} through KejaFiti. Replies to this email aren't read; contact ${p.org_name} directly with any questions.`;
 
   const text = [
     `Hello ${p.name},`,
@@ -195,7 +195,7 @@ export function redactError(message: string) {
 type SendResult = { ok: true; ref: string | null } | { ok: false; error: string; retryable: boolean };
 
 async function sendEmail(taskId: string, to: string, msg: { subject: string; text: string; html: string }): Promise<SendResult> {
-  const from = process.env.EMAIL_FROM ?? "nyumbani <no-reply@example.com>";
+  const from = process.env.EMAIL_FROM ?? "KejaFiti <no-reply@example.com>";
   if (emailProvider() === "mailpit") {
     const [, name = "", email = from] = from.match(/^\s*(?:"?([^"<]*?)"?\s*)?<([^>]+)>\s*$/) ?? [];
     const res = await fetch(`${mailpitUrl()}/api/v1/send`, {

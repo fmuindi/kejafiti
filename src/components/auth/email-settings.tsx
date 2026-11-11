@@ -39,7 +39,7 @@ export function EmailSettings({ categories, off, emailOn }: { categories: EmailC
         <p className="text-label text-muted">
           {emailOn
             ? "Everything arrives in the app. Choose what also comes by email:"
-            : "Everything arrives in the app. Email isn't switched on for nyumbani yet; your choices below are kept for when it is."}
+            : "Everything arrives in the app. Email isn't switched on for KejaFiti yet; your choices below are kept for when it is."}
         </p>
         {categories.map((c) => (
           <Checkbox

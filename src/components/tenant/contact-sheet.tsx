@@ -24,7 +24,7 @@ export function ContactSheet({
   const trigger = useRef<HTMLButtonElement>(null);
   const phone = advertiser.phone?.replace(/[^\d+]/g, "") ?? "";
   const waNumber = phone.replace(/^\+/, "").replace(/^0/, "254");
-  const waText = encodeURIComponent(`Hello, I saw your listing on nyumbani (${refId}): ${listingTitle}. Is it still available?`);
+  const waText = encodeURIComponent(`Hello, I saw your listing on KejaFiti (${refId}): ${listingTitle}. Is it still available?`);
   const messageHref = `/homes/${refId}/message`;
 
   return (
@@ -53,7 +53,7 @@ export function ContactSheet({
             </button>
           </div>
           <Link href={signedIn ? messageHref : `/sign-in?next=${encodeURIComponent(messageHref)}&reason=message`} className={buttonClass("primary", "lg")}>
-            <Icon name="message" size={18} /> Message in nyumbani
+            <Icon name="message" size={18} /> Message in KejaFiti
           </Link>
           <p className="-mt-1 text-caption text-muted">Your conversation and any viewing request stay in one place.</p>
           {advertiser.call && phone ? (
@@ -74,7 +74,7 @@ export function ContactSheet({
           ) : null}
           {advertiser.call || advertiser.whatsapp ? (
             <p className="text-caption text-muted">
-              Calls and WhatsApp happen outside nyumbani. We can&apos;t see those conversations, so they won&apos;t appear in your messages.
+              Calls and WhatsApp happen outside KejaFiti. We can&apos;t see those conversations, so they won&apos;t appear in your messages.
             </p>
           ) : null}
         </div>

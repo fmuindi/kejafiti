@@ -20,7 +20,7 @@ export function SiteFooter({ listHref, listLabel, signedIn }: { listHref: string
     <footer className="no-print mt-12 border-t border-line bg-surface">
       <div className="mx-auto hidden max-w-shell grid-cols-[1.4fr_repeat(3,1fr)] gap-x-6 px-6 py-10 md:grid">
         <div className="flex flex-col gap-3">
-          <Link href="/" aria-label="nyumbani home" className="self-start">
+          <Link href="/" aria-label="KejaFiti home" className="self-start">
             <Logo />
           </Link>
           <p className="max-w-narrow text-label text-muted">Rent, charges and move-in total, up front.</p>
@@ -52,7 +52,7 @@ export function SiteFooter({ listHref, listLabel, signedIn }: { listHref: string
       </nav>
       <div className="border-divider md:border-t">
         <p className="mx-auto flex max-w-shell flex-wrap items-center gap-x-3 gap-y-1 px-4 py-4 text-caption text-muted md:px-6">
-          <span>© {year} nyumbani</span>
+          <span>© {year} KejaFiti</span>
           <Link href="/legal/terms" className="hover:text-ink md:hidden">Terms</Link>
           <Link href="/legal/privacy" className="hover:text-ink md:hidden">Privacy</Link>
         </p>

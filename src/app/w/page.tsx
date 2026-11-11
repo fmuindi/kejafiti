@@ -18,7 +18,7 @@ export default async function WorkspaceEntry() {
   if (workspaces.length === 1) redirect(`/w/${workspaces[0].org_id}`);
   return (
     <main id="main" className="mx-auto flex min-h-dvh max-w-narrow flex-col gap-5 px-4 pt-5 pb-10">
-      <Link href="/" aria-label="nyumbani home" className="self-start"><Logo /></Link>
+      <Link href="/" aria-label="KejaFiti home" className="self-start"><Logo /></Link>
       <h1 className="heading-page">Choose a workspace</h1>
       <p className="-mt-2 text-body text-muted">You belong to {workspaces.length} workspaces. We&apos;ll remember your choice.</p>
       <ul className="surface-list">

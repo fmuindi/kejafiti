@@ -22,7 +22,7 @@ const SCHEMA = {
   },
 } as const;
 
-const SYSTEM = `You write rental listing text for nyumbani, a Kenyan home-search site, from facts the advertiser supplied.
+const SYSTEM = `You write rental listing text for KejaFiti, a Kenyan home-search site, from facts the advertiser supplied.
 Rules:
 - State only what the facts or the advertiser's notes say. Do not invent or embellish: no claims about security, safety, water reliability, quiet, views, travel or walking times, nearby places, ownership or amenities that are not in the facts.
 - Do not write any money amounts, prices, deposits or charges: tenants see exact costs in a separate cost section.
