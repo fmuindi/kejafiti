@@ -21,7 +21,7 @@ export default async function UpdatesPage({ searchParams }: PageProps<"/updates"
   const items = await getUpdates();
   const unread = items.filter((i) => !i.read_at).length;
   return (
-    <div className="mx-auto flex max-w-[720px] flex-col gap-5 px-4 pt-5 pb-10">
+    <div className="mx-auto flex max-w-reading flex-col gap-5 px-4 pt-5 pb-10">
       <PageHeader icon="bell" title="Updates" meta={unread ? `${unread} new` : "Caught up"} action={unread ? <MarkAllRead /> : null} />
       <TenantJumps current="/updates" />
       {typeof gone === "string" && GONE[gone] ? <Notice tone="info" role="status">{GONE[gone]}</Notice> : null}

@@ -35,7 +35,7 @@ export function EditAccess({
   };
   return (
     <form
-      className="flex flex-col gap-4 rounded-[20px] border border-line bg-surface p-5"
+      className="surface flex flex-col gap-4 p-5"
       action={() => {
         if (!reviewing) {
           setReviewing(true);
@@ -57,7 +57,7 @@ export function EditAccess({
           {isOwner ? <option value="agency_admin">Agency admin</option> : null}
         </Select>
       </Field>
-      <p className="-mt-2 text-[0.8125rem] text-muted">{ROLE_HELP[access.role]}</p>
+      <p className="-mt-2 text-caption text-muted">{ROLE_HELP[access.role]}</p>
       <AccessFields value={access} onChange={change} properties={properties} isOwner={isOwner} />
       {reviewing ? <AuthoritySummary value={access} before={initial} properties={properties} name={name.trim().split(/\s+/)[0]} /> : null}
       {msg ? <Notice tone={msg.ok ? "success" : "error"} role="status">{msg.text}</Notice> : null}

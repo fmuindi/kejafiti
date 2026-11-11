@@ -7,6 +7,7 @@ import { emailConfigured, kickDelivery } from "@/lib/delivery";
 import { SITE_URL } from "@/lib/env";
 import { fail, type ActionResult } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/server";
+import type { SendResult } from "@/lib/tenant-messages";
 
 // Every action re-reads the session and calls a SECURITY DEFINER function that checks
 // membership, property assignment and the specific permission again. The browser never
@@ -28,6 +29,8 @@ const entrySchema = z.object({
   allocations: z.array(z.object({ charge_id: uuid, amount: z.number().nonnegative().multipleOf(0.01) })).max(24),
   action: z.enum(["draft", "submit", "confirm"]),
   acknowledged: z.boolean().optional(),
+  /** A tenant's missing-payment report this entry answers; linked once the entry is saved. */
+  report_id: uuid.optional(),
 });
 
 export type EntryInput = z.infer<typeof entrySchema>;
@@ -50,7 +53,7 @@ export async function savePaymentEntry(orgId: string, propertyId: string, input:
     }
     return { ok: false, message: "Check the highlighted fields.", fieldErrors };
   }
-  const p = parsed.data;
+  const { report_id, ...p } = parsed.data;
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("save_payment_entry", {
     p: {
@@ -61,8 +64,11 @@ export async function savePaymentEntry(orgId: string, propertyId: string, input:
     },
   });
   if (error) return fail(error);
+  const saved = data as unknown as EntryResult;
+  // The entry is saved either way; if the report was answered meanwhile, the unit page shows it.
+  if (report_id) await supabase.rpc("answer_payment_report", { p: { report_id, outcome: "matched", entry_id: saved.id } });
   revalidateRent(orgId, propertyId);
-  return { ok: true, data: data as unknown as EntryResult };
+  return { ok: true, data: saved };
 }
 
 export async function findDuplicates(input: { tenancyId: string; amount: number; paidOn: string; reference?: string; excludeId?: string }) {
@@ -255,6 +261,124 @@ export async function revokeTenantAccess(orgId: string, propertyId: string, tena
   if (!uuid.safeParse(tenantId).success) return { ok: false, message: "This tenant record wasn't found." };
   const supabase = await createClient();
   const { error } = await supabase.rpc("revoke_tenant_access", { p_tenant: tenantId });
+  if (error) return fail(error);
+  revalidateRent(orgId, propertyId);
+  return { ok: true };
+}
+
+// Tenant communications ------------------------------------------------------------------------
+
+const sendSchema = z.object({
+  client_request_id: uuid,
+  kind: z.enum(["invoice", "reminder", "message"]),
+  tenancy_ids: z.array(uuid).min(1).max(200),
+  period: z.string().regex(/^\d{4}-\d{2}-01$/).optional(),
+  subject: z.string().max(150).optional(),
+  body: z.string().max(5000).optional(),
+});
+export type SendInput = z.infer<typeof sendSchema>;
+
+/** Invoices, reminders or a message to one or more tenants. Tenants who can't get it are skipped and listed. */
+export async function sendTenantMessages(orgId: string, propertyId: string, input: SendInput): Promise<ActionResult<SendResult>> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}/tenants`);
+  const parsed = sendSchema.safeParse(input);
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const issue of parsed.error.issues) {
+      const k = String(issue.path[0] ?? "form");
+      fieldErrors[k] ??= k === "subject" ? "Keep the subject to 150 characters." : k === "body" ? "Keep the message to 5,000 characters." : k === "tenancy_ids" ? "Choose between 1 and 200 tenants." : "Check this field.";
+    }
+    return { ok: false, message: "Check the highlighted fields.", fieldErrors };
+  }
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("send_tenant_messages", { p: parsed.data });
+  if (error) return fail(error);
+  await kickDelivery();
+  revalidateRent(orgId, propertyId);
+  return { ok: true, data: data as unknown as SendResult };
+}
+
+export async function inviteTenants(orgId: string, propertyId: string, tenantIds: string[]): Promise<ActionResult<{ sent: number; skipped: SendResult["skipped"] }>> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}/tenants`);
+  if (!z.array(uuid).min(1).max(200).safeParse(tenantIds).success) return { ok: false, message: "Choose between 1 and 200 tenants." };
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("invite_tenants_access", { p_tenants: tenantIds });
+  if (error) return fail(error);
+  await kickDelivery();
+  revalidateRent(orgId, propertyId);
+  const r = data as unknown as { sent: number; skipped: Array<{ tenant_id: string; name: string; reason: string }> };
+  return { ok: true, data: { sent: r.sent, skipped: r.skipped.map((s) => ({ tenancy_id: s.tenant_id, name: s.name, unit_label: "", reason: s.reason })) } };
+}
+
+export async function updateTenantContact(orgId: string, propertyId: string, tenantId: string, email: string, phone: string): Promise<ActionResult> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}`);
+  if (!uuid.safeParse(tenantId).success) return { ok: false, message: "This tenant record wasn't found." };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("update_tenant_contact", { p_tenant: tenantId, p_email: email, p_phone: phone });
+  if (error) return fail(error);
+  revalidateRent(orgId, propertyId);
+  return { ok: true };
+}
+
+// Follow-ups ---------------------------------------------------------------------------------
+
+const followUpSchema = z.object({
+  client_request_id: uuid,
+  tenancy_id: uuid,
+  kind: z.enum(["contacted", "promised", "reported", "note"]),
+  note: z.string().max(1000).optional(),
+  due_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  promised_amount: money.optional(),
+  anyone: z.boolean().optional(),
+});
+export type FollowUpInput = z.infer<typeof followUpSchema>;
+
+/** A contact note, promise to pay or reported payment: a task, never a change to the balance. */
+export async function addFollowUp(orgId: string, propertyId: string, input: FollowUpInput): Promise<ActionResult<{ id: string }>> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}`);
+  const parsed = followUpSchema.safeParse(input);
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const issue of parsed.error.issues) {
+      const k = String(issue.path[0] ?? "form");
+      fieldErrors[k] ??= k === "promised_amount" ? "Enter the amount in KSh, or leave it empty." : k === "due_on" ? "Choose a date." : k === "note" ? "Keep the note to 1,000 characters." : "Check this field.";
+    }
+    return { ok: false, message: "Check the highlighted fields.", fieldErrors };
+  }
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("add_follow_up", { p: parsed.data });
+  if (error) return fail(error);
+  revalidateRent(orgId, propertyId);
+  return { ok: true, data: { id: data as unknown as string } };
+}
+
+export async function resolveFollowUp(orgId: string, propertyId: string, id: string, outcome: string): Promise<ActionResult> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}`);
+  if (!uuid.safeParse(id).success) return { ok: false, message: "This follow-up wasn't found." };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("resolve_follow_up", { p_id: id, p_resolution: outcome.slice(0, 500) });
+  if (error) return fail(error);
+  revalidateRent(orgId, propertyId);
+  return { ok: true };
+}
+
+// Tenant-reported missing payments --------------------------------------------------------------
+
+const answerSchema = z.object({
+  report_id: uuid,
+  outcome: z.enum(["matched", "not_found"]),
+  entry_id: uuid.optional(),
+  reply: z.string().max(1000).optional(),
+});
+export type AnswerInput = z.infer<typeof answerSchema>;
+
+/** Match a tenant's report to a payment entry, or tell them it couldn't be found. Never confirms anything. */
+export async function answerPaymentReport(orgId: string, propertyId: string, input: AnswerInput): Promise<ActionResult> {
+  await requireUser(`/w/${orgId}/rent/${propertyId}`);
+  const parsed = answerSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, message: "Something in the answer isn't valid. Reload and try again." };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("answer_payment_report", { p: { ...parsed.data, reply: parsed.data.reply?.trim() || null } });
   if (error) return fail(error);
   revalidateRent(orgId, propertyId);
   return { ok: true };

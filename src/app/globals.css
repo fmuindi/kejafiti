@@ -22,15 +22,71 @@
   --color-surface: #ffffff;
   --color-line: #cccccc;
   --color-divider: #e5e5e5;
-  --color-input: #8c959b;
+  --color-input: #8c959b; /* field borders and placeholder text */
+  --color-ink-soft: #3d4750;
+  /* Borders that pair with the tints above (Notice and callout cards). */
+  --color-info-line: #d5e3e8;
+  --color-success-line: #b9e2db;
+  --color-waiting-line: #f0d9ad;
+  --color-error-line: #f3c1b8;
+  /* On the dark ink surfaces (admin bar, move-in total). */
+  --color-waiting-on-dark: #ffd59a;
+  --color-primary-on-dark: #ff8fa6;
+  --color-primary-disabled: #e8a3b1;
 
   --font-display: var(--font-cabinet), system-ui, sans-serif;
   --font-sans: var(--font-instrument), system-ui, sans-serif;
   --font-mono: var(--font-dm-mono), ui-monospace, monospace;
 
+  /* Type scale. Every text size in the app is one of these (lint enforces it). Body sizes step
+     by 1px for dense screens (16px is Tailwind's own text-base, used for form fields so iOS
+     doesn't zoom); headings use the display font. Sizes are rem so the browser's
+     text-size setting applies. */
+  --text-micro: 0.75rem; /* 12: badges, tiny captions */
+  --text-caption: 0.8125rem; /* 13: secondary lines, hints */
+  --text-label: 0.875rem; /* 14: labels, table cells, small buttons */
+  --text-body: 0.9375rem; /* 15: body copy */
+  --text-lead: 1.125rem; /* 18: section titles, lead copy */
+  --text-title-sm: 1.25rem; /* 20 */
+  --text-title: 1.5rem; /* 24 */
+  --text-title-lg: 1.75rem; /* 28: page titles on phones */
+  --text-display-sm: 2.125rem; /* 34: page titles */
+  --text-display: 2.5rem; /* 40 */
+  --text-hero: 3.5rem; /* 56: the home page headline */
+
+  /* Corners: chip (tags, small badges), control (buttons, fields), card (every card, list,
+     table frame and callout on a page), panel (feature surfaces only: listing cards, the
+     gallery, dialogs and sheets). */
+  --radius-chip: 8px;
   --radius-control: 12px;
   --radius-card: 16px;
-  --radius-feature: 22px;
+  --radius-panel: 20px;
+
+  /* Touch heights: field (every input, search box and the controls beside them), cta (large
+     buttons), row (a tappable row or card link). */
+  --spacing-field: 3.125rem; /* 50 */
+  --spacing-cta: 3.5rem; /* 56 */
+  --spacing-row: 3.5rem; /* 56 */
+
+  /* Uppercase labels (eyebrows, group headings, table heads) share one letter spacing. */
+  --tracking-caps: 0.6px;
+
+  /* Elevation, lowest to highest: raised (menus, tooltips, suggestions), overlay (toasts,
+     floating panels), float (the voice button). Cards on the page are flat, with a border. */
+  --shadow-raised: 0 8px 24px rgba(16, 24, 32, 0.1);
+  --shadow-overlay: 0 14px 40px rgba(16, 24, 32, 0.18);
+  --shadow-float: 0 10px 28px rgba(16, 24, 32, 0.28);
+
+  --color-skeleton: #efebe4;
+  --color-skeleton-shine: #f7f4ef;
+
+  /* Page widths: narrow (sign-in, invitations), reading (forms, settings, detail), standard
+     (detail with a side column), wide (search, lists), shell (the whole app frame). */
+  --container-narrow: 32.5rem; /* 520 */
+  --container-reading: 45rem; /* 720 */
+  --container-standard: 56.25rem; /* 900 */
+  --container-wide: 68.75rem; /* 1100 */
+  --container-shell: 85rem; /* 1360 */
 }
 
 html {
@@ -59,6 +115,96 @@ body {
     outline: 3px solid var(--color-deep);
     outline-offset: 2px;
     border-radius: 6px;
+  }
+}
+
+/* Heading roles. Every page title, compact header title and section title uses one of these,
+   so their size, weight and tracking can only change here. */
+@utility heading-page {
+  font-family: var(--font-display);
+  font-size: var(--text-title-lg);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  @media (width >= 48rem) {
+    font-size: var(--text-display-sm);
+    letter-spacing: -1px;
+  }
+}
+@utility heading-compact {
+  font-family: var(--font-display);
+  font-size: var(--text-title-sm);
+  line-height: 1.2;
+  font-weight: 700;
+}
+@utility heading-section {
+  font-family: var(--font-display);
+  font-size: var(--text-lead);
+  line-height: 1.25;
+  font-weight: 700;
+  @media (width >= 48rem) {
+    font-size: var(--text-title-sm);
+  }
+}
+/* A small uppercase label over a group of rows ("Common questions", "Today"). */
+@utility heading-group {
+  font-size: var(--text-caption);
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Surfaces. A card on the page is white with a hairline border and card corners; a list of
+   rows is the same card with dividers, clipped so a row's hover fill follows the corners
+   (focus rings move inside so the clip doesn't cut them); an empty note is dashed. */
+@utility surface {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+}
+@utility surface-list {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  & > * + * {
+    border-top: 1px solid var(--color-divider);
+  }
+  & :focus-visible {
+    outline-offset: -3px;
+  }
+}
+@utility surface-empty {
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  font-size: var(--text-label);
+  color: var(--color-muted);
+}
+
+/* The heavier outline: secondary buttons, a field in error, a selected chip or option. */
+@utility border-strong {
+  border-width: 1.5px;
+}
+
+/* A text-only action (Retry, Make cover, Show as a table): ink, bold, underlined. Red stays
+   for the one main button on a screen. */
+@utility link-action {
+  font-weight: 600;
+  color: var(--color-ink);
+  text-decoration-line: underline;
+  text-underline-offset: 3px;
+  &:hover {
+    color: var(--color-primary-hover);
+  }
+  &:disabled {
+    color: var(--color-muted);
+    text-decoration-line: none;
+    cursor: not-allowed;
   }
 }
 
@@ -103,11 +249,11 @@ input[type="number"] {
   100% { background-position: calc(200px + 100%) 0; }
 }
 .skeleton {
-  background: linear-gradient(90deg, #efebe4 0, #f7f4ef 60px, #efebe4 120px) no-repeat;
+  background: linear-gradient(90deg, var(--color-skeleton) 0, var(--color-skeleton-shine) 60px, var(--color-skeleton) 120px) no-repeat;
   background-size: 200px 100%;
-  background-color: #efebe4;
+  background-color: var(--color-skeleton);
   animation: skeleton 1.4s ease-in-out infinite;
-  border-radius: 12px;
+  border-radius: var(--radius-control);
 }
 
 @media print {

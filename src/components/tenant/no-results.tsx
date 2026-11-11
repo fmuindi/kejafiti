@@ -71,21 +71,21 @@ export async function NoResults({ params: p }: { params: SearchParams }) {
 
   return (
     <section className="mt-6 max-w-xl" aria-labelledby="none">
-      <p className="font-mono text-[0.75rem] tracking-[0.6px] text-muted">0 HOMES MATCH EVERYTHING</p>
-      <h2 id="none" className="mt-2 font-display text-[1.75rem] leading-[1.08] font-bold tracking-[-0.8px]">
+      <p className="font-mono text-micro tracking-caps text-muted">0 HOMES MATCH EVERYTHING</p>
+      <h2 id="none" className="heading-section mt-2">
         {headline}
       </h2>
-      <p className="mt-2 text-[0.9375rem] text-muted">{explanation}</p>
+      <p className="mt-2 text-body text-muted">{explanation}</p>
       {alts.length ? (
         <ul className="mt-5 flex flex-col gap-2">
           {alts.slice(0, 4).map((a) => (
             <li key={a.label}>
-              <Link href={a.href} className="flex min-h-[64px] items-center gap-3 rounded-[16px] border border-line bg-surface px-4 hover:border-ink">
+              <Link href={a.href} className="surface flex min-h-row items-center gap-3 px-4 hover:border-ink">
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold">{a.label}</span>
-                  <span className="text-[0.8125rem] text-muted">{a.detail}</span>
+                  <span className="text-caption text-muted">{a.detail}</span>
                 </span>
-                <span className="font-mono text-[0.8125rem] font-medium">
+                <span className="font-mono text-caption font-medium">
                   {a.count} home{a.count === 1 ? "" : "s"}
                 </span>
                 <Icon name="chevronRight" className="text-muted" />
@@ -94,7 +94,7 @@ export async function NoResults({ params: p }: { params: SearchParams }) {
           ))}
         </ul>
       ) : (
-        <p className="mt-5 text-[0.9375rem]">There are no published homes for these filters yet. Save the search to hear when one is listed.</p>
+        <p className="mt-5 text-body">There are no published homes for these filters yet. Save the search to hear when one is listed.</p>
       )}
     </section>
   );

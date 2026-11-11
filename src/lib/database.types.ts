@@ -469,14 +469,14 @@ isOneToOne: false
                   ]
                 },"listings": {
                   Row: {
-                    "availability_confirmed_at": string | null,"availability_confirmed_by": string | null,"available_from": string | null,"contact_call": boolean,"contact_phone": string | null,"contact_whatsapp": boolean,"created_at": string,"created_by": string | null,"deposit_amount": number | null,"deposit_months": number | null,"description": string | null,"fixed_monthly_total": number | null,"flags": NonNullable<Json>,"furnishing": string | null,"house_rules": string | null,"id": string,"let_on": string | null,"move_in_total": number | null,"org_id": string,"pending_edit": Json | null,"price_basis": string,"price_period": string,"property_id": string,"published_at": string | null,"ref": string,"rent_amount": number | null,"review_note": string | null,"reviewed_at": string | null,"reviewed_by": string | null,"sponsored_until": string | null,"status": string,"student": boolean,"submitted_at": string | null,"title": string | null,"totals_complete": boolean,"unit_id": string,"updated_at": string,"viewing_instructions": string | null,"wizard_step": number
+                    "availability_confirmed_at": string | null,"availability_confirmed_by": string | null,"available_from": string | null,"contact_call": boolean,"contact_phone": string | null,"contact_whatsapp": boolean,"copied_from": string | null,"created_at": string,"created_by": string | null,"deposit_amount": number | null,"deposit_months": number | null,"description": string | null,"fixed_monthly_total": number | null,"flags": NonNullable<Json>,"furnishing": string | null,"house_rules": string | null,"id": string,"let_on": string | null,"move_in_total": number | null,"org_id": string,"pending_edit": Json | null,"price_basis": string,"price_period": string,"property_id": string,"published_at": string | null,"ref": string,"rent_amount": number | null,"review_note": string | null,"reviewed_at": string | null,"reviewed_by": string | null,"sponsored_until": string | null,"status": string,"student": boolean,"submitted_at": string | null,"title": string | null,"totals_complete": boolean,"unit_id": string,"updated_at": string,"viewing_instructions": string | null,"wizard_step": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "availability_confirmed_at"?: string | null,"availability_confirmed_by"?: string | null,"available_from"?: string | null,"contact_call"?: boolean,"contact_phone"?: string | null,"contact_whatsapp"?: boolean,"created_at"?: string,"created_by"?: string | null,"deposit_amount"?: number | null,"deposit_months"?: number | null,"description"?: string | null,"fixed_monthly_total"?: number | null,"flags"?: NonNullable<Json>,"furnishing"?: string | null,"house_rules"?: string | null,"id"?: string,"let_on"?: string | null,"move_in_total"?: number | null,"org_id": string,"pending_edit"?: Json | null,"price_basis"?: string,"price_period"?: string,"property_id": string,"published_at"?: string | null,"ref"?: string,"rent_amount"?: number | null,"review_note"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"sponsored_until"?: string | null,"status"?: string,"student"?: boolean,"submitted_at"?: string | null,"title"?: string | null,"totals_complete"?: boolean,"unit_id": string,"updated_at"?: string,"viewing_instructions"?: string | null,"wizard_step"?: number
+                    "availability_confirmed_at"?: string | null,"availability_confirmed_by"?: string | null,"available_from"?: string | null,"contact_call"?: boolean,"contact_phone"?: string | null,"contact_whatsapp"?: boolean,"copied_from"?: string | null,"created_at"?: string,"created_by"?: string | null,"deposit_amount"?: number | null,"deposit_months"?: number | null,"description"?: string | null,"fixed_monthly_total"?: number | null,"flags"?: NonNullable<Json>,"furnishing"?: string | null,"house_rules"?: string | null,"id"?: string,"let_on"?: string | null,"move_in_total"?: number | null,"org_id": string,"pending_edit"?: Json | null,"price_basis"?: string,"price_period"?: string,"property_id": string,"published_at"?: string | null,"ref"?: string,"rent_amount"?: number | null,"review_note"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"sponsored_until"?: string | null,"status"?: string,"student"?: boolean,"submitted_at"?: string | null,"title"?: string | null,"totals_complete"?: boolean,"unit_id": string,"updated_at"?: string,"viewing_instructions"?: string | null,"wizard_step"?: number
                   }
                   Update: {
-                    "availability_confirmed_at"?: string | null,"availability_confirmed_by"?: string | null,"available_from"?: string | null,"contact_call"?: boolean,"contact_phone"?: string | null,"contact_whatsapp"?: boolean,"created_at"?: string,"created_by"?: string | null,"deposit_amount"?: number | null,"deposit_months"?: number | null,"description"?: string | null,"fixed_monthly_total"?: number | null,"flags"?: NonNullable<Json>,"furnishing"?: string | null,"house_rules"?: string | null,"id"?: string,"let_on"?: string | null,"move_in_total"?: number | null,"org_id"?: string,"pending_edit"?: Json | null,"price_basis"?: string,"price_period"?: string,"property_id"?: string,"published_at"?: string | null,"ref"?: string,"rent_amount"?: number | null,"review_note"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"sponsored_until"?: string | null,"status"?: string,"student"?: boolean,"submitted_at"?: string | null,"title"?: string | null,"totals_complete"?: boolean,"unit_id"?: string,"updated_at"?: string,"viewing_instructions"?: string | null,"wizard_step"?: number
+                    "availability_confirmed_at"?: string | null,"availability_confirmed_by"?: string | null,"available_from"?: string | null,"contact_call"?: boolean,"contact_phone"?: string | null,"contact_whatsapp"?: boolean,"copied_from"?: string | null,"created_at"?: string,"created_by"?: string | null,"deposit_amount"?: number | null,"deposit_months"?: number | null,"description"?: string | null,"fixed_monthly_total"?: number | null,"flags"?: NonNullable<Json>,"furnishing"?: string | null,"house_rules"?: string | null,"id"?: string,"let_on"?: string | null,"move_in_total"?: number | null,"org_id"?: string,"pending_edit"?: Json | null,"price_basis"?: string,"price_period"?: string,"property_id"?: string,"published_at"?: string | null,"ref"?: string,"rent_amount"?: number | null,"review_note"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"sponsored_until"?: string | null,"status"?: string,"student"?: boolean,"submitted_at"?: string | null,"title"?: string | null,"totals_complete"?: boolean,"unit_id"?: string,"updated_at"?: string,"viewing_instructions"?: string | null,"wizard_step"?: number
                   }
                   Relationships: [
                     {
@@ -484,6 +484,12 @@ isOneToOne: false
       columns: ["availability_confirmed_by"]
 isOneToOne: false
       referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "listings_copied_from_fkey"
+      columns: ["copied_from"]
+isOneToOne: false
+      referencedRelation: "listings"
       referencedColumns: ["id"]
     },{
       foreignKeyName: "listings_created_by_fkey"
@@ -759,6 +765,62 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"payment_reports": {
+                  Row: {
+                    "amount": number,"answered_at": string | null,"answered_by": string | null,"client_request_id": string,"created_at": string,"created_by": string,"entry_id": string | null,"id": string,"method": string | null,"note": string | null,"org_id": string,"paid_on": string,"property_id": string,"reference": string | null,"reply": string | null,"status": string,"tenancy_id": string,"tenant_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount": number,"answered_at"?: string | null,"answered_by"?: string | null,"client_request_id": string,"created_at"?: string,"created_by": string,"entry_id"?: string | null,"id"?: string,"method"?: string | null,"note"?: string | null,"org_id": string,"paid_on": string,"property_id": string,"reference"?: string | null,"reply"?: string | null,"status"?: string,"tenancy_id": string,"tenant_id": string
+                  }
+                  Update: {
+                    "amount"?: number,"answered_at"?: string | null,"answered_by"?: string | null,"client_request_id"?: string,"created_at"?: string,"created_by"?: string,"entry_id"?: string | null,"id"?: string,"method"?: string | null,"note"?: string | null,"org_id"?: string,"paid_on"?: string,"property_id"?: string,"reference"?: string | null,"reply"?: string | null,"status"?: string,"tenancy_id"?: string,"tenant_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "payment_reports_answered_by_fkey"
+      columns: ["answered_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payment_reports_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payment_reports_entry_id_fkey"
+      columns: ["entry_id"]
+isOneToOne: false
+      referencedRelation: "payment_entries"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payment_reports_org_id_fkey"
+      columns: ["org_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payment_reports_property_id_fkey"
+      columns: ["property_id"]
+isOneToOne: false
+      referencedRelation: "properties"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payment_reports_tenancy_id_fkey"
+      columns: ["tenancy_id"]
+isOneToOne: false
+      referencedRelation: "tenancies"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payment_reports_tenant_id_fkey"
+      columns: ["tenant_id"]
+isOneToOne: false
+      referencedRelation: "tenants"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"platform_admins": {
                   Row: {
                     "created_at": string,"role": string,"user_id": string
@@ -860,6 +922,56 @@ isOneToOne: false
       columns: ["unit_id"]
 isOneToOne: false
       referencedRelation: "units"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"rent_follow_ups": {
+                  Row: {
+                    "assigned_to": string | null,"client_request_id": string,"created_at": string,"created_by": string | null,"due_on": string | null,"id": string,"kind": string,"note": string | null,"org_id": string,"promised_amount": number | null,"property_id": string,"resolution": string | null,"resolved_at": string | null,"resolved_by": string | null,"tenancy_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "assigned_to"?: string | null,"client_request_id": string,"created_at"?: string,"created_by"?: string | null,"due_on"?: string | null,"id"?: string,"kind": string,"note"?: string | null,"org_id": string,"promised_amount"?: number | null,"property_id": string,"resolution"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"tenancy_id": string
+                  }
+                  Update: {
+                    "assigned_to"?: string | null,"client_request_id"?: string,"created_at"?: string,"created_by"?: string | null,"due_on"?: string | null,"id"?: string,"kind"?: string,"note"?: string | null,"org_id"?: string,"promised_amount"?: number | null,"property_id"?: string,"resolution"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"tenancy_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "rent_follow_ups_assigned_to_fkey"
+      columns: ["assigned_to"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "rent_follow_ups_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "rent_follow_ups_org_id_fkey"
+      columns: ["org_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "rent_follow_ups_property_id_fkey"
+      columns: ["property_id"]
+isOneToOne: false
+      referencedRelation: "properties"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "rent_follow_ups_resolved_by_fkey"
+      columns: ["resolved_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "rent_follow_ups_tenancy_id_fkey"
+      columns: ["tenancy_id"]
+isOneToOne: false
+      referencedRelation: "tenancies"
       referencedColumns: ["id"]
     }
                   ]
@@ -1089,6 +1201,50 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"tenant_messages": {
+                  Row: {
+                    "body": string | null,"client_request_id": string,"created_at": string,"delivery_error": string | null,"delivery_status": string,"details": NonNullable<Json>,"email": string,"id": string,"kind": string,"org_id": string,"period_start": string | null,"property_id": string,"ref": string | null,"sent_by": string | null,"subject": string,"tenancy_id": string,"tenant_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body"?: string | null,"client_request_id": string,"created_at"?: string,"delivery_error"?: string | null,"delivery_status"?: string,"details"?: NonNullable<Json>,"email": string,"id"?: string,"kind": string,"org_id": string,"period_start"?: string | null,"property_id": string,"ref"?: string | null,"sent_by"?: string | null,"subject": string,"tenancy_id": string,"tenant_id": string
+                  }
+                  Update: {
+                    "body"?: string | null,"client_request_id"?: string,"created_at"?: string,"delivery_error"?: string | null,"delivery_status"?: string,"details"?: NonNullable<Json>,"email"?: string,"id"?: string,"kind"?: string,"org_id"?: string,"period_start"?: string | null,"property_id"?: string,"ref"?: string | null,"sent_by"?: string | null,"subject"?: string,"tenancy_id"?: string,"tenant_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "tenant_messages_org_id_fkey"
+      columns: ["org_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "tenant_messages_property_id_fkey"
+      columns: ["property_id"]
+isOneToOne: false
+      referencedRelation: "properties"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "tenant_messages_sent_by_fkey"
+      columns: ["sent_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "tenant_messages_tenancy_id_fkey"
+      columns: ["tenancy_id"]
+isOneToOne: false
+      referencedRelation: "tenancies"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "tenant_messages_tenant_id_fkey"
+      columns: ["tenant_id"]
+isOneToOne: false
+      referencedRelation: "tenants"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"tenants": {
                   Row: {
                     "access_email": string | null,"access_expires_at": string | null,"access_invited_by": string | null,"access_token_hash": string | null,"created_at": string,"created_by": string | null,"email": string | null,"full_name": string,"id": string,"notes": string | null,"org_id": string,"phone": string | null,"updated_at": string,"user_id": string | null
@@ -1285,6 +1441,9 @@ isOneToOne: false
 "accept_tenant_access":
 { Args: { "p_token": string }; Returns: string
                            },
+"add_follow_up":
+{ Args: { "p": Json }; Returns: string
+                           },
 "adjust_charge":
 { Args: { "p_charge": string,"p_reason": string,"p_reduce_by": number }; Returns: undefined
                            },
@@ -1340,6 +1499,9 @@ isOneToOne: false
                            },
 "ai_take":
 { Args: { "p_client": string,"p_client_cap": number,"p_feature": string,"p_global_cap": number }; Returns: string
+                           },
+"answer_payment_report":
+{ Args: { "p": Json }; Returns: undefined
                            },
 "apply_credit":
 { Args: { "p_allocations": Json,"p_entry": string }; Returns: Json
@@ -1441,6 +1603,9 @@ isOneToOne: false
 "invite_tenant_access":
 { Args: { "p_email": string,"p_tenant": string }; Returns: Json
                            },
+"invite_tenants_access":
+{ Args: { "p_tenants": (string)[] }; Returns: Json
+                           },
 "listing_problem_items":
 { Args: { "p_listing": string }; Returns: Json
                            },
@@ -1459,6 +1624,11 @@ isOneToOne: false
 "my_conversations":
 { Args: { "p_org"?: string }; Returns: {
               "advertiser_role": string,"area": string,"assigned_membership_id": string,"follow_up": string,"id": string,"last_message": string,"last_message_at": string,"last_side": string,"listing_ref": string,"listing_status": string,"listing_title": string,"needs_reply": boolean,"org_name": string,"property_id": string,"tenant_name": string,"unit_label": string,"unread": number
+            }[]
+                           },
+"my_payment_reports":
+{ Args: { "p_tenancy": string }; Returns: {
+              "amount": number,"answered_at": string,"created_at": string,"id": string,"method": string,"note": string,"paid_on": string,"payment_state": string,"reference": string,"reply": string,"status": string
             }[]
                            },
 "my_rent_work":
@@ -1486,9 +1656,19 @@ isOneToOne: false
               "all_properties": boolean,"can_confirm": boolean,"can_correct": boolean,"can_enter_payments": boolean,"can_export": boolean,"can_manage_listings": boolean,"can_manage_tenancies": boolean,"can_view_attachments": boolean,"kind": string,"org_id": string,"org_name": string,"property_ids": (string)[],"role": string
             }[]
                            },
+"owing_tenancies":
+{ Args: { "p_limit"?: number,"p_org": string,"p_property"?: string }; Returns: {
+              "last_contact_at": string,"last_contact_kind": string,"last_reminder_at": string,"next_follow_up": string,"oldest_due": string,"open_follow_ups": number,"owed": number,"pending_amount": number,"property_id": string,"property_name": string,"tenancy_id": string,"tenancy_status": string,"tenant_name": string,"unit_id": string,"unit_label": string
+            }[]
+                           },
 "payments_by_date":
 { Args: { "p_month": string,"p_org": string,"p_property": string }; Returns: {
               "amount": number,"confirmed_at": string,"confirmed_by": string,"entry_id": string,"method": string,"paid_on": string,"property_id": string,"recorded_at": string,"recorded_by": string,"ref": string,"reference": string,"tenant_name": string,"unit_label": string
+            }[]
+                           },
+"portfolio_position":
+{ Args: { "p_org": string,"p_period": string }; Returns: {
+              "billed": number,"collection_rate": number,"last_confirmed_at": string,"lettable": number,"occupied": number,"outstanding": number,"overdue": number,"owed_now": number,"owing_tenancies": number,"pending_count": number,"property_id": string,"property_name": string,"settled": number,"unavailable": number,"units_total": number
             }[]
                            },
 "possible_duplicates":
@@ -1499,6 +1679,11 @@ isOneToOne: false
 "preview_rent_charges":
 { Args: { "p_period": string,"p_property": string }; Returns: {
               "already_exists": boolean,"amount": number,"due_date": string,"tenancy_id": string,"tenant_name": string,"unit_id": string,"unit_label": string
+            }[]
+                           },
+"property_tenants":
+{ Args: { "p_property": string }; Returns: {
+              "access": string,"balance": number,"email": string,"end_date": string,"last_message_at": string,"last_message_kind": string,"phone": string,"start_date": string,"status": string,"tenancy_id": string,"tenant_id": string,"tenant_name": string,"unit_id": string,"unit_label": string
             }[]
                            },
 "record_saved_search_alert":
@@ -1537,6 +1722,9 @@ isOneToOne: false
 "report_listing":
 { Args: { "p_details": string,"p_reason": string,"p_ref": string }; Returns: string
                            },
+"report_missing_payment":
+{ Args: { "p": Json }; Returns: string
+                           },
 "report_prefinalize":
 { Args: { "p_period": string,"p_property": string }; Returns: Json
                            },
@@ -1545,6 +1733,9 @@ isOneToOne: false
                            },
 "resend_invitation":
 { Args: { "p_membership": string }; Returns: Json
+                           },
+"resolve_follow_up":
+{ Args: { "p_id": string,"p_resolution": string }; Returns: undefined
                            },
 "respond_viewing":
 { Args: { "p_action": string,"p_ignore_conflict"?: boolean,"p_instructions"?: string,"p_reason"?: string,"p_time"?: string,"p_viewing": string }; Returns: Json
@@ -1565,6 +1756,9 @@ isOneToOne: false
                            },
 "send_message":
 { Args: { "p_body": string,"p_client_ref": string,"p_conversation": string }; Returns: string
+                           },
+"send_tenant_messages":
+{ Args: { "p": Json }; Returns: Json
                            },
 "set_conversation_follow_up":
 { Args: { "p_assign_membership"?: string,"p_conversation": string,"p_stage"?: string,"p_unassign"?: boolean }; Returns: undefined
@@ -1594,6 +1788,16 @@ isOneToOne: false
               "all_properties": boolean,"can_confirm": boolean,"can_correct": boolean,"can_enter_payments": boolean,"can_export": boolean,"can_manage_listings": boolean,"can_manage_tenancies": boolean,"can_view_attachments": boolean,"display_name": string,"email": string,"invite_expires_at": string,"last_active_at": string,"last_sign_in_at": string,"membership_id": string,"open_work": number,"property_ids": (string)[],"property_names": (string)[],"role": string,"status": string,"status_changed_at": string,"submitted_pending": number,"user_id": string
             }[]
                            },
+"tenancy_activity":
+{ Args: { "p_limit"?: number,"p_tenancy": string }; Returns: {
+              "at": string,"detail": string,"kind": string,"ref_id": string,"title": string,"tone": string
+            }[]
+                           },
+"tenancy_payment_record":
+{ Args: { "p_months"?: number,"p_tenancy": string }; Returns: {
+              "amount": number,"days_late": number,"due_date": string,"paid": number,"paid_by_due": number,"period_start": string,"settled_on": string,"state": string
+            }[]
+                           },
 "tenancy_statement":
 { Args: { "p_tenancy": string }; Returns: {
               "balance": number,"charge": number,"description": string,"kind": string,"line_date": string,"payment": number,"ref": string
@@ -1601,6 +1805,11 @@ isOneToOne: false
                            },
 "tenant_access_preview":
 { Args: { "p_token": string }; Returns: Json
+                           },
+"tenant_payment_habits":
+{ Args: { "p_months"?: number,"p_org": string,"p_property"?: string }; Returns: {
+              "avg_days_late": number,"last_paid_on": string,"late": number,"max_days_late": number,"months_due": number,"on_time": number,"on_time_streak": number,"overdue": number,"owed": number,"promises_broken": number,"promises_kept": number,"property_id": string,"property_name": string,"recent": (string)[],"reports": number,"start_date": string,"tenancy_id": string,"tenant_name": string,"unit_id": string,"unit_label": string
+            }[]
                            },
 "tenant_viewing_action":
 { Args: { "p_action": string,"p_reason"?: string,"p_time"?: string,"p_viewing": string }; Returns: undefined
@@ -1611,9 +1820,20 @@ isOneToOne: false
 "update_member_access":
 { Args: { "p": Json,"p_membership": string }; Returns: undefined
                            },
+"update_tenant_contact":
+{ Args: { "p_email": string,"p_phone": string,"p_tenant": string }; Returns: undefined
+                           },
 "viewing_location":
 { Args: { "p_viewing": string }; Returns: {
               "address": string,"confirmed_start": string,"landmark": string,"latitude": number,"longitude": number,"meeting_instructions": string,"property_name": string
+            }[]
+                           },
+"withdraw_payment_report":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
+"workspace_search":
+{ Args: { "p_org": string,"p_q": string }; Returns: {
+              "detail": string,"entry_id": string,"kind": string,"property_id": string,"title": string,"unit_id": string
             }[]
                            }
           }

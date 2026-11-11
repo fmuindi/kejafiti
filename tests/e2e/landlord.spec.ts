@@ -62,5 +62,6 @@ test("import units and tenants, then share a tenancy with the tenant", async ({ 
 
   // Back on the landlord's side, the tenant shows as linked.
   await page.reload();
-  await expect(page.getByText(/can see their rent, balance and statement online/)).toBeVisible();
+  // Scoped to the visible page: Next can keep a hidden copy of the previous render for back-navigation.
+  await expect(page.locator("#main").getByText(/can see their rent, balance and statement online/)).toBeVisible();
 });

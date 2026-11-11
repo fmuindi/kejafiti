@@ -21,6 +21,14 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  // Tunnels (ngrok) may load dev assets; see allowedDevOrigins in the Next docs.
+  allowedDevOrigins: ["*.ngrok-free.app", "*.ngrok-free.dev", "*.ngrok.app", "*.ngrok.dev"],
+  // When sharing a local build through one tunnel, the browser can't reach 127.0.0.1:54321,
+  // so /supabase/* is forwarded to the local Supabase. Only on when SUPABASE_PROXY_TARGET is set.
+  async rewrites() {
+    const target = process.env.SUPABASE_PROXY_TARGET;
+    return target ? [{ source: "/supabase/:path*", destination: `${target}/:path*` }] : [];
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

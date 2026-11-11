@@ -15,7 +15,7 @@ export default async function ActivityPage({ params }: PageProps<"/w/[orgId]/act
   const items = await getUpdates({ orgId });
   const unread = items.filter((i) => !i.read_at).length;
   return (
-    <div className="mx-auto flex max-w-[720px] flex-col gap-5">
+    <div className="mx-auto flex max-w-reading flex-col gap-5">
       <PageHeader icon="bell" title="Updates" meta={unread ? `${unread} new` : "Caught up"} action={unread ? <MarkAllRead orgId={orgId} /> : null} />
       <ActivityList items={items} />
       <UpdateChannels />

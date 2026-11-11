@@ -2,7 +2,9 @@ import "server-only";
 import { after } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { SITE_URL } from "@/lib/env";
-import { formatAmount } from "@/lib/money";
+import { formatDate } from "@/lib/dates";
+import { formatAmount, formatMoney } from "@/lib/money";
+import type { InvoiceDetails, ReminderDetails } from "@/lib/tenant-messages";
 import { CATEGORIES, safeInternalLink } from "@/lib/updates";
 
 // Delivery worker. Business actions only write durable delivery_tasks rows (in the same
@@ -104,9 +106,75 @@ export function renderEmail(t: Task): { subject: string; text: string; html: str
         html: `<p><strong>${escapeHtml(subject)}</strong></p><ul>${a.homes.map((h) => `<li><a href="${SITE_URL}/homes/${encodeURIComponent(h.ref)}">${escapeHtml(line(h))}</a></li>`).join("")}</ul>${more > 0 ? `<p>And ${more} more.</p>` : ""}<p><a href="${escapeHtml(searchUrl)}">See them all</a></p>${footerHtml("alerts")}`,
       };
     }
+    case "tenant_invoice":
+    case "tenant_reminder":
+    case "tenant_message":
+      return renderTenantMessage(t.template, t.payload as TenantPayload);
     default:
       return null;
   }
+}
+
+// Invoices, reminders and messages from a landlord or agent to a tenant (send_tenant_messages).
+type TenantPayload = Partial<InvoiceDetails & ReminderDetails> & {
+  subject: string;
+  body: string | null;
+  ref: string | null;
+  org_name: string;
+  property_name: string;
+  unit_label: string;
+  name: string;
+  sender: string;
+  link: string | null;
+};
+
+function renderTenantMessage(template: string, p: TenantPayload): { subject: string; text: string; html: string } {
+  const home = `${p.property_name}, unit ${p.unit_label}`;
+  const rows: Array<[string, string, boolean?]> = [];
+  let intro: string;
+  if (template === "tenant_invoice") {
+    intro = `Here is invoice ${p.ref} from ${p.org_name} for ${p.period_label}, for ${home}.`;
+    for (const l of p.lines as InvoiceDetails["lines"]) rows.push([l.label, formatMoney(l.amount)]);
+    rows.push([`Charges for ${p.period_label}`, formatMoney(p.period_total), true]);
+    if (p.earlier_balance) rows.push([p.earlier_balance > 0 ? "Earlier balance still owed" : "Credit from earlier payments", formatMoney(Math.abs(p.earlier_balance!))]);
+    rows.push([p.credit ? "Credit in your favour" : `Amount due by ${formatDate(p.due_date)}`, formatMoney(p.credit || p.amount_due), true]);
+  } else if (template === "tenant_reminder") {
+    intro = `This is a reminder from ${p.org_name} that ${formatMoney(p.balance)} is due for ${home}, as of ${formatDate(p.as_of)}.`;
+    for (const l of p.lines as ReminderDetails["lines"]) rows.push([`${l.label} · due ${formatDate(l.due_date)}${l.overdue ? " · overdue" : ""}`, formatMoney(l.outstanding)]);
+    rows.push(["Total due", formatMoney(p.balance), true]);
+  } else {
+    intro = `A message from ${p.org_name} about ${home}:`;
+  }
+  const paid = template === "tenant_message" ? null : `If you've paid recently, thank you. Payments show once ${p.org_name} has checked and confirmed them.`;
+  const url = p.link ? `${SITE_URL}${safeInternalLink(p.link) ?? "/my-rent"}` : null;
+  const footer = `Sent by ${p.sender} for ${p.org_name} through nyumbani. Replies to this email aren't read; contact ${p.org_name} directly with any questions.`;
+
+  const text = [
+    `Hello ${p.name},`,
+    intro,
+    rows.length ? rows.map(([k, v]) => `${k}: ${v}`).join("\n") : null,
+    p.body,
+    paid,
+    url ? `See it online: ${url}` : null,
+    `--\n${footer}`,
+  ].filter(Boolean).join("\n\n");
+
+  const cell = "padding:6px 0;border-bottom:1px solid #e5e5e5";
+  const table = rows.length
+    ? `<table style="border-collapse:collapse;width:100%;max-width:520px">${rows
+        .map(([k, v, strong]) => `<tr><td style="${cell}${strong ? ";font-weight:700" : ""}">${escapeHtml(k)}</td><td style="${cell};text-align:right${strong ? ";font-weight:700" : ""}">${escapeHtml(v)}</td></tr>`)
+        .join("")}</table>`
+    : "";
+  const html = [
+    `<p>Hello ${escapeHtml(p.name)},</p>`,
+    `<p>${escapeHtml(intro)}</p>`,
+    table,
+    p.body ? `<p style="white-space:pre-line">${escapeHtml(p.body)}</p>` : "",
+    paid ? `<p>${escapeHtml(paid)}</p>` : "",
+    url ? `<p><a href="${url}">See it online</a></p>` : "",
+    `<hr><p style="color:#67737c;font-size:13px">${escapeHtml(footer)}</p>`,
+  ].join("");
+  return { subject: p.subject, text, html };
 }
 
 // Every optional email says why it came and links to the switch that stops it.

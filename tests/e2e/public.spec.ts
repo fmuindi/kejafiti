@@ -54,7 +54,8 @@ test("pages still fit a phone screen at 200% text size", async ({ page }) => {
   for (const path of ["/", "/search", "/help", "/sign-in"]) {
     await page.goto(path);
     await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    // Against the screen width: phone emulation widens the layout viewport to fit overflow.
+    const overflow = await page.evaluate((w) => document.documentElement.scrollWidth - w, page.viewportSize()!.width);
     expect(overflow, `${path} scrolls sideways at 200% text`).toBeLessThanOrEqual(1);
   }
 });

@@ -9,8 +9,8 @@ import { formatAmount } from "@/lib/money";
 function Row({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
   return (
     <div className={`flex items-baseline justify-between gap-4 py-2 ${strong ? "font-semibold" : ""}`}>
-      <dt className="text-[0.9375rem]">{label}</dt>
-      <dd className="font-mono text-[0.9375rem]">{value}</dd>
+      <dt className="text-body">{label}</dt>
+      <dd className="tabular-nums text-body">{value}</dd>
     </div>
   );
 }
@@ -38,13 +38,13 @@ export function CostBreakdown({
   const monthlyCharges = c.monthlyLines.reduce((s, l) => s + (l.amount ?? 0), 0);
 
   return (
-    <section aria-labelledby="costs" className="overflow-hidden rounded-[20px] border border-line bg-surface">
+    <section aria-labelledby="costs" className="surface overflow-hidden">
       <div className="px-4 pt-4 pb-2">
         <div className="flex items-baseline justify-between">
-          <h2 id="costs" className="font-display text-[1.125rem] font-bold">
+          <h2 id="costs" className="heading-section">
             What you&apos;ll pay
           </h2>
-          <span className="text-[0.78125rem] text-muted">KES{basis ? ` · ${basis}` : ""}</span>
+          <span className="text-caption text-muted">KES{basis ? ` · ${basis}` : ""}</span>
         </div>
         <dl className="mt-1 divide-y divide-divider">
           <Row label={`${period === "month" ? "Monthly" : `Per ${period}`} rent`} value={formatAmount(rent)} />
@@ -61,43 +61,43 @@ export function CostBreakdown({
       <div className="bg-ink px-4 py-3 text-white">
         <dl className="divide-y divide-white/15">
           <div className="flex items-baseline justify-between gap-4 py-1.5">
-            <dt className="text-[0.90625rem]">
+            <dt className="text-body">
               Deposit
               {depositMonths ? ` (${depositMonths} month${depositMonths === 1 ? "" : "s"}' rent)` : ""}
             </dt>
-            <dd className="font-mono text-[0.90625rem]">{formatAmount(c.deposit)}</dd>
+            <dd className="tabular-nums text-body">{formatAmount(c.deposit)}</dd>
           </div>
           {monthlyPrice ? (
             <div className="flex items-baseline justify-between gap-4 py-1.5">
-              <dt className="text-[0.90625rem]">First month{c.monthlyLines.length ? " (rent + charges)" : ""}</dt>
-              <dd className="font-mono text-[0.90625rem]">{formatAmount(c.fixedMonthly)}</dd>
+              <dt className="text-body">First month{c.monthlyLines.length ? " (rent + charges)" : ""}</dt>
+              <dd className="tabular-nums text-body">{formatAmount(c.fixedMonthly)}</dd>
             </div>
           ) : null}
           {c.oneOffLines.map((l) => (
             <div key={l.label} className="flex items-baseline justify-between gap-4 py-1.5">
-              <dt className="text-[0.90625rem]">{l.label}</dt>
-              <dd className="font-mono text-[0.90625rem]">{l.amount === null ? "Not confirmed" : formatAmount(l.amount)}</dd>
+              <dt className="text-body">{l.label}</dt>
+              <dd className="tabular-nums text-body">{l.amount === null ? "Not confirmed" : formatAmount(l.amount)}</dd>
             </div>
           ))}
           {monthlyPrice ? (
             <div className="flex items-baseline justify-between gap-4 pt-2.5">
               <dt className="font-semibold">Move-in total</dt>
-              <dd className="font-display text-[1.625rem] font-extrabold">{formatAmount(c.moveIn)}</dd>
+              <dd className="font-display text-title-lg font-extrabold">{formatAmount(c.moveIn)}</dd>
             </div>
           ) : (
-            <p className="pt-2.5 text-[0.875rem]">
+            <p className="pt-2.5 text-label">
               No move-in total: rent is charged per {period} and charges are monthly, and we don&apos;t convert between them. Confirm your first payment with the advertiser.
             </p>
           )}
         </dl>
         {!c.complete ? (
-          <p className="mt-1 text-[0.8125rem] font-semibold text-[#ffd59a]">
+          <p className="mt-1 text-caption font-semibold text-waiting-on-dark">
             Total incomplete: {c.unconfirmed.length ? `${c.unconfirmed.join(", ")} not confirmed` : "a charge is not confirmed"}.
           </p>
         ) : null}
       </div>
       {c.billedSeparately.length || c.included.length || c.unconfirmed.length ? (
-        <div className="space-y-1 px-4 py-3 text-[0.875rem]">
+        <div className="space-y-1 px-4 py-3 text-label">
           {c.billedSeparately.length ? (
             <p>
               <span className="font-semibold">Billed separately:</span> {c.billedSeparately.join(", ")}

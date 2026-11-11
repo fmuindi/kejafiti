@@ -39,24 +39,24 @@ export default async function TenantThreadPage({ params }: PageProps<"/messages/
 
   return (
     <LiveConversation conversationId={id} userId={user.id} side="tenant">
-    <div className="mx-auto flex max-w-[720px] flex-col gap-4 px-4 pt-4 pb-6">
+    <div className="mx-auto flex max-w-reading flex-col gap-4 px-4 pt-4 pb-6">
       <BackLink href="/messages">Messages</BackLink>
       <div className="flex items-center gap-3">
         <Avatar name={meta?.org_name ?? "?"} size={44} />
         <div className="min-w-0">
-          <h1 className="truncate font-display text-[1.25rem] font-bold">{meta?.org_name ?? "Conversation"}</h1>
-          <p className="flex flex-wrap items-center gap-x-2 text-[0.8125rem] text-muted">
+          <h1 className="heading-compact truncate">{meta?.org_name ?? "Conversation"}</h1>
+          <p className="flex flex-wrap items-center gap-x-2 text-caption text-muted">
             {ADVERTISER_ROLE_LABEL[meta?.advertiser_role ?? ""] ?? "Advertiser"}
             <PeerStatus className="before:mr-0.5 before:text-muted before:content-['·']" />
           </p>
         </div>
       </div>
       {meta?.listing_ref ? (
-        <Link href={`/homes/${meta.listing_ref}`} className="flex items-center gap-3 rounded-[14px] border border-line bg-surface p-3 hover:border-ink">
-          <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-[12px] bg-cool text-deep"><Icon name="home" size={18} /></span>
+        <Link href={`/homes/${meta.listing_ref}`} className="surface flex items-center gap-3 p-3 hover:border-ink">
+          <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-control bg-cool text-deep"><Icon name="home" size={18} /></span>
           <span className="min-w-0 flex-1">
             <span className="block truncate font-semibold">{meta.listing_title ?? meta.area}</span>
-            <span className="text-[0.8125rem] text-muted">
+            <span className="text-caption text-muted">
               {listing?.rent_amount ? `KES ${formatAmount(listing.rent_amount)} / month` : meta.area}
               {meta.listing_status !== "published" ? <span className="font-semibold text-error"> · unavailable</span> : null}
             </span>
@@ -65,7 +65,7 @@ export default async function TenantThreadPage({ params }: PageProps<"/messages/
         </Link>
       ) : null}
       {viewing ? (
-        <div id="viewing" className="flex scroll-mt-24 flex-col gap-3 rounded-[14px] border border-line bg-surface p-3.5 text-[0.875rem] target:border-primary target:ring-4 target:ring-primary/15">
+        <div id="viewing" className="surface flex scroll-mt-24 flex-col gap-3 p-3.5 text-label target:border-primary target:ring-4 target:ring-primary/15">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="flex items-center gap-2 font-semibold"><Icon name="calendar" size={18} className="text-primary" /> {formatAppointment(viewing.confirmed_start ?? viewing.proposed_start ?? viewing.requested_start)}</span>
             <StatusBadge tone={TENANT_LABEL[viewing.state]?.tone ?? "neutral"}>{(TENANT_LABEL[viewing.state]?.label ?? "Pending").split(" · ")[0]}</StatusBadge>
@@ -88,7 +88,7 @@ export default async function TenantThreadPage({ params }: PageProps<"/messages/
       ) : null}
       <Thread userId={user.id} conversationId={id} messages={messages} peerName={meta?.org_name ?? "The advertiser"} />
       {listing?.advertiser?.call && listing.advertiser.phone ? (
-        <a href={`tel:${listing.advertiser.phone}`} className="inline-flex items-center justify-center gap-2 self-center text-[0.875rem] font-semibold text-muted hover:text-ink">
+        <a href={`tel:${listing.advertiser.phone}`} className="inline-flex items-center justify-center gap-2 self-center text-label font-semibold text-muted hover:text-ink">
           <Icon name="phone" size={16} /> Call instead
         </a>
       ) : null}

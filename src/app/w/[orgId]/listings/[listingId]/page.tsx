@@ -33,6 +33,9 @@ export default async function ListingWizardPage({ params, searchParams }: PagePr
   // Same checks submit_listing applies, with the step and field that fix each one (IMP-13).
   const { data: issues } = await supabase.rpc("listing_problem_items", { p_listing: listingId });
   const { data: org } = await supabase.from("organizations").select("contact_phone").eq("id", orgId).maybeSingle();
+  const { data: source } = l.copied_from
+    ? await supabase.from("listings").select("ref, units(label), listing_charges(count)").eq("id", l.copied_from).maybeSingle()
+    : { data: null };
 
   const editable = ["draft", "needs_correction", "published", "paused"].includes(l.status);
   const stepParam = Number(Array.isArray(sp.step) ? sp.step[0] : sp.step);
@@ -101,10 +104,18 @@ export default async function ListingWizardPage({ params, searchParams }: PagePr
       house_rules: l.house_rules ?? "",
     },
     issues: (issues ?? []) as unknown as WizardData["issues"],
+    copiedFrom: source
+      ? {
+          ref: source.ref,
+          unitLabel: (source.units as unknown as { label: string } | null)?.label ?? "",
+          charges: (source.listing_charges as unknown as Array<{ count: number }>)?.[0]?.count ?? 0,
+          buildingPhotos: photos.filter((p) => p.media_label === "building").length,
+        }
+      : null,
   };
 
   return (
-    <div className="mx-auto flex max-w-[680px] flex-col gap-4">
+    <div className="mx-auto flex max-w-reading flex-col gap-5">
       <BackLink href={`/w/${orgId}/properties/${l.property_id}`}>{String(property.name)}</BackLink>
       {l.status !== "draft" ? <ListingStatusPanel orgId={orgId} listingId={listingId} status={l.status} refId={l.ref} confirmedAt={l.availability_confirmed_at} reviewNote={l.review_note} /> : null}
       {editable ? (

@@ -5,7 +5,7 @@ import { PrintButton } from "@/components/rent/print-button";
 import { AI } from "@/lib/ai/config";
 import { ReportView, type ReportSnapshot } from "@/components/rent/report-view";
 import { Icon } from "@/components/ui/icon";
-import { EmptyState, Notice } from "@/components/ui/primitives";
+import { EmptyState, Notice, buttonClass } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
 import { addMonths, currentPeriod, formatDateTime, formatPeriod, parsePeriodParam, periodParam } from "@/lib/dates";
 import { getVisibleProperties } from "@/lib/rent/queries";
@@ -53,45 +53,45 @@ export default async function ReportsPage({ params, searchParams }: PageProps<"/
     <div className="flex flex-col gap-5">
       <PageHeader icon="file" title="Reports" />
       <form className="flex flex-wrap items-end gap-2" aria-label="Report filters">
-        <label className="flex flex-col gap-1 text-[0.8125rem] text-muted">
+        <label className="flex flex-col gap-1 text-caption text-muted">
           Property
-          <select name="property" defaultValue={propertyId} className="min-h-11 rounded-[12px] border border-line bg-surface px-3 text-[0.90625rem] font-semibold text-ink">
+          <select name="property" defaultValue={propertyId} className="min-h-11 rounded-control border border-line bg-surface px-3 text-body font-semibold text-ink">
             {properties.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-[0.8125rem] text-muted">
+        <label className="flex flex-col gap-1 text-caption text-muted">
           Period
-          <select name="period" defaultValue={periodParam(period)} className="min-h-11 rounded-[12px] border border-line bg-surface px-3 text-[0.90625rem] font-semibold text-ink">
+          <select name="period" defaultValue={periodParam(period)} className="min-h-11 rounded-control border border-line bg-surface px-3 text-body font-semibold text-ink">
             {Array.from({ length: 12 }, (_, i) => addMonths(currentPeriod(), -i)).map((p) => <option key={p} value={periodParam(p)}>{formatPeriod(p)}</option>)}
           </select>
         </label>
-        <button type="submit" className="min-h-11 rounded-[12px] bg-ink px-4 text-[0.90625rem] font-semibold text-white">Show</button>
+        <button type="submit" className={buttonClass("dark", "md")}>Show</button>
       </form>
 
       {(versions ?? []).length ? (
-        <section aria-labelledby="versions" className="rounded-[18px] border border-line bg-surface p-4">
-          <h2 id="versions" className="font-display text-[1.125rem] font-bold">Finalized versions</h2>
+        <section aria-labelledby="versions" className="surface p-4">
+          <h2 id="versions" className="heading-section">Finalized versions</h2>
           <ul className="mt-2 divide-y divide-divider">
             {(versions ?? []).map((v) => (
-              <li key={v.id} className="flex flex-wrap items-center justify-between gap-3 py-2.5 text-[0.875rem]">
+              <li key={v.id} className="flex flex-wrap items-center justify-between gap-3 py-2.5 text-label">
                 <span>
                   <strong>v{v.version}</strong> · {formatDateTime(v.finalized_at)} · {people?.find((p) => p.id === v.prepared_by)?.full_name ?? "staff"}
-                  {v.change_note ? <span className="block text-[0.8125rem] text-muted">Reason: &quot;{v.change_note}&quot;</span> : null}
+                  {v.change_note ? <span className="block text-caption text-muted">Reason: &quot;{v.change_note}&quot;</span> : null}
                   {(() => {
                     // Concise change summary against the version before it (IMP-18).
                     const prev = (versions ?? []).find((x) => x.version === v.version - 1);
                     const d = summaryDiff(prev?.summary as Summary | null, v.summary as Summary | null);
-                    return prev ? <span className="block text-[0.8125rem] text-muted">{d.length ? `Since v${prev.version}: ${d.join(" · ")}` : `Same totals as v${prev.version}`}</span> : null;
+                    return prev ? <span className="block text-caption text-muted">{d.length ? `Since v${prev.version}: ${d.join(" · ")}` : `Same totals as v${prev.version}`}</span> : null;
                   })()}
                 </span>
                 <span className="flex gap-3 font-semibold">
-                  <Link href={`/w/${orgId}/reports/${v.id}`} className="text-primary underline">View final / PDF</Link>
-                  {ws.can_export ? <a href={`/api/export/report?version=${v.id}`} className="text-primary underline">CSV</a> : null}
+                  <Link href={`/w/${orgId}/reports/${v.id}`} className="link-action">View final / PDF</Link>
+                  {ws.can_export ? <a href={`/api/export/report?version=${v.id}`} className="link-action">CSV</a> : null}
                 </span>
               </li>
             ))}
           </ul>
-          <p className="mt-2 text-[0.78125rem] text-muted">Finalized versions never change. A later correction produces a new version with a change note.</p>
+          <p className="mt-2 text-caption text-muted">Finalized versions never change. A later correction produces a new version with a change note.</p>
         </section>
       ) : null}
 
@@ -104,7 +104,7 @@ export default async function ReportsPage({ params, searchParams }: PageProps<"/
             <FinalizeReport orgId={orgId} propertyId={propertyId} propertyName={snapshot.property.name} period={period} nextVersion={(versions?.[0]?.version ?? 0) + 1} review={pre as unknown as PreFinalize} aiCommentary={AI.assistEnabled("report_commentary")} />
           ) : null}
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="flex items-center gap-2 text-[0.875rem] font-semibold">
+            <p className="flex items-center gap-2 text-label font-semibold">
               <Icon name="eye" size={16} /> DRAFT preview: live from confirmed records, not saved and may change
             </p>
             <PrintButton label="Print draft" />

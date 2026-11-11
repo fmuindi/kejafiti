@@ -14,13 +14,13 @@ type Geo = "asking" | "on" | "denied" | "unavailable";
 
 const homeIcon = L.divIcon({
   className: "",
-  html: '<div class="grid size-10 place-items-center rounded-full border-[3px] border-white bg-primary text-white shadow-lg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></svg></div>',
+  html: '<div class="grid size-10 place-items-center rounded-full border-[3px] border-white bg-primary text-white shadow-raised"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></svg></div>',
   iconSize: [40, 40],
   iconAnchor: [20, 20],
 });
 const meIcon = L.divIcon({
   className: "",
-  html: '<div class="size-[18px] rounded-full border-[3px] border-white bg-deep shadow-[0_0_0_6px_rgba(0,79,113,0.25)]"></div>',
+  html: '<div class="size-[18px] rounded-full border-[3px] border-white bg-deep ring-6 ring-deep/25"></div>',
   iconSize: [18, 18],
   iconAnchor: [9, 9],
 });
@@ -92,9 +92,9 @@ export default function LiveMap({ lat, lng, label }: { lat: number; lng: number;
   return (
     <figure className="flex flex-col gap-2">
       <div className="relative">
-        <div ref={el} role="img" aria-label={`Map with ${label} and your location`} className="z-0 h-[52vh] max-h-[460px] min-h-[300px] w-full overflow-hidden rounded-[14px] border border-line" />
+        <div ref={el} role="img" aria-label={`Map with ${label} and your location`} className="z-0 h-[52vh] max-h-[460px] min-h-[300px] w-full overflow-hidden rounded-card border border-line" />
         <div className="pointer-events-none absolute inset-x-2 top-2 z-[400] flex justify-center">
-          <p role="status" aria-live="polite" className="pointer-events-auto rounded-full bg-surface px-3.5 py-1.5 text-[0.875rem] font-semibold shadow-md">
+          <p role="status" aria-live="polite" className="pointer-events-auto rounded-full bg-surface px-3.5 py-1.5 text-label font-semibold shadow-raised">
             {metres !== null
               ? distanceText(metres)
               : geo === "asking"
@@ -109,7 +109,7 @@ export default function LiveMap({ lat, lng, label }: { lat: number; lng: number;
         {fix ? <Button type="button" size="sm" variant="secondary" onClick={showBoth}>Show me and the home</Button> : null}
         <Button type="button" size="sm" variant="secondary" onClick={showHome}>Centre on the home</Button>
       </div>
-      <figcaption className="text-[0.78125rem] text-muted">
+      <figcaption className="text-caption text-muted">
         {geo === "denied" ? "To see yourself on the map, allow location for this site in your browser settings. " : null}
         The line is a straight line; use Google Maps for the road route. Your location stays on this phone and isn&apos;t shared.
       </figcaption>

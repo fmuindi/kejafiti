@@ -44,10 +44,10 @@ export function UnitsTable({ orgId, propertyId, rows, canListings, canTenancies 
   return (
     <section aria-labelledby="units" className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id="units" className="font-display text-[1.25rem] font-bold">Units</h2>
+        <h2 id="units" className="heading-section">Units</h2>
         {canListings && chosen.length ? (
-          <div className="flex flex-wrap items-center gap-2 rounded-[12px] bg-ink p-1.5 text-white">
-            <span className="px-2 text-[0.875rem] font-semibold">{chosen.length} selected</span>
+          <div className="flex flex-wrap items-center gap-2 rounded-control bg-ink p-1.5 text-white">
+            <span className="px-2 text-label font-semibold">{chosen.length} selected</span>
             <Button size="sm" variant="secondary" pending={pending} onClick={() => start(async () => {
               const r = await confirmStillAvailable(orgId, chosen.map((c) => c.listing!.id));
               setResult(r.ok ? `${r.data.filter((x) => x.ok).length} of ${chosen.length} confirmed still available` : r.message);
@@ -65,13 +65,13 @@ export function UnitsTable({ orgId, propertyId, rows, canListings, canTenancies 
       </div>
       {result ? <Notice tone="success" role="status">{result}</Notice> : null}
       {rows.length === 0 ? (
-        <p className="rounded-[16px] border border-dashed border-line bg-surface p-6 text-center text-[0.875rem] text-muted">No units yet. Add them below.</p>
+        <p className="surface-empty p-6 text-center">No units yet. Add them below.</p>
       ) : (
-        <div className="overflow-x-auto rounded-[16px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Units (scrolls sideways)">
-          <table className="w-full min-w-[720px] text-[0.90625rem]">
+        <div className="surface overflow-x-auto" tabIndex={0} role="region" aria-label="Units (scrolls sideways)">
+          <table className="w-full min-w-[720px] text-body">
             <caption className="sr-only">Units, occupancy and listing status</caption>
             <thead>
-              <tr className="border-b border-line text-left font-mono text-[0.75rem] tracking-[0.4px] text-muted uppercase">
+              <tr className="border-b border-line text-left font-mono text-micro tracking-caps text-muted uppercase">
                 <th scope="col" className="w-10 px-3 py-2.5"><span className="sr-only">Select</span></th>
                 <th scope="col" className="px-3 py-2.5 font-medium">Unit</th>
                 <th scope="col" className="px-3 py-2.5 font-medium">Layout</th>
@@ -97,23 +97,23 @@ export function UnitsTable({ orgId, propertyId, rows, canListings, canTenancies 
                     </td>
                     <td className="px-3 py-3 font-mono font-medium">{r.label}</td>
                     <td className="px-3 py-3">{layoutLabel(r)}</td>
-                    <td className="px-3 py-3 text-right font-mono">{r.rent ? formatAmount(r.rent) : "—"}</td>
+                    <td className="px-3 py-3 text-right tabular-nums">{r.rent ? formatAmount(r.rent) : "—"}</td>
                     <td className="px-3 py-3">{OCCUPANCY[r.occupancy as Occupancy]}{r.occupancyDate && r.occupancy !== "occupied" ? ` · ${formatDate(r.occupancyDate, { year: false })}` : ""}</td>
                     <td className="px-3 py-3">{ls ? <StatusBadge tone={ls.tone}>{ls.text}</StatusBadge> : <span className="text-muted">Not listed</span>}</td>
                     <td className={cx("px-3 py-3", stale && "font-semibold text-waiting")}>
                       {r.listing?.confirmedAt ? `${formatDate(r.listing.confirmedAt, { year: false })}${stale ? " · reconfirm" : ""}` : "—"}
                     </td>
                     <td className="px-3 py-3">
-                      <div className="flex flex-wrap gap-3 text-[0.84375rem] font-semibold">
+                      <div className="flex flex-wrap gap-3 text-label font-semibold">
                         {r.listing && canListings ? (
-                          <Link href={`/w/${orgId}/listings/${r.listing.id}`} className="text-primary underline">
+                          <Link href={`/w/${orgId}/listings/${r.listing.id}`} className="link-action">
                             {r.listing.status === "draft" ? "Finish draft" : r.listing.status === "needs_correction" ? "Fix listing" : "Listing"}
                           </Link>
                         ) : canListings && r.occupancy !== "occupied" ? (
-                          <Link href={`/w/${orgId}/listings/new?unit=${r.id}`} className="underline">List it</Link>
+                          <Link href={`/w/${orgId}/listings/new?unit=${r.id}`} className="link-action">List it</Link>
                         ) : null}
                         {r.listing?.enquiries ? <Link href={`/w/${orgId}/enquiries`} className="text-waiting underline">{r.listing.enquiries} enquir{r.listing.enquiries === 1 ? "y" : "ies"}</Link> : null}
-                        <Link href={`/w/${orgId}/rent/${propertyId}/units/${r.id}`} className="underline">{canTenancies ? "Tenancy" : "Rent"}</Link>
+                        <Link href={`/w/${orgId}/rent/${propertyId}/units/${r.id}`} className="link-action">{canTenancies ? "Tenancy" : "Rent"}</Link>
                       </div>
                     </td>
                   </tr>

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Button, cx } from "@/components/ui/primitives";
+import { Button, cx, InlineError } from "@/components/ui/primitives";
 
 // AI-01 + AI-02: search by voice. A floating mic; one tap opens it and starts listening, it stops
 // by itself when the person stops talking, and the results open with the filters set. English,
@@ -277,7 +277,7 @@ export function VoiceSearch({ currentQuery = "", serverVoice }: { currentQuery?:
           ref={panel}
           role="dialog"
           aria-label="Voice search"
-          className="fixed inset-x-3 bottom-[calc(142px+env(safe-area-inset-bottom))] z-40 mx-auto flex max-w-[420px] flex-col items-center gap-3 rounded-[22px] border border-line bg-surface p-5 pt-6 text-center shadow-[0_18px_50px_rgba(16,24,32,0.22)] md:inset-x-auto md:right-8 md:bottom-28 md:w-[380px]"
+          className="fixed inset-x-3 bottom-[calc(142px+env(safe-area-inset-bottom))] z-40 mx-auto flex max-w-narrow flex-col items-center gap-3 rounded-panel border border-line bg-surface p-5 pt-6 text-center shadow-overlay md:inset-x-auto md:right-8 md:bottom-28 md:w-[380px]"
         >
           <button type="button" onClick={close} aria-label="Close voice search" className="absolute top-2.5 right-2.5 grid size-9 place-items-center rounded-full text-muted hover:bg-cool hover:text-ink">
             {closeIcon}
@@ -288,12 +288,12 @@ export function VoiceSearch({ currentQuery = "", serverVoice }: { currentQuery?:
               {working ? <Spinner /> : <MicIcon size={30} />}
             </span>
           </div>
-          <p role="status" aria-live="polite" className="font-display text-[1.1875rem] font-bold">{title}</p>
+          <p role="status" aria-live="polite" className="font-display text-lead font-bold">{title}</p>
           {listening ? (
-            <p className="-mt-2 text-[0.875rem] text-muted">{refine ? "Say what to change, like “make it 25k”." : "Say what you're looking for, like “bedsitter in Ruaka under 15k”."}</p>
+            <p className="-mt-2 text-label text-muted">{refine ? "Say what to change, like “make it 25k”." : "Say what you're looking for, like “bedsitter in Ruaka under 15k”."}</p>
           ) : null}
-          {words && (phase === "searching" || phase === "question") ? <p className="-mt-2 text-[0.875rem] text-muted">&ldquo;{words}&rdquo;</p> : null}
-          {phase === "error" && message ? <p role="alert" className="-mt-1 text-[0.90625rem] font-semibold text-error">{message}</p> : null}
+          {words && (phase === "searching" || phase === "question") ? <p className="-mt-2 text-label text-muted">&ldquo;{words}&rdquo;</p> : null}
+          {phase === "error" && message ? <InlineError className="-mt-1">{message}</InlineError> : null}
           {listening ? (
             <Button type="button" data-autofocus onClick={finish} className="w-full">Done</Button>
           ) : null}
@@ -330,11 +330,11 @@ export function VoiceSearch({ currentQuery = "", serverVoice }: { currentQuery?:
         aria-expanded={open}
         title={open ? undefined : "Search by voice"}
         className={cx(
-          "no-print fixed right-4 bottom-[calc(74px+env(safe-area-inset-bottom))] z-40 grid size-[58px] place-items-center rounded-full text-white shadow-[0_10px_28px_rgba(16,24,32,0.28)] transition hover:scale-105 focus-visible:ring-4 focus-visible:ring-deep/40 focus-visible:outline-none md:right-8 md:bottom-8 md:size-16",
+          "no-print fixed right-4 bottom-[calc(74px+env(safe-area-inset-bottom))] z-40 grid size-[58px] place-items-center rounded-full text-white shadow-float transition hover:scale-105 focus-visible:ring-4 focus-visible:ring-deep/40 focus-visible:outline-none md:right-8 md:bottom-8 md:size-16",
           listening ? "bg-ink" : "bg-primary",
         )}
       >
-        {listening ? <span className="block size-5 rounded-[4px] bg-white" aria-hidden="true" /> : open ? closeIcon : <MicIcon size={26} />}
+        {listening ? <span className="block size-5 rounded-chip bg-white" aria-hidden="true" /> : open ? closeIcon : <MicIcon size={26} />}
       </button>
     </>
   );

@@ -45,7 +45,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-dvh antialiased">
         <a
           href="#main"
-          className="sr-only z-50 rounded-[10px] bg-ink px-4 py-3 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+          className="sr-only z-50 rounded-control bg-ink px-4 py-3 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
         >
           Skip to content
         </a>

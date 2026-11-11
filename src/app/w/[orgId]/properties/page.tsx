@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
-import { ButtonLink, EmptyState } from "@/components/ui/primitives";
+import { ButtonLink, EmptyState, Notice } from "@/components/ui/primitives";
 import { isOrgAdmin, requireWorkspace } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/shell/page-header";
@@ -23,20 +23,20 @@ export default async function PropertiesPage({ params, searchParams }: PageProps
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <PageHeader icon="building" title="Properties" />
-          <p className="mt-1 text-[0.90625rem] text-muted">Buildings and their units. Listings and rent records use the same units.</p>
+          <p className="mt-1 text-body text-muted">Buildings and their units. Listings and rent records use the same units.</p>
         </div>
         <div className="flex gap-2">
           {isOrgAdmin(ws) ? <ButtonLink href={`/w/${orgId}/properties/new`} variant="secondary" icon="plus">Add property</ButtonLink> : null}
           {ws.can_manage_listings ? <ButtonLink href={`/w/${orgId}/listings/new`} icon="plus">List a home</ButtonLink> : null}
         </div>
       </div>
-      <form role="search" className="flex min-h-[50px] items-center gap-2 rounded-[12px] border border-input bg-surface px-3 focus-within:ring-2 focus-within:ring-deep/40">
+      <form role="search" className="flex min-h-field items-center gap-2 rounded-control border border-input bg-surface px-3 focus-within:ring-2 focus-within:ring-deep/40">
         <Icon name="search" className="text-muted" />
         <label htmlFor="q" className="sr-only">Search property or area</label>
-        <input id="q" name="q" defaultValue={q} placeholder="Search property or area" className="min-w-0 flex-1 bg-transparent text-[1rem] focus:outline-none" />
+        <input id="q" name="q" defaultValue={q} placeholder="Search property or area" className="min-w-0 flex-1 bg-transparent text-base focus:outline-none" />
       </form>
       {error ? (
-        <p role="alert" className="text-error">We couldn&apos;t load your properties. Reload to try again.</p>
+        <Notice tone="error" role="alert">We couldn&apos;t load your properties. Reload to try again.</Notice>
       ) : !properties?.length ? (
         <EmptyState title={q ? "No properties match" : "No properties yet"} icon="building" action={isOrgAdmin(ws) && !q ? <ButtonLink href={`/w/${orgId}/properties/new`}>Add a property</ButtonLink> : undefined}>
           {q ? "Try another name or area." : "Add a building with its units, or use List a home for a single house."}
@@ -50,12 +50,12 @@ export default async function PropertiesPage({ params, searchParams }: PageProps
             const published = listings.filter((l) => l.status === "published").length;
             return (
               <li key={p.id}>
-                <Link href={`/w/${orgId}/properties/${p.id}`} className="flex flex-col gap-1.5 rounded-[18px] border border-line bg-surface p-4 hover:border-ink">
-                  <span className="flex items-center justify-between font-display text-[1.1875rem] font-bold">
+                <Link href={`/w/${orgId}/properties/${p.id}`} className="surface flex flex-col gap-1.5 p-4 hover:border-ink">
+                  <span className="flex items-center justify-between font-display text-lead font-bold">
                     {p.name} <Icon name="chevronRight" className="text-muted" />
                   </span>
-                  <span className="text-[0.84375rem] text-muted">{[p.area, p.road].filter(Boolean).join(", ")}</span>
-                  <span className="text-[0.875rem]">
+                  <span className="text-label text-muted">{[p.area, p.road].filter(Boolean).join(", ")}</span>
+                  <span className="text-label">
                     {units.length} unit{units.length === 1 ? "" : "s"} · {vacant} vacant · {published} published
                   </span>
                 </Link>

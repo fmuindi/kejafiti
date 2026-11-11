@@ -123,7 +123,7 @@ export function PlaceAutocomplete({ enabled, value, onChange, onPlace, fallback 
         }}
       />
       {shown.length ? (
-        <div className="absolute inset-x-0 top-full z-30 mt-1 overflow-hidden rounded-[14px] border border-line bg-surface shadow-lg">
+        <div className="surface absolute inset-x-0 top-full z-30 mt-1 overflow-hidden shadow-raised">
           <ul id={listId} role="listbox" aria-label="Suggested places">
             {shown.map((s, i) => (
               <li
@@ -137,15 +137,15 @@ export function PlaceAutocomplete({ enabled, value, onChange, onPlace, fallback 
                 onMouseEnter={() => setActive(i)}
                 className={cx("flex cursor-pointer items-start gap-2.5 px-3.5 py-2.5 text-left", i === active ? "bg-cool" : "")}
               >
-                <Icon name="pin" size={17} className="mt-0.5 shrink-0 text-muted" />
+                <Icon name="pin" size={18} className="mt-0.5 shrink-0 text-muted" />
                 <span className="min-w-0">
-                  <span className="block truncate text-[0.9375rem] font-semibold text-ink">{s.main}</span>
-                  {s.secondary ? <span className="block truncate text-[0.8125rem] font-normal text-muted">{s.secondary}</span> : null}
+                  <span className="block truncate text-body font-semibold text-ink">{s.main}</span>
+                  {s.secondary ? <span className="block truncate text-caption font-normal text-muted">{s.secondary}</span> : null}
                 </span>
               </li>
             ))}
           </ul>
-          <p className="border-t border-divider px-3.5 py-1.5 text-right text-[0.71875rem] text-muted">Suggestions from Google Maps</p>
+          <p className="border-t border-divider px-3.5 py-1.5 text-right text-micro text-muted">Suggestions from Google Maps</p>
         </div>
       ) : null}
     </div>

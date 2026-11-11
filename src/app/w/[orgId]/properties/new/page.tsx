@@ -12,10 +12,10 @@ export default async function NewPropertyPage({ params }: PageProps<"/w/[orgId]/
   const ws = await requireWorkspace(orgId, `/w/${orgId}/properties/new`);
   if (!isOrgAdmin(ws)) notFound();
   return (
-    <div className="mx-auto flex max-w-[600px] flex-col gap-4">
+    <div className="mx-auto flex max-w-reading flex-col gap-5">
       <BackLink href={`/w/${orgId}/properties`}>Properties</BackLink>
       <PageHeader icon="building" title="Add a property" />
-      <p className="text-[0.9375rem] text-muted">A building or compound. You&apos;ll add its units next.</p>
+      <p className="text-body text-muted">A building or compound. You&apos;ll add its units next.</p>
       <PropertyForm orgId={orgId} />
     </div>
   );

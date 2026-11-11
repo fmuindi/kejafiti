@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { adjustCharge } from "@/app/w/[orgId]/rent/actions";
 import { MoneyInput, TextInput } from "@/components/ui/form";
-import { Button } from "@/components/ui/primitives";
+import { Button, InlineError } from "@/components/ui/primitives";
 import { formatMoney, parseAmount } from "@/lib/money";
 
 // Waivers, prorating and voids are explicit decisions with a reason; the charge itself is
@@ -35,11 +35,11 @@ export function ChargeAdjust({ orgId, propertyId, chargeId, max }: { orgId: stri
         })
       }
     >
-      <label className="flex flex-col gap-1 text-[0.8125rem] font-semibold">
+      <label className="flex flex-col gap-1 text-caption font-semibold">
         Reduce by
         <MoneyInput name="reduce" className="min-h-11" />
       </label>
-      <label className="flex flex-col gap-1 text-[0.8125rem] font-semibold">
+      <label className="flex flex-col gap-1 text-caption font-semibold">
         Reason
         <TextInput name="reason" required minLength={3} maxLength={200} className="min-h-11" />
       </label>
@@ -49,7 +49,7 @@ export function ChargeAdjust({ orgId, propertyId, chargeId, max }: { orgId: stri
       <Button type="button" size="sm" variant="quiet" onClick={() => setOpen(false)}>
         Cancel
       </Button>
-      {error ? <p role="alert" className="text-[0.8125rem] font-semibold text-error">{error}</p> : null}
+      {error ? <InlineError>{error}</InlineError> : null}
     </form>
   );
 }

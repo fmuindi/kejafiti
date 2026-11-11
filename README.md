@@ -78,6 +78,7 @@ npm install
 npx supabase start          # first run downloads images; applies supabase/migrations
 cp .env.example .env.local  # then paste the values printed by: npx supabase status
 npm run seed:demo           # optional: fictional demo data (the blueprint's Sunrise Apartments example)
+npm run seed:market-demo    # optional: ~55 demo listings modelled on the Nov 2026 market-rate dataset
 npm run dev                 # http://localhost:3200
 ```
 
@@ -122,6 +123,7 @@ insert into public.app_settings (key, value) values ('admin_alert_email', 'you@e
 | `npm run db:reset` | Rebuild the local database from migrations |
 | `npm run db:types` | Regenerate `src/lib/database.types.ts` after schema changes |
 | `npm run seed:demo` | Local demo data (refuses non-local URLs) |
+| `npm run seed:market-demo` | ~55 published demo listings from `data/market-rates/2026-11`: real areas, rents and charges; fictional advertisers, dummy phones, labelled sample images (local only) |
 
 ---
 
@@ -157,12 +159,35 @@ From the blueprint's acceptance tests:
 - **Saved-search alerts**: only homes published since the last alert, never twice, only the job can run them.
 - **Tenant self-view**: link accepted only by the invited email, neighbours' records and staff notes stay hidden,
   removing access hides everything again.
+- **Dashboards and follow-ups**: "who owes" counts only due charges, capped by credit, and never counts submitted
+  payments; follow-ups need rent or tenancy permission, never change a balance and stay inside the team; search and
+  the property position only cover properties the person can see; wildcards in search are literal.
+- **Payment habits**: a month counts as paid only by confirmed payments applied oldest charge first (unallocated
+  credit counts, a reversed payment never did, submitted ones don't yet); on time means covered by the due date; a
+  month waived to nothing is neither paid nor late; only people who can see the property see habits and activity.
+- **Missing-payment reports**: only the tenant on the tenancy can report, a report never changes the balance, only
+  the people who confirm payments are alerted, a report can only be matched to that tenant's own entry (one entry per
+  report), "not found" needs a reason, an answered report can't be changed or withdrawn, and the tenant sees the
+  payment's progress without seeing staff-only entry details.
+- **Tenant communications**: only staff with tenancy permission send, for every tenant in the send; invoices show the
+  month's charges, the earlier balance and the amount due from confirmed records; tenants with no email, no charges
+  that month or nothing owed are skipped with a reason; one reminder a day at most; a retry never sends twice; the
+  tenant sees only their own, and only while they have online access.
 - **Listing edits**: wording, contact or photo changes to a live listing are held for review; price and dates stay live.
+- **Listing another unit**: only details from the same building are copied, never the unit's own facts, title or
+  description; a unit's own answers are never overwritten; rent is suggested only for the same kind of unit; "start
+  blank" copies nothing; building photos are copied as new files, so removing one never affects the other listing.
 - **Spreadsheet import**: dry runs change nothing, imports are all or nothing, every failing row is reported.
 
 Browser tests (`tests/e2e`, run in CI): search and listing under the Content Security Policy, robots/sitemap/manifest
 and share images, layouts at 200% text size, a tenant's saved-search alert arriving by email, and a landlord
-importing units and sharing a tenancy that the tenant then opens.
+importing units and sharing a tenancy that the tenant then opens, and a landlord emailing an invoice, a message
+and a reminder that arrive by email and that the tenant then finds in My rent. The workspace home is checked for
+each role (no sideways scroll on a phone, figures matching Performance, a follow-up reaching the manager's queue).
+The owner goes from the home's payment habits to the tenants who are often late and opens one tenant's twelve months
+and activity. A tenant reports a missing payment that the landlord records from their queue and the tenant sees confirmed, and a
+second one the landlord can't find, with the reason the tenant reads. A second unit in a listed building starts on
+the Home step with the building's costs, viewing details and building photos already filled in.
 
 ---
 
@@ -216,7 +241,10 @@ Operating cost at launch: Supabase Pro (from USD 25/month) plus app hosting (USD
 - **Marketplace**: guided 6-step listing wizard with autosave, structured costs and a live "Tenants will see"
   total, photos (camera or file, resized to a full image plus a thumbnail, labelled actual, building or sample,
   move earlier or later, cover, retry), submit for review, pause, resume, mark let and withdraw, one-tap and bulk
-  "Still available". Search by area, budget (rent only or rent + fixed charges), home type, must-haves with
+  "Still available". **Another unit in a building that has been listed before** skips the location (it is saved on
+  the building) and starts from that building's earlier listing: costs and charges, deposit, contact and viewing
+  details, house rules, building features and building photos, ready to change; staff pick which listing to copy or
+  start blank. Search by area, budget (rent only or rent + fixed charges), home type, must-haves with
   "Include unconfirmed", furnishing, advertiser role, move-in date and category, with sort, pagination, a live
   count in the filter sheet and no-results recovery with real counts. Listing detail with gallery, Yes/No/Unknown
   facts, full cost breakdown, dated checks, report, call and WhatsApp handoff (logged as an attempt only) and an
@@ -234,7 +262,37 @@ Operating cost at launch: Supabase Pro (from USD 25/month) plus app hosting (USD
   by email.
 - **Tenant self-view**: staff with tenancy permission send a tenant a one-time link (unit page → Tenant's online
   access); the tenant sees their tenancy, balance and statement under My rent (confirmed records only, never staff
-  notes). Access can be removed at any time.
+  notes). Access can be removed at any time. Several tenants can be invited at once from the Tenants page.
+- **Workspace home** (manager and landlord dashboard blueprint, 25 Oct 2026): owners and agency admins start from the
+  rent position (billed, covered and outstanding for the month, coverage, overdue across all months), each figure
+  opening the records behind it, then what needs them and the properties side by side. Managers and caretakers start
+  from their work queue: search (unit, tenant, phone, payment reference), Record payment, and cards for reviews,
+  follow-ups due, returned entries and tenants owing. **Who owes** lists every overdue balance with what is being
+  done about it. **Follow-ups** on the unit page record a contact, a promise to pay (by a date) or a reported payment,
+  assigned to a person; they never change a balance.
+- **Payment habits**: how each tenant pays, for managers and owners. On the unit page, twelve rent months in a row
+  (on time, paid late with the days, overdue so far), a plain label (pays on time, usually on time, often late, too new
+  to tell) and the figures behind it: months on time, average and longest days late, the on-time run, promises to pay
+  kept, last payment. An **Activity** timeline brings payments, invoices and reminders, follow-ups, tenant reports and
+  adjustments together, newest first. **Payment habits** (from the home) lists every current tenant with the last six
+  months at a glance, most in need of attention first, filtered by habit, by who is overdue now or by property. The
+  demo seed now includes a year of history with different habits.
+- **Missing payments reported by tenants**: a tenant with online access says "I paid, but it isn't on my statement"
+  (amount, date, M-PESA/bank/cash and the reference) from My rent. The people who confirm payments are alerted and it
+  shows on the home queue. On the unit page staff see the likely matching entry (same reference, or same amount within
+  a week) and either **record it** (the form starts from what the tenant said and the entry answers the report),
+  match it to an entry already recorded, or say they **couldn't find it** and why. The tenant sees "Being checked",
+  "Found · being confirmed", "Confirmed" or "Not found" with the reply. A report is never a payment.
+- **Rent register**: natural unit order (A2 before A10), sort by most owed, due date or latest confirmation, a table
+  view on wider screens and a Vacant filter; filters, search, sort and view stay in the link. **How this balance is
+  made up** (unit page, and My rent for tenants) breaks a balance into what was owed before the month, the month's
+  charges, adjustments, confirmed payments, reversals and later lines, from the statement itself; the rows always add
+  up to the balance.
+- **Tenant communications**: staff with tenancy permission email tenants an **invoice** for a month (charges, earlier
+  balance, amount due; numbered INV-000123), a **reminder** of what is owed, or a **message** (repairs, water cuts,
+  how to pay). One tenant from the unit page, or many from the property's **Tenants** page (filter by who owes, who
+  has no email, who isn't online yet). Each is kept with its figures as sent and shows whether the email went; tenants
+  with online access also find it in My rent with an in-app update. Staff can change a tenant's email and phone.
 - **Spreadsheet import**: units and tenancies from a CSV file or cells pasted from Excel or Google Sheets (property
   page), with a template, a row-by-row check against the real rules, and an all-or-nothing import.
 - **Help and support desk** with tickets and replies; **map**: approximate area map on listings and a live map with

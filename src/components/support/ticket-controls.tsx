@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { adminUpdateTicket } from "@/app/(tenant)/help/actions";
 import { Select } from "@/components/ui/form";
-import { Button } from "@/components/ui/primitives";
+import { Button, InlineError } from "@/components/ui/primitives";
 
 /** Assign, prioritise and change status (IMP-19). Every change is audited in the database. */
 export function TicketControls({ ticketId, status, priority, assigned }: { ticketId: string; status: string; priority: string; assigned: boolean }) {
@@ -19,9 +19,9 @@ export function TicketControls({ ticketId, status, priority, assigned }: { ticke
       router.refresh();
     });
   return (
-    <div className="flex flex-wrap items-end gap-2 rounded-[14px] bg-cool p-3">
+    <div className="flex flex-wrap items-end gap-2 rounded-card bg-cool p-3">
       {!assigned ? <Button size="sm" pending={pending} onClick={() => run({ assign_to_me: true })}>Assign to me</Button> : null}
-      <label className="flex flex-col gap-1 text-[0.8125rem] font-semibold">
+      <label className="flex flex-col gap-1 text-caption font-semibold">
         Priority
         <Select value={priority} onChange={(e) => run({ priority: e.target.value })} className="min-h-10">
           <option value="low">Low</option>
@@ -29,7 +29,7 @@ export function TicketControls({ ticketId, status, priority, assigned }: { ticke
           <option value="high">High</option>
         </Select>
       </label>
-      <label className="flex flex-col gap-1 text-[0.8125rem] font-semibold">
+      <label className="flex flex-col gap-1 text-caption font-semibold">
         Status
         <Select value={status} onChange={(e) => run({ status: e.target.value })} className="min-h-10">
           <option value="open">Open</option>
@@ -38,7 +38,7 @@ export function TicketControls({ ticketId, status, priority, assigned }: { ticke
           <option value="resolved">Resolved</option>
         </Select>
       </label>
-      {error ? <p role="alert" className="w-full text-[0.84375rem] font-semibold text-error">{error}</p> : null}
+      {error ? <InlineError className="w-full">{error}</InlineError> : null}
     </div>
   );
 }

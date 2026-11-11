@@ -18,16 +18,16 @@ type ButtonSize = "md" | "lg" | "sm";
 const buttonBase =
   "inline-flex items-center justify-center gap-2 font-semibold transition-colors disabled:cursor-not-allowed select-none text-center";
 const buttonVariants: Record<ButtonVariant, string> = {
-  primary: "bg-primary text-white hover:bg-primary-hover disabled:bg-[#e8a3b1]",
-  secondary: "bg-surface text-ink border-[1.5px] border-ink hover:bg-cool disabled:border-line disabled:text-muted",
+  primary: "bg-primary text-white hover:bg-primary-hover disabled:bg-primary-disabled",
+  secondary: "bg-surface text-ink border-strong border-ink hover:bg-cool disabled:border-line disabled:text-muted",
   quiet: "bg-transparent text-ink hover:bg-cool disabled:text-muted",
   dark: "bg-ink text-white hover:bg-black disabled:bg-muted",
-  danger: "bg-surface text-error border-[1.5px] border-error hover:bg-error-tint disabled:opacity-60",
+  danger: "bg-surface text-error border-strong border-error hover:bg-error-tint disabled:opacity-60",
 };
 const buttonSizes: Record<ButtonSize, string> = {
-  sm: "min-h-10 px-3.5 text-[0.875rem] rounded-[10px]",
-  md: "min-h-11 px-4 text-[0.9375rem] rounded-[12px]",
-  lg: "min-h-[54px] px-5 text-[1rem] rounded-[14px]",
+  sm: "min-h-10 px-3.5 text-label rounded-control",
+  md: "min-h-11 px-4 text-body rounded-control",
+  lg: "min-h-cta px-5 text-base rounded-card",
 };
 
 export function buttonClass(variant: ButtonVariant = "primary", size: ButtonSize = "md", extra?: string) {
@@ -112,12 +112,12 @@ export function StatusBadge({ tone, children, className, icon }: { tone: Tone; c
   return (
     <span
       className={cx(
-        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[0.78125rem] font-semibold leading-none whitespace-nowrap",
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-caption font-semibold leading-none whitespace-nowrap",
         toneClasses[tone],
         className,
       )}
     >
-      {i ? <Icon name={i} size={13} strokeWidth={2.4} /> : null}
+      {i ? <Icon name={i} size={16} strokeWidth={2.4} /> : null}
       {children}
     </span>
   );
@@ -134,7 +134,7 @@ export function Dot({ tone }: { tone: "success" | "waiting" | "error" }) {
 
 export function Card({ className, children, ...props }: ComponentProps<"div">) {
   return (
-    <div {...props} className={cx("rounded-[16px] border border-line bg-surface", className)}>
+    <div {...props} className={cx("surface", className)}>
       {children}
     </div>
   );
@@ -142,13 +142,13 @@ export function Card({ className, children, ...props }: ComponentProps<"div">) {
 
 export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <p className={cx("font-mono text-[0.75rem] uppercase tracking-[0.6px] text-muted", className)}>{children}</p>
+    <p className={cx("font-mono text-micro uppercase tracking-caps text-muted", className)}>{children}</p>
   );
 }
 
 export function PageTitle({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <h1 className={cx("font-display text-[1.75rem] leading-[1.05] font-bold tracking-[-0.6px] md:text-[2.5rem] md:tracking-[-1.2px]", className)}>
+    <h1 className={cx("heading-page", className)}>
       {children}
     </h1>
   );
@@ -156,7 +156,7 @@ export function PageTitle({ children, className }: { children: ReactNode; classN
 
 export function SectionTitle({ children, className, id }: { children: ReactNode; className?: string; id?: string }) {
   return (
-    <h2 id={id} className={cx("font-display text-[1.125rem] font-bold md:text-[1.25rem]", className)}>
+    <h2 id={id} className={cx("heading-section", className)}>
       {children}
     </h2>
   );
@@ -178,10 +178,10 @@ export function Notice({
   role?: "status" | "alert";
 }) {
   const bg: Record<Tone, string> = {
-    info: "bg-cool border-[#d5e3e8]",
-    success: "bg-success-tint border-[#b9e2db]",
-    waiting: "bg-waiting-tint border-[#f0d9ad]",
-    error: "bg-error-tint border-[#f3c1b8]",
+    info: "bg-cool border-info-line",
+    success: "bg-success-tint border-success-line",
+    waiting: "bg-waiting-tint border-waiting-line",
+    error: "bg-error-tint border-error-line",
     neutral: "bg-surface border-line",
   };
   const iconColor: Record<Tone, string> = {
@@ -193,16 +193,26 @@ export function Notice({
   };
   const i = toneIcon[tone] ?? "info";
   return (
-    <div role={role} className={cx("flex gap-3 rounded-[14px] border p-3.5", bg[tone], className)}>
+    <div role={role} className={cx("flex gap-3 rounded-card border p-3.5", bg[tone], className)}>
       <span className={cx("mt-0.5 shrink-0", iconColor[tone])}>
         <Icon name={i} size={18} strokeWidth={2.2} />
       </span>
-      <div className="min-w-0 flex-1 text-[0.875rem] leading-snug">
+      <div className="min-w-0 flex-1 text-label leading-snug">
         {title ? <p className="font-semibold">{title}</p> : null}
         {children ? <div className={title ? "mt-0.5" : undefined}>{children}</div> : null}
         {action ? <div className="mt-2">{action}</div> : null}
       </div>
     </div>
+  );
+}
+
+/** A failed action, shown next to its button; looks the same as a field's error. */
+export function InlineError({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <p role="alert" className={cx("flex items-start gap-1.5 text-label font-semibold text-error", className)}>
+      <Icon name="alert" size={16} strokeWidth={2.2} className="mt-0.5 shrink-0" />
+      <span>{children}</span>
+    </p>
   );
 }
 
@@ -218,12 +228,12 @@ export function EmptyState({
   icon?: IconName;
 }) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-[18px] border border-dashed border-line bg-surface px-6 py-10 text-center">
+    <div className="flex flex-col items-center gap-3 rounded-card border border-dashed border-line bg-surface px-6 py-10 text-center">
       <span className="grid size-12 place-items-center rounded-full bg-cool text-deep">
-        <Icon name={icon} size={22} />
+        <Icon name={icon} size={24} />
       </span>
-      <p className="font-display text-[1.125rem] font-bold">{title}</p>
-      {children ? <div className="max-w-md text-[0.875rem] text-muted">{children}</div> : null}
+      <p className="font-display text-lead font-bold">{title}</p>
+      {children ? <div className="max-w-md text-label text-muted">{children}</div> : null}
       {action ? <div className="mt-1">{action}</div> : null}
     </div>
   );
@@ -247,8 +257,8 @@ export function LoadingBlock({ label = "Loading…", rows = 3 }: { label?: strin
 export function KeyValue({ label, value, className }: { label: ReactNode; value: ReactNode; className?: string }) {
   return (
     <div className={cx("flex items-baseline justify-between gap-4 py-2", className)}>
-      <dt className="text-[0.875rem] text-muted">{label}</dt>
-      <dd className="text-right text-[0.875rem] font-semibold">{value}</dd>
+      <dt className="text-label text-muted">{label}</dt>
+      <dd className="text-right text-label font-semibold">{value}</dd>
     </div>
   );
 }

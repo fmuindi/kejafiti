@@ -7,31 +7,7 @@
 // Sign in locally with any demo email; the one-time code arrives in Mailpit
 // (http://127.0.0.1:54324). Refuses to run against a non-local Supabase URL.
 
-import { createClient } from "@supabase/supabase-js";
-import { readFileSync } from "node:fs";
-import { deflateSync } from "node:zlib";
-
-function loadEnv() {
-  try {
-    for (const line of readFileSync(".env.local", "utf8").split(/\r?\n/)) {
-      const m = line.match(/^([A-Z0-9_]+)=(.*)$/);
-      if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^"|"$/g, "");
-    }
-  } catch {
-    /* use the process environment */
-  }
-}
-loadEnv();
-
-const URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const PUBLIC_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const SECRET = process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
-if (!URL || !PUBLIC_KEY || !SECRET) throw new Error("Set NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY and SUPABASE_SECRET_KEY");
-if (!/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/.test(URL)) throw new Error(`Refusing to seed a non-local project: ${URL}`);
-
-// Local-only demo password, never used outside this machine's local Supabase.
-const DEMO_PASSWORD = "nyumbani-local-demo";
-const admin = createClient(URL, SECRET, { auth: { persistSession: false, autoRefreshToken: false } });
+import { admin, ensureUser, as, must, placeholderPng } from "./lib/demo.mjs";
 
 const PEOPLE = {
   admin: { email: "admin@nyumbani.test", name: "Platform Admin" },
@@ -43,77 +19,11 @@ const PEOPLE = {
   achieng: { email: "achieng@nyumbani.test", name: "Achieng Otieno" },
 };
 
-async function ensureUser({ email, name }) {
-  const { data: list } = await admin.auth.admin.listUsers({ perPage: 1000 });
-  const found = list?.users?.find((u) => u.email === email);
-  if (found) return found.id;
-  const { data, error } = await admin.auth.admin.createUser({ email, password: DEMO_PASSWORD, email_confirm: true, user_metadata: { full_name: name } });
-  if (error) throw error;
-  return data.user.id;
-}
-
-async function as(person) {
-  const c = createClient(URL, PUBLIC_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
-  const { error } = await c.auth.signInWithPassword({ email: person.email, password: DEMO_PASSWORD });
-  if (error) throw new Error(`${person.email}: ${error.message}`);
-  return c;
-}
-
-function must(label, { data, error }) {
-  if (error) throw new Error(`${label}: ${error.message}`);
-  return data;
-}
-
-// --- tiny PNG generator for labelled placeholder photos (no image dependencies) ----------
-function crc32(buf) {
-  let c, crc = 0xffffffff;
-  for (let n = 0; n < buf.length; n++) {
-    c = (crc ^ buf[n]) & 0xff;
-    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-    crc = (crc >>> 8) ^ c;
-  }
-  return (crc ^ 0xffffffff) >>> 0;
-}
-function chunk(type, data) {
-  const len = Buffer.alloc(4);
-  len.writeUInt32BE(data.length);
-  const td = Buffer.concat([Buffer.from(type), data]);
-  const crc = Buffer.alloc(4);
-  crc.writeUInt32BE(crc32(td));
-  return Buffer.concat([len, td, crc]);
-}
-function placeholderPng(seed, w = 960, h = 600) {
-  const palettes = [
-    [[226, 236, 240], [244, 238, 228], [143, 168, 184]],
-    [[240, 232, 220], [250, 246, 240], [176, 150, 120]],
-    [[222, 232, 226], [246, 248, 244], [130, 160, 150]],
-  ];
-  const [sky, wall, win] = palettes[seed % palettes.length];
-  const raw = Buffer.alloc((w * 3 + 1) * h);
-  for (let y = 0; y < h; y++) {
-    raw[y * (w * 3 + 1)] = 0;
-    for (let x = 0; x < w; x++) {
-      let c = sky;
-      const inBuilding = x > w * 0.18 && x < w * 0.82 && y > h * 0.22;
-      if (inBuilding) {
-        c = wall;
-        const gx = (x - w * 0.18) % 90, gy = (y - h * 0.22) % 95;
-        if (gx > 25 && gx < 70 && gy > 25 && gy < 70) c = win;
-      }
-      if (y > h * 0.9) c = [205, 200, 190];
-      const o = y * (w * 3 + 1) + 1 + x * 3;
-      raw[o] = c[0]; raw[o + 1] = c[1]; raw[o + 2] = c[2];
-    }
-  }
-  const ihdr = Buffer.alloc(13);
-  ihdr.writeUInt32BE(w, 0); ihdr.writeUInt32BE(h, 4); ihdr[8] = 8; ihdr[9] = 2; ihdr[10] = 0; ihdr[11] = 0; ihdr[12] = 0;
-  return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk("IHDR", ihdr), chunk("IDAT", deflateSync(raw)), chunk("IEND", Buffer.alloc(0))]);
-}
-
 // --- dates relative to today (Africa/Nairobi) ------------------------------------------------
 const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Nairobi" }).format(new Date());
 const period = `${today.slice(0, 7)}-01`;
 const prev = (() => { const [y, m] = period.split("-").map(Number); return new Date(Date.UTC(y, m - 2, 1)).toISOString().slice(0, 10); })();
+const monthsBefore = (p, n) => { const [y, m] = p.split("-").map(Number); return new Date(Date.UTC(y, m - 1 - n, 1)).toISOString().slice(0, 10); };
 const paidOn = (p, day) => { const d = `${p.slice(0, 8)}${String(day).padStart(2, "0")}`; return d > today ? today : d; };
 
 async function main() {
@@ -141,6 +51,9 @@ async function main() {
   for (const [label, name] of Object.entries(tenants)) {
     tenancy[label] = must(`tenancy ${label}`, await felix.rpc("create_tenancy", { p: { unit_id: unitId[label], tenant_name: name, start_date: "2025-03-01", rent_amount: 15000, due_day: 5 } }));
   }
+  // Ten earlier months of history, so payment habits have something to show.
+  const history = Array.from({ length: 10 }, (_, i) => monthsBefore(period, 11 - i));
+  for (const p of history) must(`charges ${p}`, await felix.rpc("generate_rent_charges", { p_property: sunrise, p_period: p }));
   must("prev charges", await felix.rpc("generate_rent_charges", { p_property: sunrise, p_period: prev }));
   must("charges", await felix.rpc("generate_rent_charges", { p_property: sunrise, p_period: period }));
   const { data: charges } = await felix.from("rent_charges").select("id, tenancy_id, period_start").eq("property_id", sunrise);
@@ -150,6 +63,15 @@ async function main() {
       client_request_id: crypto.randomUUID(), tenancy_id: tenancy[label], amount, paid_on: paidOn(p, day), method: "mpesa",
       reference: ref ?? `S${label}${p.slice(5, 7)}${Math.floor(amount / 1000)}K`, allocations: [{ charge_id: chargeFor(label, p), amount }],
       action, acknowledged: action === "confirm" } }));
+
+  // The earlier months, by habit (day of the month each paid; rent is due on the 5th): Peter,
+  // Lucy, Mercy and John always on time; Daniel and Samuel usually; Grace, Faith and Kevin often late.
+  const days = {
+    A1: [3, 2, 4, 3, 1, 3, 4, 2, 3, 3], A3: [4, 5, 3, 9, 4, 2, 5, 4, 3, 4], A4: [1, 2, 1, 3, 2, 1, 2, 4, 1, 2],
+    B1: [5, 7, 4, 11, 3, 5, 8, 4, 5, 3], B4: [2, 3, 2, 4, 5, 3, 2, 1, 3, 4], B5: [5, 4, 5, 3, 5, 4, 5, 5, 4, 5],
+    A2: [12, 4, 20, 9, 15, 3, 25, 8, 14, 4], B2: [15, 18, 9, 22, 12, 6, 16, 19, 11, 14], B3: [6, 3, 10, 4, 13, 2, 8, 5, 17, 9],
+  };
+  for (const [i, p] of history.entries()) for (const [label, d] of Object.entries(days)) await pay(felix, label, p, 15000, d[i]);
 
   // Previous month: everyone paid in full.
   for (const label of Object.keys(tenants)) await pay(felix, label, prev, 15000, 4);

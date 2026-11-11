@@ -24,13 +24,13 @@ export function ActivityList({ items }: { items: Update[] }) {
     <div className="flex flex-col gap-5">
       {groups.map((g) => (
         <section key={g.key} aria-labelledby={`upd-${g.key}`} className="flex flex-col gap-2">
-          <h2 id={`upd-${g.key}`} className="text-[0.8125rem] font-semibold tracking-[0.4px] text-muted uppercase">{g.label}</h2>
-          <ul className="flex flex-col divide-y divide-divider overflow-hidden rounded-[16px] border border-line bg-surface">
+          <h2 id={`upd-${g.key}`} className="heading-group">{g.label}</h2>
+          <ul className="surface-list">
             {g.items.map((n) => {
               const icon = n.kind.startsWith("viewing") ? "calendar" : ICON[n.category];
               const inner = (
                 <>
-                  <span aria-hidden="true" className={cx("grid size-10 shrink-0 place-items-center rounded-[12px]", n.read_at ? "bg-cool text-muted" : "bg-primary text-white")}>
+                  <span aria-hidden="true" className={cx("grid size-10 shrink-0 place-items-center rounded-control", n.read_at ? "bg-cool text-muted" : "bg-primary text-white")}>
                     <Icon name={icon} size={18} />
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -38,11 +38,11 @@ export function ActivityList({ items }: { items: Update[] }) {
                       {!n.read_at ? <span className="sr-only">Unread: </span> : null}
                       {n.title}
                     </span>
-                    {n.body ? <span className="line-clamp-2 text-[0.84375rem] text-muted">{n.body}</span> : null}
-                    {n.restricted ? <span className="text-[0.8125rem] text-muted">Hidden: you no longer have access.</span> : null}
+                    {n.body ? <span className="line-clamp-2 text-label text-muted">{n.body}</span> : null}
+                    {n.restricted ? <span className="text-caption text-muted">Hidden: you no longer have access.</span> : null}
                   </span>
                   <span className="flex shrink-0 flex-col items-end gap-2 self-stretch">
-                    <span className="text-[0.75rem] text-muted">{timeAgo(n.created_at)}</span>
+                    <span className="text-micro text-muted">{timeAgo(n.created_at)}</span>
                     {n.link ? <Icon name="chevronRight" size={16} className="mt-auto text-muted" /> : null}
                   </span>
                 </>

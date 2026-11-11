@@ -48,25 +48,25 @@ export function TrendChart({ points, onOpen }: { points: Point[]; onOpen?: strin
     <figure className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <figcaption>
-          <span className="block font-display text-[1.125rem] font-bold">Billed vs confirmed, by rent period</span>
+          <span className="block font-display text-lead font-bold">Billed vs confirmed, by rent period</span>
           {latest && states[states.length - 1] === "data" ? (
-            <span className="block text-[0.8125rem] text-muted">
+            <span className="block text-caption text-muted">
               {formatPeriod(latest.period_start)}: KSh {formatAmount(Number(latest.settled))} of {formatAmount(Number(latest.billed))} confirmed ({formatRate(latest.collection_rate)})
             </span>
           ) : null}
         </figcaption>
-        <div className="flex items-center gap-4 text-[0.8125rem] text-muted">
-          <span className="inline-flex items-center gap-1.5"><span className="inline-block size-3 rounded-[3px] border border-line bg-divider" aria-hidden="true" />Rent billed</span>
-          <span className="inline-flex items-center gap-1.5"><span className="inline-block size-3 rounded-[3px] bg-success" aria-hidden="true" />Confirmed</span>
-          <button type="button" className="inline-flex min-h-11 items-center font-semibold text-primary underline" onClick={() => setTable(!table)} aria-pressed={table}>
+        <div className="flex items-center gap-4 text-caption text-muted">
+          <span className="inline-flex items-center gap-1.5"><span className="inline-block size-3 rounded-chip border border-line bg-divider" aria-hidden="true" />Rent billed</span>
+          <span className="inline-flex items-center gap-1.5"><span className="inline-block size-3 rounded-chip bg-success" aria-hidden="true" />Confirmed</span>
+          <button type="button" className="link-action inline-flex min-h-11 items-center" onClick={() => setTable(!table)} aria-pressed={table}>
             {table ? "View as chart" : "View as table"}
           </button>
         </div>
       </div>
       {table ? (
-        <table className="w-full text-[0.875rem]">
+        <table className="w-full text-label">
           <thead>
-            <tr className="border-b border-line text-left font-mono text-[0.75rem] text-muted">
+            <tr className="border-b border-line text-left font-mono text-micro text-muted">
               <th scope="col" className="py-2 font-medium">Period</th>
               <th scope="col" className="py-2 text-right font-medium">Billed</th>
               <th scope="col" className="py-2 text-right font-medium">Confirmed</th>
@@ -81,9 +81,9 @@ export function TrendChart({ points, onOpen }: { points: Point[]; onOpen?: strin
                   <td colSpan={3} className="py-2 text-right text-muted">No records yet</td>
                 ) : (
                   <>
-                    <td className="py-2 text-right font-mono">{formatAmount(Number(p.billed))}</td>
-                    <td className="py-2 text-right font-mono">{formatAmount(Number(p.settled))}</td>
-                    <td className="py-2 text-right font-mono">{states[i] === "zero" ? "No rent billed" : formatRate(p.collection_rate)}</td>
+                    <td className="py-2 text-right tabular-nums">{formatAmount(Number(p.billed))}</td>
+                    <td className="py-2 text-right tabular-nums">{formatAmount(Number(p.settled))}</td>
+                    <td className="py-2 text-right tabular-nums">{states[i] === "zero" ? "No rent billed" : formatRate(p.collection_rate)}</td>
                   </>
                 )}
               </tr>
@@ -94,7 +94,7 @@ export function TrendChart({ points, onOpen }: { points: Point[]; onOpen?: strin
         <div className="relative">
           <div className="grid grid-cols-[auto_1fr] gap-2">
             {/* Y-axis: round ticks in KSh, recessive. */}
-            <div className="relative w-9 font-mono text-[0.71875rem] text-muted" style={{ height: H }} aria-hidden="true">
+            <div className="relative w-9 font-mono text-micro text-muted" style={{ height: H }} aria-hidden="true">
               {ticks.map((t) => (
                 <span key={t} className="absolute right-0 whitespace-nowrap" style={{ bottom: `${(t / top) * H}px`, transform: "translateY(50%)" }}>
                   {t === 0 ? "0" : formatCompact(t)}
@@ -119,14 +119,14 @@ export function TrendChart({ points, onOpen }: { points: Point[]; onOpen?: strin
                       onPointerLeave={() => setActive(null)}
                       onFocus={() => setActive(i)}
                       onBlur={() => setActive(null)}
-                      className="relative flex h-full flex-1 flex-col justify-end rounded-t-[6px] outline-offset-2"
+                      className="relative flex h-full flex-1 flex-col justify-end rounded-t-chip outline-offset-2"
                     >
                       {states[i] === "none" ? (
-                        <div className="mx-auto h-full w-full max-w-[56px] rounded-t-[4px] border border-dashed border-line" />
+                        <div className="mx-auto h-full w-full max-w-narrow rounded-t-chip border border-dashed border-line" />
                       ) : (
-                        <div className="relative mx-auto w-full max-w-[56px] rounded-t-[4px] border border-b-0 border-line bg-divider" style={{ height: Math.max(billedH, 2) }}>
+                        <div className="relative mx-auto w-full max-w-narrow rounded-t-chip border border-b-0 border-line bg-divider" style={{ height: Math.max(billedH, 2) }}>
                           <div
-                            className={`absolute inset-x-0 bottom-0 rounded-t-[4px] bg-success transition-opacity ${active !== null && active !== i ? "opacity-60" : ""}`}
+                            className={`absolute inset-x-0 bottom-0 rounded-t-chip bg-success transition-opacity ${active !== null && active !== i ? "opacity-60" : ""}`}
                             style={{ height: billedH ? `${Math.min(100, (settledH / billedH) * 100)}%` : 0 }}
                           />
                         </div>
@@ -139,14 +139,14 @@ export function TrendChart({ points, onOpen }: { points: Point[]; onOpen?: strin
             <span aria-hidden="true" />
             <div className="flex gap-3" aria-hidden="true">
               {points.map((p, i) => (
-                <span key={p.period_start} className={`flex-1 text-center text-[0.8125rem] ${i === points.length - 1 ? "font-bold" : "text-muted"}`}>
+                <span key={p.period_start} className={`flex-1 text-center text-caption ${i === points.length - 1 ? "font-bold" : "text-muted"}`}>
                   {formatPeriodShort(p.period_start)}
                 </span>
               ))}
             </div>
           </div>
           {active !== null ? (
-            <div role="status" className="pointer-events-none absolute top-0 right-0 rounded-[12px] border border-line bg-surface px-3 py-2 text-[0.8125rem] shadow-[0_6px_18px_rgba(0,0,0,0.08)]">
+            <div role="status" className="pointer-events-none absolute top-0 right-0 rounded-control border border-line bg-surface px-3 py-2 text-caption shadow-raised">
               <p className="font-semibold">{formatPeriod(points[active].period_start)}</p>
               {states[active] === "none" ? (
                 <p className="text-muted">No records yet</p>
@@ -154,17 +154,17 @@ export function TrendChart({ points, onOpen }: { points: Point[]; onOpen?: strin
                 <p className="text-muted">No rent billed</p>
               ) : (
                 <>
-                  <p><strong className="font-mono">{formatAmount(Number(points[active].settled))}</strong> <span className="text-muted">confirmed</span></p>
-                  <p><strong className="font-mono">{formatAmount(Number(points[active].billed))}</strong> <span className="text-muted">billed</span></p>
+                  <p><strong className="tabular-nums">{formatAmount(Number(points[active].settled))}</strong> <span className="text-muted">confirmed</span></p>
+                  <p><strong className="tabular-nums">{formatAmount(Number(points[active].billed))}</strong> <span className="text-muted">billed</span></p>
                   <p className="text-muted">{formatRate(points[active].collection_rate)}</p>
                 </>
               )}
             </div>
           ) : null}
-          {states.includes("none") ? <p className="mt-2 text-[0.78125rem] text-muted">Dashed outline: no records for that month yet (not the same as zero).</p> : null}
+          {states.includes("none") ? <p className="mt-2 text-caption text-muted">Dashed outline: no records for that month yet (not the same as zero).</p> : null}
         </div>
       )}
-      <p className="text-[0.78125rem] text-muted">
+      <p className="text-caption text-muted">
         By rent period: confirmed payments allocated to each month&apos;s rent, whenever they were paid. Payments waiting for confirmation are not included.
         {onOpen ? " Select a unit below, or open the register, to see the records." : ""}
       </p>

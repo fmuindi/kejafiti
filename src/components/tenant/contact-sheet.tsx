@@ -41,11 +41,11 @@ export function ContactSheet({
         ref={ref}
         aria-labelledby="contact-title"
         onClose={() => trigger.current?.focus()}
-        className="m-0 mt-auto w-full max-w-full rounded-t-[22px] bg-surface p-0 backdrop:bg-ink/40 md:m-auto md:max-w-[440px] md:rounded-[22px]"
+        className="m-0 mt-auto w-full max-w-full rounded-t-panel bg-surface p-0 backdrop:bg-ink/40 md:m-auto md:max-w-narrow md:rounded-panel"
       >
         <div className="safe-bottom flex flex-col gap-3 p-5">
           <div className="flex items-center justify-between">
-            <h2 id="contact-title" className="font-display text-[1.25rem] font-bold">
+            <h2 id="contact-title" className="heading-section">
               Contact {advertiser.name}
             </h2>
             <button type="button" aria-label="Close" onClick={() => ref.current?.close()} className="grid size-11 place-items-center rounded-full hover:bg-cool">
@@ -55,7 +55,7 @@ export function ContactSheet({
           <Link href={signedIn ? messageHref : `/sign-in?next=${encodeURIComponent(messageHref)}&reason=message`} className={buttonClass("primary", "lg")}>
             <Icon name="message" size={18} /> Message in nyumbani
           </Link>
-          <p className="-mt-1 text-[0.78125rem] text-muted">Your conversation and any viewing request stay in one place.</p>
+          <p className="-mt-1 text-caption text-muted">Your conversation and any viewing request stay in one place.</p>
           {advertiser.call && phone ? (
             <a href={`tel:${phone}`} onClick={() => void logContact(refId, "call")} className={buttonClass("secondary", "lg")}>
               <Icon name="phone" size={18} /> Call {advertiser.phone}
@@ -73,7 +73,7 @@ export function ContactSheet({
             </a>
           ) : null}
           {advertiser.call || advertiser.whatsapp ? (
-            <p className="text-[0.78125rem] text-muted">
+            <p className="text-caption text-muted">
               Calls and WhatsApp happen outside nyumbani. We can&apos;t see those conversations, so they won&apos;t appear in your messages.
             </p>
           ) : null}

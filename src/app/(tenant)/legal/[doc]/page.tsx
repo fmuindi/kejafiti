@@ -17,15 +17,15 @@ export default async function LegalPage({ params }: PageProps<"/legal/[doc]">) {
   const title = DOCS[doc];
   if (!title) notFound();
   return (
-    <div className="mx-auto flex max-w-[720px] flex-col gap-4 px-4 pt-5 pb-10">
+    <div className="mx-auto flex max-w-reading flex-col gap-5 px-4 pt-5 pb-10">
       <BackLink href="/help">Help and support</BackLink>
       <PageTitle>{title}</PageTitle>
-      <p className="text-[0.9375rem]">The full {title.toLowerCase()} will be published on this page.</p>
-      <p className="text-[0.9375rem] text-muted">
+      <p className="text-body">The full {title.toLowerCase()} will be published on this page.</p>
+      <p className="text-body text-muted">
         If you have a question about how nyumbani handles your account or information in the meantime,{" "}
-        <Link href="/help" className="font-semibold text-ink underline">contact support</Link>.
+        <Link href="/help" className="link-action">contact support</Link>.
       </p>
-      <p className="text-[0.8125rem] text-muted">
+      <p className="text-caption text-muted">
         <Link href="/legal/terms" className="underline">Terms of use</Link> · <Link href="/legal/privacy" className="underline">Privacy notice</Link>
       </p>
     </div>

@@ -46,3 +46,6 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# downloaded demo photos (see data/demo-photos.json)
+/.cache/

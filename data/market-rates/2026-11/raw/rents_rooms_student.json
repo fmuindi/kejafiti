@@ -1,0 +1,664 @@
+[
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "road": "Gichuru Road",
+    "rental_scope": "private_room",
+    "building_style": "apartment",
+    "origin": null,
+    "bathrooms": null,
+    "size_sqm": 20,
+    "furnishing": "partly",
+    "price_period": "month",
+    "price_basis": "per_room",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "internet",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "water",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "included"
+      }
+    ],
+    "facts": {
+      "balcony": "yes",
+      "cctv": "yes",
+      "private_kitchen": "no"
+    },
+    "student": false,
+    "advertiser_role": "unknown",
+    "source_site": "jiji.co.ke",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06",
+    "area": "Kileleshwa",
+    "layout": "single_room",
+    "bedrooms": 0,
+    "rent_amount": 22000,
+    "source_url": "https://jiji.co.ke/kileleshwa/houses-apartments-for-rent/furnished-1bdrm-shared-apartment-in-kile-alps-kileleshwa-for-rent-czbIp0Ga4rImeAllK4Rb5w0W.html"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "road": "Gichuru Road",
+    "rental_scope": "private_room",
+    "building_style": "apartment",
+    "origin": null,
+    "bathrooms": null,
+    "size_sqm": 20,
+    "furnishing": "fully",
+    "price_period": "month",
+    "price_basis": "per_room",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "internet",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "water",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "other_deposit",
+        "amount": 9000,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {
+      "private_kitchen": "no"
+    },
+    "student": false,
+    "advertiser_role": "unknown",
+    "source_site": "jiji.co.ke",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06",
+    "area": "Kileleshwa",
+    "layout": "single_room",
+    "bedrooms": 0,
+    "rent_amount": 18000,
+    "source_url": "https://jiji.co.ke/kileleshwa/houses-apartments-for-rent/furnished-1bdrm-shared-apartment-in-kile-alps-kileleshwa-for-rent-rotGB6h4gEBvNeBW8WJtrsSP.html"
+  },
+  {
+    "county": "Kajiado",
+    "town": "Ongata Rongai",
+    "road": "Maasai Lodge Road",
+    "rental_scope": "shared_room",
+    "building_style": "other",
+    "origin": null,
+    "bathrooms": null,
+    "size_sqm": null,
+    "furnishing": "fully",
+    "price_period": "semester",
+    "price_basis": "per_person",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "internet",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "other_deposit",
+        "amount": 5000,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {
+      "backup_power": "yes"
+    },
+    "student": true,
+    "advertiser_role": "property_manager",
+    "source_site": "elitehostels.co.ke",
+    "posted_on": null,
+    "observed_on": "2026-11-06",
+    "area": "Maasai Lodge Road",
+    "layout": "single_room",
+    "bedrooms": 0,
+    "rent_amount": 52000,
+    "source_url": "https://elitehostels.co.ke/product/four-sharing-room/",
+    "price_estimated": true,
+    "price_note": "Estimated from the operator's published semester price list (no academic-year label; site last updated about mid-2026, before the Sept 2026 intake). Listed price kept; no adjustment applied."
+  },
+  {
+    "county": "Kajiado",
+    "town": "Ongata Rongai",
+    "road": "Maasai Lodge Road",
+    "rental_scope": "shared_room",
+    "building_style": "other",
+    "origin": null,
+    "bathrooms": null,
+    "size_sqm": null,
+    "furnishing": "fully",
+    "price_period": "semester",
+    "price_basis": "per_person",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "internet",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "other_deposit",
+        "amount": 5000,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {
+      "backup_power": "yes"
+    },
+    "student": true,
+    "advertiser_role": "property_manager",
+    "source_site": "elitehostels.co.ke",
+    "posted_on": null,
+    "observed_on": "2026-11-06",
+    "area": "Maasai Lodge Road",
+    "layout": "single_room",
+    "bedrooms": 0,
+    "rent_amount": 60000,
+    "source_url": "https://elitehostels.co.ke/product/two-sharing-room/",
+    "price_estimated": true,
+    "price_note": "Estimated from the operator's published semester price list (no academic-year label; site last updated about mid-2026, before the Sept 2026 intake). Listed price kept; no adjustment applied."
+  },
+  {
+    "county": "Kajiado",
+    "town": "Ongata Rongai",
+    "road": "Maasai Lodge Road",
+    "rental_scope": "private_room",
+    "building_style": "other",
+    "origin": null,
+    "bathrooms": null,
+    "size_sqm": null,
+    "furnishing": "fully",
+    "price_period": "semester",
+    "price_basis": "per_room",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "internet",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "other_deposit",
+        "amount": 5000,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {
+      "backup_power": "yes"
+    },
+    "student": true,
+    "advertiser_role": "property_manager",
+    "source_site": "elitehostels.co.ke",
+    "posted_on": null,
+    "observed_on": "2026-11-06",
+    "area": "Maasai Lodge Road",
+    "layout": "single_room",
+    "bedrooms": 0,
+    "rent_amount": 62000,
+    "source_url": "https://elitehostels.co.ke/product/single-small-room/",
+    "price_estimated": true,
+    "price_note": "Estimated from the operator's published semester price list (no academic-year label; site last updated about mid-2026, before the Sept 2026 intake). Listed price kept; no adjustment applied."
+  },
+  {
+    "county": "Kajiado",
+    "town": "Ongata Rongai",
+    "road": "Maasai Lodge Road",
+    "rental_scope": "private_room",
+    "building_style": "other",
+    "origin": null,
+    "bathrooms": null,
+    "size_sqm": null,
+    "furnishing": "fully",
+    "price_period": "semester",
+    "price_basis": "per_room",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "internet",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "other_deposit",
+        "amount": 5000,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {
+      "backup_power": "yes"
+    },
+    "student": true,
+    "advertiser_role": "property_manager",
+    "source_site": "elitehostels.co.ke",
+    "posted_on": null,
+    "observed_on": "2026-11-06",
+    "area": "Maasai Lodge Road",
+    "layout": "single_room",
+    "bedrooms": 0,
+    "rent_amount": 68000,
+    "source_url": "https://elitehostels.co.ke/product/single-large-room/",
+    "price_estimated": true,
+    "price_note": "Estimated from the operator's published semester price list (no academic-year label; site last updated about mid-2026, before the Sept 2026 intake). Listed price kept; no adjustment applied."
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "road": "off Muthaiga North Road",
+    "rental_scope": "entire_home",
+    "building_style": "other",
+    "origin": "guest_wing",
+    "bathrooms": 3,
+    "size_sqm": 89,
+    "furnishing": "unfurnished",
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [],
+    "facts": {
+      "balcony": "yes",
+      "cctv": "yes",
+      "parking": "yes",
+      "pets_allowed": "no"
+    },
+    "student": false,
+    "advertiser_role": "unknown",
+    "source_site": "jiji.co.ke",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06",
+    "area": "Muthaiga North",
+    "layout": "bedroom_home",
+    "bedrooms": 2,
+    "rent_amount": 55000,
+    "source_url": "https://jiji.co.ke/muthaiga-north/houses-apartments-for-rent/spacious-2bedroomed-guest-wing-to-let-shr8UyxKQ0rezYKClPMlur7m.html"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "road": "Mbaazi Road area",
+    "rental_scope": "entire_home",
+    "building_style": "other",
+    "origin": "dsq",
+    "bathrooms": 1,
+    "size_sqm": null,
+    "furnishing": "unfurnished",
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes"
+    },
+    "student": false,
+    "advertiser_role": "unknown",
+    "source_site": "jiji.co.ke",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06",
+    "area": "Lavington",
+    "layout": "double_room",
+    "bedrooms": 1,
+    "rent_amount": 55000,
+    "source_url": "https://jiji.co.ke/lavington/houses-apartments-for-rent/1bdrm-room-parlour-in-lavington-along-for-rent-pkNP8YhB4BLSuCbpFKqcxeQK.html"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Juja",
+    "road": null,
+    "rental_scope": "entire_home",
+    "building_style": "other",
+    "origin": null,
+    "bathrooms": null,
+    "size_sqm": 10,
+    "furnishing": "unfurnished",
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "service_charge",
+        "amount": 2000,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {
+      "cctv": "yes",
+      "private_bathroom": "no"
+    },
+    "student": true,
+    "advertiser_role": "unknown",
+    "source_site": "jiji.co.ke",
+    "posted_on": "2026-11-03",
+    "observed_on": "2026-11-06",
+    "area": "Witeithie",
+    "layout": "single_room",
+    "bedrooms": 0,
+    "rent_amount": 4300,
+    "source_url": "https://jiji.co.ke/witethie/houses-apartments-for-rent/1bdrm-shared-apartment-in-witeithie-athena-witethie-for-rent-cPJHsHpCKVlqLBluR57mmaOE.html"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Limuru",
+    "road": null,
+    "rental_scope": "entire_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bathrooms": 1,
+    "size_sqm": 20,
+    "furnishing": "unfurnished",
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": 1,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes"
+    },
+    "student": true,
+    "advertiser_role": "owner",
+    "source_site": "jiji.co.ke",
+    "posted_on": "2026-09-11",
+    "observed_on": "2026-11-06",
+    "area": "Kabuku (near St Paul's University)",
+    "layout": "bedsitter_studio",
+    "bedrooms": 0,
+    "rent_amount": 5000,
+    "source_url": "https://jiji.co.ke/limuru/houses-apartments-for-rent/1bdrm-bedsitter-in-ellah-apartments-limuru-for-rent-s21SZ4sTgnuUeZwGTZJFAP7i.html"
+  },
+  {
+    "county": "Kajiado",
+    "town": "Ngong",
+    "road": null,
+    "rental_scope": "entire_home",
+    "building_style": "other",
+    "origin": null,
+    "bathrooms": null,
+    "size_sqm": 13,
+    "furnishing": "unfurnished",
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes"
+    },
+    "student": false,
+    "advertiser_role": "unknown",
+    "source_site": "jiji.co.ke",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06",
+    "area": "Kibiku (opposite KIHBT)",
+    "layout": "single_room",
+    "bedrooms": 0,
+    "rent_amount": 3200,
+    "source_url": "https://jiji.co.ke/kibiku/houses-apartments-for-rent/mini-flat-in-kibiku-for-rent-a6xVXVvy0Z80mkVrzko81JSw.html"
+  },
+  {
+    "county": "Kajiado",
+    "town": "Kitengela",
+    "road": null,
+    "rental_scope": "entire_home",
+    "building_style": "other",
+    "origin": null,
+    "bathrooms": null,
+    "size_sqm": null,
+    "furnishing": null,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "own_meter": "yes"
+    },
+    "student": false,
+    "advertiser_role": "unknown",
+    "source_site": "jiji.co.ke",
+    "posted_on": "2026-10-31",
+    "observed_on": "2026-11-06",
+    "area": "Kyangombe",
+    "layout": "single_room",
+    "bedrooms": 0,
+    "rent_amount": 3500,
+    "source_url": "https://jiji.co.ke/kitengela/houses-apartments-for-rent/furnished-1bdrm-bedsitter-in-kyangombe-kitengela-for-rent-7J0HBfO0gU5PLjzMNiezb8Vg.html"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "road": null,
+    "rental_scope": "entire_home",
+    "building_style": "apartment",
+    "origin": null,
+    "bathrooms": 1,
+    "size_sqm": null,
+    "furnishing": "unfurnished",
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "agency_fee",
+        "amount": 1500,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {},
+    "student": false,
+    "advertiser_role": "agent",
+    "source_site": "jiji.co.ke",
+    "posted_on": "2026-11-06",
+    "observed_on": "2026-11-06",
+    "area": "Madaraka (near Strathmore)",
+    "layout": "bedsitter_studio",
+    "bedrooms": 0,
+    "rent_amount": 12000,
+    "source_url": "https://jiji.co.ke/madaraka/houses-apartments-for-rent/1bdrm-bedsitter-in-madaraka-for-rent-5noNvrqlPkQLwJULTf9VlJId.html"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "road": "Bogani Road",
+    "rental_scope": "entire_home",
+    "building_style": "other",
+    "origin": null,
+    "bathrooms": null,
+    "size_sqm": null,
+    "furnishing": null,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": 1,
+    "charges": [
+      {
+        "kind": "water",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "internet",
+        "amount": null,
+        "billing": "included"
+      }
+    ],
+    "facts": {
+      "private_bathroom": "no",
+      "parking": "yes"
+    },
+    "student": true,
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "posted_on": "2026-09-30",
+    "observed_on": "2026-11-06",
+    "area": "Karen",
+    "layout": "single_room",
+    "bedrooms": 0,
+    "rent_amount": 10000,
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/self-contained/nairobi/karen/68864-affordable-student-accommodation"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "road": null,
+    "rental_scope": "entire_home",
+    "building_style": "other",
+    "origin": null,
+    "bathrooms": 1,
+    "size_sqm": null,
+    "furnishing": null,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": 1,
+    "charges": [],
+    "facts": {},
+    "student": false,
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "posted_on": "2026-09-24",
+    "observed_on": "2026-11-06",
+    "area": "Karen",
+    "layout": "bedsitter_studio",
+    "bedrooms": 0,
+    "rent_amount": 30000,
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/self-contained/nairobi/karen/68507-1-bedroom-studio-extension"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "road": null,
+    "rental_scope": "entire_home",
+    "building_style": "other",
+    "origin": "guest_wing",
+    "bathrooms": 2,
+    "size_sqm": null,
+    "furnishing": null,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [],
+    "facts": {},
+    "student": false,
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "posted_on": "2026-09-25",
+    "observed_on": "2026-11-06",
+    "area": "Karen (Hardy)",
+    "layout": "bedroom_home",
+    "bedrooms": 2,
+    "rent_amount": 60000,
+    "source_url": "https://kenyapropertycentre.com/for-rent/flats-apartments/nairobi/karen/68548-2-bedroom-apartment"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Nairobi",
+    "road": null,
+    "rental_scope": "entire_home",
+    "building_style": "other",
+    "origin": "guest_wing",
+    "bathrooms": 1,
+    "size_sqm": null,
+    "furnishing": null,
+    "price_period": "month",
+    "price_basis": "entire_unit",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "electricity",
+        "amount": null,
+        "billing": "metered"
+      }
+    ],
+    "facts": {
+      "balcony": "yes",
+      "parking": "yes",
+      "own_meter": "yes"
+    },
+    "student": false,
+    "advertiser_role": "agent",
+    "source_site": "kenyapropertycentre.com",
+    "posted_on": "2026-09-19",
+    "observed_on": "2026-11-06",
+    "area": "Mountain View Estate",
+    "layout": "bedroom_home",
+    "bedrooms": 1,
+    "rent_amount": 38000,
+    "source_url": "https://kenyapropertycentre.com/for-rent/houses/nairobi/mountain-view/68275-spacious-1-bedroom-guest-house-with-exceptional-comfort"
+  },
+  {
+    "county": "Kajiado",
+    "town": "Ongata Rongai",
+    "road": "Maasai Lodge Road",
+    "rental_scope": "private_room",
+    "building_style": "other",
+    "origin": null,
+    "bathrooms": null,
+    "size_sqm": null,
+    "furnishing": "fully",
+    "price_period": "semester",
+    "price_basis": "per_room",
+    "deposit_months": null,
+    "charges": [
+      {
+        "kind": "internet",
+        "amount": null,
+        "billing": "included"
+      },
+      {
+        "kind": "other_deposit",
+        "amount": 5000,
+        "billing": "fixed"
+      }
+    ],
+    "facts": {
+      "backup_power": "yes"
+    },
+    "student": true,
+    "advertiser_role": "property_manager",
+    "source_site": "elitehostels.co.ke",
+    "posted_on": null,
+    "observed_on": "2026-11-06",
+    "area": "Maasai Lodge Road",
+    "layout": "single_room",
+    "bedrooms": 0,
+    "rent_amount": 64000,
+    "source_url": "https://elitehostels.co.ke/product/single-medium-room/",
+    "price_estimated": true,
+    "price_note": "Estimated from the operator's published semester price list (no academic-year label; site last updated about mid-2026, before the Sept 2026 intake). Listed price kept; no adjustment applied."
+  }
+]

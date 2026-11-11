@@ -37,11 +37,11 @@ export default async function DeliveriesPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <h1 className="font-display text-[2.125rem] font-bold tracking-[-1px]">Deliveries</h1>
+      <h1 className="heading-page">Deliveries</h1>
 
-      <section aria-labelledby="health" className="flex flex-col gap-3 rounded-[18px] border border-line bg-surface p-4">
-        <h2 id="health" className="font-display text-[1.125rem] font-bold">Delivery health</h2>
-        <p className="text-[0.875rem]">
+      <section aria-labelledby="health" className="surface flex flex-col gap-3 p-4">
+        <h2 id="health" className="heading-section">Delivery health</h2>
+        <p className="text-label">
           <strong>Email:</strong> {provider ? PROVIDER_LABEL[provider] : "switched off (no provider configured)"} ·{" "}
           <strong>SMS, WhatsApp, push:</strong> switched off. In-app notifications always work.
         </p>
@@ -56,8 +56,8 @@ export default async function DeliveriesPage() {
             ["Handed over (24 h)", h.accepted_24h ?? 0, false],
           ].map(([k, v, warn]) => (
             <div key={k as string}>
-              <dd className={`font-display text-[1.375rem] font-bold ${warn ? "text-error" : ""}`}>{String(v)}</dd>
-              <dt className="text-[0.8125rem] text-muted">{k as string}</dt>
+              <dd className={`font-display text-title font-bold ${warn ? "text-error" : ""}`}>{String(v)}</dd>
+              <dt className="text-caption text-muted">{k as string}</dt>
             </div>
           ))}
         </dl>
@@ -71,18 +71,18 @@ export default async function DeliveriesPage() {
           </Notice>
         ) : null}
         {Number(h.held) > 0 ? (
-          <p className="text-[0.84375rem] text-muted">
+          <p className="text-label text-muted">
             Messages older than {h.max_age_hours} hours are held rather than sent automatically, so turning on a provider never replays an old backlog. Send or cancel each one below.
           </p>
         ) : null}
         {channels.includes("email") ? <ProcessNowButton /> : null}
       </section>
 
-      <div className="overflow-x-auto rounded-[18px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Delivery tasks (scrolls sideways)">
-        <table className="w-full min-w-[820px] text-[0.875rem]">
+      <div className="surface overflow-x-auto" tabIndex={0} role="region" aria-label="Delivery tasks (scrolls sideways)">
+        <table className="w-full min-w-[820px] text-label">
           <caption className="sr-only">Delivery tasks, newest first{attention ? `. ${attention} need attention.` : ""}</caption>
           <thead>
-            <tr className="border-b border-line text-left font-mono text-[0.75rem] text-muted uppercase">
+            <tr className="border-b border-line text-left font-mono text-micro text-muted uppercase">
               {["Message", "To", "Status", "Attempts", "Created", "Updated", "Action"].map((col) => (
                 <th key={col} scope="col" className="px-4 py-2.5 font-medium">{col}</th>
               ))}
@@ -96,12 +96,12 @@ export default async function DeliveriesPage() {
                 <tr key={t.id} className="border-b border-divider last:border-0">
                   <td className="px-4 py-3">
                     {t.template.replaceAll("_", " ")} · {t.channel}
-                    {t.last_error ? <span className="block text-[0.78125rem] text-error">{t.last_error}</span> : null}
+                    {t.last_error ? <span className="block text-caption text-error">{t.last_error}</span> : null}
                   </td>
-                  <td className="px-4 py-3 font-mono text-[0.8125rem]">{t.destination_masked}</td>
+                  <td className="px-4 py-3 font-mono text-caption">{t.destination_masked}</td>
                   <td className="px-4 py-3">
                     <StatusBadge tone={off ? "neutral" : st.tone}>{off ? "Channel switched off" : st.label}</StatusBadge>
-                    <span className="mt-1 block text-[0.75rem] text-muted">{off ? "Stays queued until a provider is configured." : st.help}</span>
+                    <span className="mt-1 block text-micro text-muted">{off ? "Stays queued until a provider is configured." : st.help}</span>
                   </td>
                   <td className="px-4 py-3 font-mono">{t.attempts}</td>
                   <td className="px-4 py-3">{formatDateTime(t.created_at)}</td>

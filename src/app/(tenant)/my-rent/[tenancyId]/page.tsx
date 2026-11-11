@@ -1,12 +1,19 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BackLink } from "@/components/shell/back-link";
+import { ExplainBalance } from "@/components/rent/explain-balance";
+import { PaymentReports } from "@/components/tenant/payment-reports";
+import { Icon } from "@/components/ui/icon";
 import { Card, cx } from "@/components/ui/primitives";
 import { requireUser } from "@/lib/auth";
-import { formatDate } from "@/lib/dates";
+import { currentPeriod, formatDate, formatDateTime, formatPeriod, todayEAT } from "@/lib/dates";
+import { explainBalance } from "@/lib/rent/explain";
 import { formatAmount, formatMoney } from "@/lib/money";
 import { balanceWords, getMyTenancies, type StatementLine } from "@/lib/my-rent";
+import { toReport } from "@/lib/payment-reports";
 import { createClient } from "@/lib/supabase/server";
+import { KIND_LABEL, type MessageKind } from "@/lib/tenant-messages";
 
 export const metadata: Metadata = { title: "My statement" };
 
@@ -16,39 +23,87 @@ export default async function MyStatementPage({ params }: PageProps<"/my-rent/[t
   const supabase = await createClient();
   const t = (await getMyTenancies(supabase)).find((x) => x.tenancy_id === tenancyId);
   if (!t) notFound();
-  const { data } = await supabase.rpc("tenancy_statement", { p_tenancy: tenancyId });
+  const [{ data }, { data: messages }, { data: reportRows }] = await Promise.all([
+    supabase.rpc("tenancy_statement", { p_tenancy: tenancyId }),
+    supabase.from("tenant_messages").select("id, kind, ref, subject, created_at").eq("tenancy_id", tenancyId).order("created_at", { ascending: false }).limit(30),
+    supabase.rpc("my_payment_reports", { p_tenancy: tenancyId }),
+  ]);
+  const reports = (reportRows ?? []).map((r) => toReport(r));
   const lines = (data ?? []) as unknown as StatementLine[];
   const b = balanceWords(t.balance);
 
   return (
-    <div className="mx-auto flex max-w-[860px] flex-col gap-5 px-4 pt-5 pb-10">
+    <div className="mx-auto flex max-w-standard flex-col gap-5 px-4 pt-5 pb-10">
       <BackLink href="/my-rent">My rent</BackLink>
       <Card className="flex flex-wrap items-start justify-between gap-4 p-4">
         <div className="min-w-0">
-          <h1 className="font-display text-[1.625rem] leading-tight font-bold">{t.property_name} · Unit {t.unit_label}</h1>
-          <p className="text-[0.875rem] text-muted">{[t.area, t.org_name].filter(Boolean).join(" · ")}</p>
-          <p className="mt-1 text-[0.875rem]">
+          <h1 className="heading-page">{t.property_name} · Unit {t.unit_label}</h1>
+          <p className="text-label text-muted">{[t.area, t.org_name].filter(Boolean).join(" · ")}</p>
+          <p className="mt-1 text-label">
             Since {formatDate(t.start_date)}
             {t.status === "ended" ? ` · ended ${formatDate(t.end_date)}` : ` · ${t.current_rent ? `${formatMoney(t.current_rent)} a month, ` : ""}due on day ${t.due_day}`}
           </p>
         </div>
         <div className="text-right">
-          <p className="text-[0.78125rem] text-muted">{b.label}</p>
-          <p className={cx("font-display text-[1.75rem] font-extrabold", b.tone === "owed" ? "text-error" : "text-success")}>{formatMoney(Math.abs(t.balance))}</p>
-          <p className="text-[0.75rem] text-muted">Confirmed records only</p>
+          <p className="text-caption text-muted">{b.label}</p>
+          <p className={cx("font-display text-title-lg font-extrabold", b.tone === "owed" ? "text-error" : "text-success")}>{formatMoney(Math.abs(t.balance))}</p>
+          <p className="text-micro text-muted">Confirmed records only</p>
         </div>
       </Card>
 
+      {lines.length ? (
+        <details className="surface group p-4">
+          <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 font-semibold">
+            How your balance is made up · {formatPeriod(currentPeriod())}
+            <Icon name="chevronDown" size={18} className="text-muted transition-transform group-open:rotate-180" />
+          </summary>
+          <div className="mt-2">
+            <ExplainBalance e={explainBalance(lines, currentPeriod())} period={currentPeriod()} tenantView />
+          </div>
+        </details>
+      ) : null}
+
+      <section aria-labelledby="reports-h" id="reports" className="flex scroll-mt-24 flex-col gap-2">
+        <h2 id="reports-h" className="heading-section">Paid but not showing?</h2>
+        {reports.length ? null : (
+          <p className="text-label text-muted">
+            Payments appear once {t.org_name} has checked and confirmed them. If one you made is still missing after that, tell them here.
+          </p>
+        )}
+        <PaymentReports tenancyId={tenancyId} orgName={t.org_name} reports={reports} today={todayEAT()} />
+      </section>
+
+      {messages?.length ? (
+        <section aria-labelledby="from" className="flex flex-col gap-2">
+          <h2 id="from" className="heading-section">From {t.org_name}</h2>
+          <ul className="surface-list">
+            {messages.map((m) => (
+              <li key={m.id}>
+                <Link href={`/my-rent/${tenancyId}/messages/${m.id}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-cool">
+                  <span className="min-w-0">
+                    <span className="block truncate font-semibold">{m.subject}</span>
+                    <span className="block text-caption text-muted">
+                      {KIND_LABEL[m.kind as MessageKind]}{m.ref ? ` ${m.ref}` : ""} · {formatDateTime(m.created_at)}
+                    </span>
+                  </span>
+                  <Icon name="chevronRight" className="shrink-0 text-muted" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       <section aria-labelledby="stmt" className="flex flex-col gap-2">
-        <h2 id="stmt" className="font-display text-[1.125rem] font-bold">Statement</h2>
+        <h2 id="stmt" className="heading-section">Statement</h2>
         {lines.length === 0 ? (
-          <p className="rounded-[14px] border border-dashed border-line bg-surface p-4 text-[0.875rem] text-muted">No charges or payments recorded yet.</p>
+          <p className="surface-empty p-4">No charges or payments recorded yet.</p>
         ) : (
-          <div className="overflow-x-auto rounded-[16px] border border-line bg-surface" tabIndex={0} role="region" aria-label="Statement (scrolls sideways)">
-            <table className="w-full min-w-[520px] text-[0.875rem]">
+          <div className="surface overflow-x-auto" tabIndex={0} role="region" aria-label="Statement (scrolls sideways)">
+            <table className="w-full min-w-[520px] text-label">
               <caption className="sr-only">Charges and confirmed payments with the running balance</caption>
               <thead>
-                <tr className="border-b border-line text-left font-mono text-[0.75rem] text-muted">
+                <tr className="border-b border-line text-left font-mono text-micro text-muted">
                   <th scope="col" className="px-3 py-2 font-medium">Date</th>
                   <th scope="col" className="px-3 py-2 font-medium">Description</th>
                   <th scope="col" className="px-3 py-2 text-right font-medium">Charge</th>
@@ -60,17 +115,17 @@ export default async function MyStatementPage({ params }: PageProps<"/my-rent/[t
                 {lines.map((l, i) => (
                   <tr key={i} className="border-b border-divider last:border-0">
                     <td className="px-3 py-2 whitespace-nowrap">{formatDate(l.line_date)}</td>
-                    <td className="px-3 py-2">{l.description}{l.ref ? <span className="font-mono text-[0.75rem] text-muted"> · {l.ref}</span> : null}</td>
-                    <td className="px-3 py-2 text-right font-mono">{Number(l.charge) ? formatAmount(Number(l.charge)) : ""}</td>
-                    <td className="px-3 py-2 text-right font-mono">{Number(l.payment) ? formatAmount(Number(l.payment)) : ""}</td>
-                    <td className="px-3 py-2 text-right font-mono font-medium">{formatAmount(Number(l.balance))}</td>
+                    <td className="px-3 py-2">{l.description}{l.ref ? <span className="font-mono text-micro text-muted"> · {l.ref}</span> : null}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">{Number(l.charge) ? formatAmount(Number(l.charge)) : ""}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">{Number(l.payment) ? formatAmount(Number(l.payment)) : ""}</td>
+                    <td className="px-3 py-2 text-right tabular-nums font-medium">{formatAmount(Number(l.balance))}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         )}
-        <p className="text-[0.8125rem] text-muted">
+        <p className="text-caption text-muted">
           A payment appears once your landlord or agent has checked and confirmed it. Balance: positive means owed, negative means credit.
         </p>
       </section>

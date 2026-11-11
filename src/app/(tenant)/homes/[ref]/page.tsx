@@ -46,8 +46,8 @@ export async function generateMetadata({ params }: PageProps<"/homes/[ref]">): P
 
 function FactTile({ label, value, unknown }: { label: string; value: string; unknown?: boolean }) {
   return (
-    <div className="rounded-[14px] border border-line bg-surface px-3.5 py-3">
-      <p className="text-[0.78125rem] text-muted">{label}</p>
+    <div className="surface px-3.5 py-3">
+      <p className="text-caption text-muted">{label}</p>
       <p className={cx("mt-0.5 font-semibold", unknown && "text-waiting-strong")}>{value}</p>
     </div>
   );
@@ -90,7 +90,7 @@ export default async function ListingPage({ params, searchParams }: PageProps<"/
   const otherFacts = FACTS.filter((x) => !["private_bathroom", "parking"].includes(x.key) && f[x.key] && f[x.key] !== "unknown");
 
   return (
-    <div className="mx-auto max-w-[1100px] pb-28 md:px-6 md:pt-6 md:pb-12">
+    <div className="mx-auto max-w-wide pb-28 md:px-6 md:pt-6 md:pb-12">
       <div className="no-print flex items-center justify-between px-4 py-3 md:px-0">
         <BackLink href={back.href}>{back.label}</BackLink>
         <SaveButton refId={ref} saved={!!savedRow.data} signedIn={!!user} returnTo={returnTo} />
@@ -100,15 +100,15 @@ export default async function ListingPage({ params, searchParams }: PageProps<"/
         <div>
           <Gallery photos={photos} title={title} />
           <div className="px-4 pt-4 md:px-0">
-            <p className={cx("inline-flex items-center gap-1.5 text-[0.84375rem] font-semibold", stale ? "text-waiting" : "text-success")}>
+            <p className={cx("inline-flex items-center gap-1.5 text-label font-semibold", stale ? "text-waiting" : "text-success")}>
               <Icon name={stale ? "clock" : "check"} size={16} strokeWidth={2.2} />
               {listing.available_from ? `Available from ${formatDate(listing.available_from, { year: false })}` : "Availability date not set"}
               {listing.availability_confirmed_at
                 ? ` · ${ADVERTISER_ROLE_LABEL[adv.role]?.toLowerCase() ?? "advertiser"} confirmed ${formatDate(listing.availability_confirmed_at, { year: false })}`
                 : ""}
             </p>
-            <h1 className="mt-2 font-display text-[1.625rem] leading-[1.1] font-bold tracking-[-0.5px] md:text-[2.125rem]">{title}</h1>
-            <p className="mt-1 inline-flex items-center gap-1 text-[0.90625rem] text-muted">
+            <h1 className="heading-page mt-2">{title}</h1>
+            <p className="mt-1 inline-flex items-center gap-1 text-body text-muted">
               <Icon name="pin" size={16} />
               {[listing.location.area, listing.location.road].filter(Boolean).join(", ")} · approximate location
             </p>
@@ -116,7 +116,7 @@ export default async function ListingPage({ params, searchParams }: PageProps<"/
               <AreaMap lat={listing.location.approx_lat} lng={listing.location.approx_lng} label={[listing.location.area, listing.location.town].filter(Boolean).join(", ")} />
             </div>
             <p className="mt-3 md:hidden">
-              <span className="font-display text-[1.625rem] font-extrabold">KES {formatAmount(listing.rent_amount)}</span>
+              <span className="font-display text-title-lg font-extrabold">KES {formatAmount(listing.rent_amount)}</span>
               <span className="text-muted"> / {listing.price_period}</span>
             </p>
 
@@ -137,17 +137,17 @@ export default async function ListingPage({ params, searchParams }: PageProps<"/
             {otherFacts.length ? (
               <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Other facts">
                 {otherFacts.map((x) => (
-                  <li key={x.key} className="rounded-[8px] bg-cool px-2.5 py-1 text-[0.8125rem]">
+                  <li key={x.key} className="rounded-chip bg-cool px-2.5 py-1 text-caption">
                     {x.label}: <strong>{yn(f[x.key])}</strong>
                   </li>
                 ))}
               </ul>
             ) : null}
-            {listing.description ? <p className="mt-4 text-[0.9375rem] whitespace-pre-line">{listing.description}</p> : null}
+            {listing.description ? <p className="mt-4 text-body whitespace-pre-line">{listing.description}</p> : null}
             {listing.house_rules ? (
               <div className="mt-4">
                 <h2 className="font-semibold">House rules</h2>
-                <p className="mt-1 text-[0.90625rem] whitespace-pre-line text-muted">{listing.house_rules}</p>
+                <p className="mt-1 text-body whitespace-pre-line text-muted">{listing.house_rules}</p>
               </div>
             ) : null}
           </div>
@@ -173,20 +173,20 @@ export default async function ListingPage({ params, searchParams }: PageProps<"/
             priceBasis={listing.price_basis}
           />
 
-          <section aria-labelledby="adv" className="flex flex-col gap-3 rounded-[20px] border border-line bg-surface p-4">
+          <section aria-labelledby="adv" className="surface flex flex-col gap-3 p-4">
             <div className="flex items-center gap-3">
               <Avatar name={adv.name} />
               <div>
                 <h2 id="adv" className="font-semibold">
                   {adv.name}
                 </h2>
-                <p className="text-[0.84375rem] text-muted">
+                <p className="text-label text-muted">
                   {ADVERTISER_ROLE_LABEL[adv.role] ?? "Advertiser"}
                   {adv.usually_replies ? ` · ${adv.usually_replies}` : ""}
                 </p>
               </div>
             </div>
-            <ul className="flex flex-col gap-1.5 text-[0.875rem]">
+            <ul className="flex flex-col gap-1.5 text-label">
               {adv.identity_checked_at ? (
                 <li className="flex items-center gap-2"><Icon name="check" size={16} className="text-deep" /> Identity checked · {formatDate(adv.identity_checked_at)}</li>
               ) : null}
@@ -200,7 +200,7 @@ export default async function ListingPage({ params, searchParams }: PageProps<"/
                 <li className="text-muted">No checks recorded yet. We label each check with its date when it happens.</li>
               ) : null}
             </ul>
-            <p className="text-[0.78125rem] text-muted">Never pay a deposit before viewing the home and meeting the advertiser.</p>
+            <p className="text-caption text-muted">Never pay a deposit before viewing the home and meeting the advertiser.</p>
             <ReportListing refId={ref} signedIn={!!user} />
           </section>
 
@@ -214,7 +214,7 @@ export default async function ListingPage({ params, searchParams }: PageProps<"/
       </div>
 
       <div className="no-print safe-bottom fixed inset-x-0 bottom-[58px] z-20 border-t border-line bg-surface px-4 pt-3 md:static md:mt-8 md:border-0 md:bg-transparent md:p-0">
-        <div className="mx-auto flex max-w-[1100px] gap-3 md:justify-end">
+        <div className="mx-auto flex max-w-wide gap-3 md:justify-end">
           <ContactSheet
             refId={ref}
             advertiser={adv}

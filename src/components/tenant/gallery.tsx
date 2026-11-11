@@ -16,8 +16,8 @@ export function Gallery({
   const [touchX, setTouchX] = useState<number | null>(null);
   if (photos.length === 0) {
     return (
-      <div className="grid aspect-[4/3] place-items-center bg-cool text-muted md:rounded-[20px]">
-        <span className="flex flex-col items-center gap-2 text-[0.875rem]">
+      <div className="grid aspect-[4/3] place-items-center bg-cool text-muted md:rounded-panel">
+        <span className="flex flex-col items-center gap-2 text-label">
           <Icon name="image" size={28} /> No photos yet
         </span>
       </div>
@@ -29,7 +29,7 @@ export function Gallery({
 
   return (
     <div
-      className="relative aspect-[4/3] overflow-hidden bg-cool md:rounded-[20px]"
+      className="relative aspect-[4/3] overflow-hidden bg-cool md:rounded-panel"
       aria-roledescription="carousel"
       aria-label={`Photos of ${title}`}
       onTouchStart={(e) => setTouchX(e.touches[0].clientX)}
@@ -60,7 +60,7 @@ export function Gallery({
         <img src={photos[(i + 1) % photos.length].url} srcSet={srcSet(photos[(i + 1) % photos.length])} sizes="(min-width: 768px) 720px, 100vw" alt="" aria-hidden="true" loading="lazy" decoding="async" className="pointer-events-none absolute size-px opacity-0" />
       ) : null}
       <span
-        className={`absolute bottom-3 left-3 rounded-[8px] px-2.5 py-1 text-[0.78125rem] font-semibold ${p.label === "sample" ? "bg-waiting-tint text-waiting-strong" : "bg-ink/85 text-white"}`}
+        className={`absolute bottom-3 left-3 rounded-chip px-2.5 py-1 text-caption font-semibold ${p.label === "sample" ? "bg-waiting-tint text-waiting-strong" : "bg-ink/85 text-white"}`}
         aria-live="polite"
       >
         {labelText} · photo {i + 1} of {photos.length}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
-import { EmptyState } from "@/components/ui/primitives";
+import { EmptyState, Notice } from "@/components/ui/primitives";
 import { requireWorkspace } from "@/lib/auth";
 import { formatDate, timeAgo } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
@@ -27,10 +27,10 @@ export default async function MyEntriesPage({ params }: PageProps<"/w/[orgId]/re
   const { data, error } = await supabase.rpc("my_rent_work", { p_org: orgId });
   const rows = data ?? [];
   return (
-    <div className="mx-auto flex max-w-[760px] flex-col gap-5">
+    <div className="mx-auto flex max-w-reading flex-col gap-5">
       <PageHeader icon="inbox" title="My entries" />
       {error ? (
-        <p role="alert" className="text-error">We couldn&apos;t load your entries. Reload to try again.</p>
+        <Notice tone="error" role="alert">We couldn&apos;t load your entries. Reload to try again.</Notice>
       ) : rows.length === 0 ? (
         <EmptyState title="Nothing waiting on you" icon="check">
           Entries you save, submit or get back for correction appear here. Unsent entries kept only on a device are not included.
@@ -40,12 +40,12 @@ export default async function MyEntriesPage({ params }: PageProps<"/w/[orgId]/re
           const items = rows.filter((r) => r.grp === g.key);
           return (
             <section key={g.key} id={g.key} aria-labelledby={`h-${g.key}`} className="scroll-mt-20">
-              <h2 id={`h-${g.key}`} className="font-display text-[1.25rem] font-bold">
-                {g.title} <span className="font-mono text-[0.9375rem] text-muted">{items.length}</span>
+              <h2 id={`h-${g.key}`} className="heading-section">
+                {g.title} <span className="font-mono text-body text-muted">{items.length}</span>
               </h2>
-              <p className="text-[0.84375rem] text-muted">{g.help}</p>
+              <p className="text-label text-muted">{g.help}</p>
               {items.length ? (
-                <ul className="mt-2 flex flex-col divide-y divide-divider overflow-hidden rounded-[16px] border border-line bg-surface">
+                <ul className="surface-list mt-2">
                   {items.map((r) => {
                     const href = g.key === "submitted" ? `/w/${orgId}/rent/${r.property_id}/entries/${r.entry_id}` : `/w/${orgId}/rent/${r.property_id}/record?tenancy=${r.tenancy_id}&entry=${r.entry_id}`;
                     return (
@@ -55,12 +55,12 @@ export default async function MyEntriesPage({ params }: PageProps<"/w/[orgId]/re
                             <span className="block font-semibold">
                               {r.ref} · Unit {r.unit_label} · {formatMoney(Number(r.amount))}
                             </span>
-                            <span className="block text-[0.8125rem] text-muted">
+                            <span className="block text-caption text-muted">
                               {r.property_name} · paid {formatDate(r.paid_on)} · updated {timeAgo(r.updated_at)}
                             </span>
-                            {g.key === "returned" && r.decision_reason ? <span className="mt-1 block text-[0.84375rem] text-error">&quot;{r.decision_reason}&quot;</span> : null}
+                            {g.key === "returned" && r.decision_reason ? <span className="mt-1 block text-label text-error">&quot;{r.decision_reason}&quot;</span> : null}
                           </span>
-                          <span className="inline-flex shrink-0 items-center gap-1 text-[0.875rem] font-semibold text-primary">
+                          <span className="link-action inline-flex shrink-0 items-center gap-1 text-label">
                             {g.action} <Icon name="chevronRight" size={16} />
                           </span>
                         </Link>
@@ -69,7 +69,7 @@ export default async function MyEntriesPage({ params }: PageProps<"/w/[orgId]/re
                   })}
                 </ul>
               ) : (
-                <p className="mt-2 rounded-[14px] border border-dashed border-line bg-surface p-3 text-[0.875rem] text-muted">None.</p>
+                <p className="surface-empty mt-2 p-3">None.</p>
               )}
             </section>
           );

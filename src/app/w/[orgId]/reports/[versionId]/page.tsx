@@ -19,11 +19,11 @@ export default async function ReportVersionPage({ params }: PageProps<"/w/[orgId
   if (!v) notFound();
   const { data: who } = await supabase.from("profiles").select("full_name").eq("id", v.prepared_by).maybeSingle();
   return (
-    <div className="mx-auto flex max-w-[900px] flex-col gap-4">
+    <div className="mx-auto flex max-w-standard flex-col gap-5">
       <div className="no-print flex flex-wrap items-center justify-between gap-2">
         <BackLink href={`/w/${orgId}/reports?property=${v.property_id}&period=${v.period_start.slice(0, 7)}`}>Reports</BackLink>
         <div className="flex gap-2">
-          {ws.can_export ? <a href={`/api/export/report?version=${v.id}`} className="inline-flex min-h-11 items-center gap-1.5 rounded-[12px] border-[1.5px] border-ink px-4 font-semibold"><Icon name="download" size={16} /> CSV of v{v.version}</a> : null}
+          {ws.can_export ? <a href={`/api/export/report?version=${v.id}`} className="inline-flex min-h-11 items-center gap-1.5 rounded-control border-strong border-ink px-4 font-semibold"><Icon name="download" size={16} /> CSV of v{v.version}</a> : null}
           <PrintButton />
         </div>
       </div>

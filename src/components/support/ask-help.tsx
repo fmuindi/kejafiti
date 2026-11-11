@@ -35,20 +35,20 @@ export function AskHelp({ signedIn }: { signedIn: boolean }) {
         <TextInput id="ask-q" value={q} maxLength={500} onChange={(e) => setQ(e.target.value)} placeholder="Ask anything, e.g. can I pay rent here?" className="min-w-0 flex-1" />
         <Button type="submit" icon="arrowRight" pending={pending} pendingLabel="Checking">Ask</Button>
       </form>
-      <p className="text-[0.78125rem] text-muted">Answered from our help articles. Leave out personal details.</p>
+      <p className="text-caption text-muted">Answered from our help articles. Leave out personal details.</p>
       <div aria-live="polite">
         {error ? <Notice tone="error">{error}</Notice> : null}
         {result?.found ? (
-          <div className="flex flex-col gap-2 rounded-[14px] border border-line bg-cool p-4">
-            <p className="text-[0.90625rem]">{result.answer}</p>
-            <p className="text-[0.8125rem] text-muted">From: {result.articles.map((a, i) => <span key={a.id}>{i ? ", " : ""}<a href={`#${a.id}`} className="underline">{a.question}</a></span>)}</p>
-            <p className="text-[0.8125rem]">Not what you needed? <Link href={supportHref} className="underline">Contact support</Link></p>
+          <div className="flex flex-col gap-2 rounded-card border border-line bg-cool p-4">
+            <p className="text-body">{result.answer}</p>
+            <p className="text-caption text-muted">From: {result.articles.map((a, i) => <span key={a.id}>{i ? ", " : ""}<a href={`#${a.id}`} className="underline">{a.question}</a></span>)}</p>
+            <p className="text-caption">Not what you needed? <Link href={supportHref} className="underline">Contact support</Link></p>
           </div>
         ) : null}
         {result && !result.found ? (
-          <div className="flex flex-col gap-2 rounded-[14px] border border-line bg-cool p-4">
-            <p className="text-[0.90625rem]">Our help articles don&apos;t cover that. Our support team can help.</p>
-            <Link href={supportHref} className="self-start font-semibold underline">{signedIn ? "Send this question to support" : "Sign in to ask support"}</Link>
+          <div className="flex flex-col gap-2 rounded-card border border-line bg-cool p-4">
+            <p className="text-body">Our help articles don&apos;t cover that. Our support team can help.</p>
+            <Link href={supportHref} className="link-action self-start">{signedIn ? "Send this question to support" : "Sign in to ask support"}</Link>
           </div>
         ) : null}
       </div>
