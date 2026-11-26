@@ -21,9 +21,16 @@ test("sign-in never sends people to another site, before or after they sign in",
   await signIn(page, "achieng@nyumbani.test", "/\t/evil.com");
   expect(new URL(page.url()).hostname).toBe("localhost");
 
-  // Already signed in: the server redirects straight away, and must still stay here.
+  // Already signed in: the page redirects straight away (a 307, or a client redirect when the
+  // response is streamed), and /auth/continue may move on again. Each case gets its own tab in the
+  // same session so one case's trailing navigation can't abort the next; once the tab has left
+  // /sign-in and gone quiet, it must still be on this site.
   for (const next of ["/%09/evil.com", "/%5Cevil.com", "//evil.com", "https://evil.com"]) {
-    await page.goto(`/sign-in?next=${next}`);
-    expect(new URL(page.url()).hostname, next).toBe("localhost");
+    const tab = await page.context().newPage();
+    await tab.goto(`/sign-in?next=${next}`, { waitUntil: "commit" });
+    await tab.waitForURL((u) => !u.pathname.startsWith("/sign-in"));
+    await tab.waitForLoadState("networkidle");
+    expect(new URL(tab.url()).hostname, next).toBe("localhost");
+    await tab.close();
   }
 });
