@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/primitives";
 
-const UNDO_KEY = "nyumbani.aiSearch.undo";
-const LAST_KEY = "nyumbani.aiSearch.last";
+const UNDO_KEY = "kejafiti.aiSearch.undo";
+const LAST_KEY = "kejafiti.aiSearch.last";
 
 type Last = { to: string; text: string; changes: string[]; defaults: string[]; notes: string[] };
 

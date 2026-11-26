@@ -5,6 +5,7 @@ import { SignInForm } from "@/components/auth/sign-in-form";
 import { Logo } from "@/components/ui/icon";
 import { getSessionUser } from "@/lib/auth";
 import { PHONE_AUTH_ENABLED } from "@/lib/env";
+import { safeInternalPath } from "@/lib/safe-path";
 
 export const metadata: Metadata = { title: "Sign in", robots: { index: false } };
 
@@ -26,8 +27,7 @@ const REASONS: Record<string, { title: string; body: string }> = {
  * goes to /auth/continue, which picks the person's workspace, admin centre or home search.
  */
 function safeNext(next: string | undefined) {
-  if (!next || !next.startsWith("/") || next.startsWith("//") || next.startsWith("/\\")) return "/auth/continue";
-  return next;
+  return safeInternalPath(next) ?? "/auth/continue";
 }
 
 export default async function SignInPage({ searchParams }: PageProps<"/sign-in">) {

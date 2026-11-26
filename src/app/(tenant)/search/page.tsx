@@ -164,10 +164,10 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
               </>
             ) : null}
           </p>
-          <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {rows.map((r, i) => (
-              <li key={r.ref} className="flex">
-                <div className="w-full">
+              <li key={r.ref} className="flex min-w-0">
+                <div className="flex w-full min-w-0">
                   <ListingCard row={r} photoUrl={r.cover_path ? photos.get(r.cover_path) : undefined} saved={savedRefs.has(r.ref)} signedIn={!!user} returnTo={returnTo} back={query} eager={i === 0} />
                 </div>
               </li>

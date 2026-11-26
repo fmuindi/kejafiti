@@ -3,9 +3,17 @@
 // and that scope matches exactly, and expires. Nothing secret is stored: no tokens, no file
 // contents, only what the person typed.
 //
-// Key: nyumbani.v2.draft.<userId>.<kind>.<scope id>
+// Key: kejafiti.v2.draft.<userId>.<kind>.<scope id>
 
-const PREFIX = "nyumbani.v2.draft.";
+const PREFIX = "kejafiti.v2.draft.";
+export const RECENT_SEARCHES_KEY = "kejafiti.recentSearches";
+
+// Keys written before the rename to KejaFiti. Their values are moved to the new keys once, so
+// nobody loses an unsent payment, a message or their recent searches.
+const RENAMED: Array<[from: string, to: string]> = [
+  ["nyumbani.v2.draft.", PREFIX],
+  ["nyumbani.recentSearches", RECENT_SEARCHES_KEY],
+];
 const SCHEMA = 2;
 export const DRAFT_RETENTION_DAYS = 14;
 
@@ -38,6 +46,7 @@ export function readDraft<T>(userId: string, kind: string, scope: Record<string,
   const s = storage();
   if (!s || !userId) return null;
   dropLegacy(s);
+  migrateRenamedKeys(s);
   const key = keyFor(userId, kind, scope);
   try {
     const raw = s.getItem(key);
@@ -76,12 +85,30 @@ export function removeDraft(userId: string, kind: string, scope: Record<string, 
 export function clearDeviceDataFor(userId: string) {
   const s = storage();
   if (!s) return;
+  migrateRenamedKeys(s);
   for (const k of Object.keys(s)) {
-    if ((userId && k.startsWith(`${PREFIX}${userId}.`)) || k === "nyumbani.recentSearches") s.removeItem(k);
+    if ((userId && k.startsWith(`${PREFIX}${userId}.`)) || k === RECENT_SEARCHES_KEY) s.removeItem(k);
   }
   dropLegacy(s);
 }
 
 function dropLegacy(s: Storage) {
   for (const k of Object.keys(s)) if (LEGACY_PREFIXES.some((p) => k.startsWith(p))) s.removeItem(k);
+}
+
+/** Moves values from pre-rename keys to their current names; a value already under the new key wins. */
+export function migrateRenamedKeys(s: Storage | null = storage()) {
+  if (!s) return;
+  try {
+    for (const k of Object.keys(s)) {
+      const rule = RENAMED.find(([from]) => (from.endsWith(".") ? k.startsWith(from) : k === from));
+      if (!rule) continue;
+      const to = rule[1] + k.slice(rule[0].length);
+      const v = s.getItem(k);
+      if (v !== null && s.getItem(to) === null) s.setItem(to, v);
+      s.removeItem(k);
+    }
+  } catch {
+    // Storage full or blocked: leave things as they are.
+  }
 }

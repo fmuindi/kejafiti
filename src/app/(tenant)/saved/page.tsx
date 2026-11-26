@@ -91,9 +91,9 @@ export default async function SavedPage() {
         <section aria-labelledby="sh" className="flex flex-col gap-3">
           <h2 id="sh" className="sr-only">Saved homes</h2>
           <ComparePicker homes={cards.map((c) => ({ ref: c.ref, label: `${c.title ?? c.area} · KES ${(c.fixed_monthly_total ?? c.rent_amount).toLocaleString("en-KE")}` }))} />
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {cards.map((c, i) => (
-              <li key={c.ref}>
+              <li key={c.ref} className="flex min-w-0">
                 <ListingCard row={c} photoUrl={c.cover_path ? photos.get(c.cover_path) : undefined} saved signedIn returnTo="/saved" back="saved" eager={i === 0} />
               </li>
             ))}
