@@ -13,7 +13,7 @@ export type AssistResult<T> = { ok: true; value: T; provider: string } | { ok: f
 
 /** Per-person cap key for signed-in features (salted hash of the user id). */
 export function userKey(userId: string) {
-  const salt = process.env.AI_CLIENT_SALT ?? process.env.CRON_SECRET ?? "nyumbani-local";
+  const salt = process.env.AI_CLIENT_SALT || process.env.CRON_SECRET || "kejafiti-local";
   return createHash("sha256").update(`${salt}:user:${userId}`).digest("hex").slice(0, 40);
 }
 

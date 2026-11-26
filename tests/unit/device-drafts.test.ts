@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { DRAFT_RETENTION_DAYS, clearDeviceDataFor, readDraft, removeDraft, writeDraft } from "@/lib/device-drafts";
+import { DRAFT_RETENTION_DAYS, RECENT_SEARCHES_KEY, clearDeviceDataFor, migrateRenamedKeys, readDraft, removeDraft, writeDraft } from "@/lib/device-drafts";
 
 // IMP-05: one shared browser, two accounts.
 class MemoryStorage {
@@ -58,10 +58,34 @@ describe("device drafts", () => {
   it("signing out clears that person's drafts and searches, not another account's", () => {
     writeDraft("userA", "rentEntry", scope, draft);
     writeDraft("userB", "rentEntry", scope, { ...draft, amount: "7000" });
-    store.setItem("nyumbani.recentSearches", "[]");
+    store.setItem(RECENT_SEARCHES_KEY, "[]");
+    store.setItem("nyumbani.recentSearches", "[]"); // saved before the rename
     clearDeviceDataFor("userA");
     expect(readDraft("userA", "rentEntry", scope)).toBeNull();
     expect(readDraft<typeof draft>("userB", "rentEntry", scope)?.data.amount).toBe("7000");
+    expect(store.getItem(RECENT_SEARCHES_KEY)).toBeNull();
+    expect(store.getItem("nyumbani.recentSearches")).toBeNull();
+  });
+
+  it("keeps drafts and recent searches saved before the rename to KejaFiti", () => {
+    writeDraft("userA", "rentEntry", scope, draft);
+    const [k] = store.keys();
+    expect(k.startsWith("kejafiti.v2.draft.userA.")).toBe(true);
+    // Simulate the same draft stored under the old name.
+    store.setItem(k.replace("kejafiti.", "nyumbani."), store.getItem(k) as string);
+    store.removeItem(k);
+    store.setItem("nyumbani.recentSearches", '[{"label":"Ruaka","query":"q=Ruaka","at":1}]');
+
+    expect(readDraft("userA", "rentEntry", scope)?.data).toEqual(draft);
+    expect(store.getItem(RECENT_SEARCHES_KEY)).toContain("Ruaka");
+    expect(store.keys().some((key) => key.startsWith("nyumbani."))).toBe(false);
+  });
+
+  it("never lets an old value overwrite a newer one", () => {
+    store.setItem(RECENT_SEARCHES_KEY, "new");
+    store.setItem("nyumbani.recentSearches", "old");
+    migrateRenamedKeys(window.localStorage);
+    expect(store.getItem(RECENT_SEARCHES_KEY)).toBe("new");
     expect(store.getItem("nyumbani.recentSearches")).toBeNull();
   });
 

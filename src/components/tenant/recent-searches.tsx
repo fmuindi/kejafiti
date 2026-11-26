@@ -3,14 +3,25 @@
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import { Icon } from "@/components/ui/icon";
+import { RECENT_SEARCHES_KEY, migrateRenamedKeys } from "@/lib/device-drafts";
 
 // Recent searches are kept on this device only (no account needed). They contain no
 // personal data: just the search parameters.
 
-const KEY = "nyumbani.recentSearches";
+const KEY = RECENT_SEARCHES_KEY;
+const CHANGED = "kejafiti-recent";
 export type RecentSearch = { label: string; query: string; at: number };
 
+// Searches saved under the old brand's key are moved over once per page load.
+let migrated = false;
+function migrateOnce() {
+  if (migrated) return;
+  migrated = true;
+  migrateRenamedKeys();
+}
+
 function read(): RecentSearch[] {
+  migrateOnce();
   try {
     const raw = window.localStorage.getItem(KEY);
     return raw ? (JSON.parse(raw) as RecentSearch[]) : [];
@@ -23,7 +34,7 @@ export function rememberSearch(entry: Omit<RecentSearch, "at">) {
   try {
     const next = [{ ...entry, at: Date.now() }, ...read().filter((r) => r.query !== entry.query)].slice(0, 5);
     window.localStorage.setItem(KEY, JSON.stringify(next));
-    window.dispatchEvent(new Event("nyumbani-recent"));
+    window.dispatchEvent(new Event(CHANGED));
   } catch {
     // Storage unavailable (private mode): nothing to remember.
   }
@@ -31,6 +42,7 @@ export function rememberSearch(entry: Omit<RecentSearch, "at">) {
 
 let cache: { raw: string | null; value: RecentSearch[] } = { raw: null, value: [] };
 function snapshot(): RecentSearch[] {
+  migrateOnce();
   let raw: string | null = null;
   try {
     raw = window.localStorage.getItem(KEY);
@@ -45,10 +57,10 @@ const empty: RecentSearch[] = [];
 export function RecentSearches() {
   const items = useSyncExternalStore(
     (cb) => {
-      window.addEventListener("nyumbani-recent", cb);
+      window.addEventListener(CHANGED, cb);
       window.addEventListener("storage", cb);
       return () => {
-        window.removeEventListener("nyumbani-recent", cb);
+        window.removeEventListener(CHANGED, cb);
         window.removeEventListener("storage", cb);
       };
     },

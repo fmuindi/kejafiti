@@ -49,3 +49,6 @@ next-env.d.ts
 
 # downloaded demo photos (see data/demo-photos.json)
 /.cache/
+
+# stray output from a script run with an unset path variable
+/undefined/

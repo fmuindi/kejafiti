@@ -22,8 +22,8 @@ const NO_SPEECH_MS = 8000;
 const UNAVAILABLE = "Voice search isn't available at the moment. Please use the filters.";
 /** Wall clock; read only in event handlers and effects. */
 const now = () => Date.now();
-const UNDO_KEY = "nyumbani.aiSearch.undo";
-const LAST_KEY = "nyumbani.aiSearch.last";
+const UNDO_KEY = "kejafiti.aiSearch.undo";
+const LAST_KEY = "kejafiti.aiSearch.last";
 
 /** Remember how a search was interpreted, and where Undo goes (this browser tab only). */
 export function rememberInterpretation(from: string, to: string, info: { text: string; changes: string[]; defaults: string[]; notes: string[] }) {

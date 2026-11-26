@@ -8,7 +8,8 @@ arrangements. Authorised staff check payments outside the platform, then record 
 payment processing, no bank or M-PESA connection and no automatic payment verification.
 
 Stack: **Next.js 16 (React 19, TypeScript)**, **Supabase** (Postgres + RLS, Auth, Storage, Realtime), Tailwind CSS 4,
-Zod. Runtime dependencies: `next`, `react`, `react-dom`, `@supabase/supabase-js`, `@supabase/ssr`, `zod`. That's all.
+Zod. Runtime dependencies: `next`, `react`, `react-dom`, `@supabase/supabase-js`, `@supabase/ssr`, `zod`, plus
+`@anthropic-ai/sdk` (optional AI fallback) and `leaflet` (the live map).
 
 ---
 
@@ -109,6 +110,9 @@ insert into public.app_settings (key, value) values ('admin_alert_email', 'you@e
 | `GOOGLE_MAPS_API_KEY` | **server only** | Optional. Google Places API (New) suggestions in the Explore search box and the listing wizard's location step, proxied through `/api/places/*`. Without it, those fields are plain text. |
 | `NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY` | browser | Optional. Maps Embed API key for the on-demand "approximate area" map on listings (centred on the public position, rounded to about 1 km, no pin). Restrict it to your domains and the Maps Embed API. Empty means no map. |
 | `NEXT_PUBLIC_PHONE_AUTH_ENABLED` | browser | `true` only after an SMS provider is configured in Supabase Auth |
+| `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `AI_*` | **server only** | Optional AI search, voice and assistance, with switches and daily caps. Every variable is listed with its default in `.env.example`. |
+| `AI_CLIENT_SALT` | **server only** | Long random string for hashing visitor and user ids in AI usage caps. Set it in production; without it the hash falls back to `CRON_SECRET`. |
+| `SUPABASE_PROXY_TARGET` | server | Local tunnel demos only: forwards `/supabase/*` to a local Supabase. Ignored unless it points at `localhost`/`127.0.0.1`. Leave empty in production. |
 
 ### Scripts
 
@@ -214,7 +218,9 @@ the Home step with the building's costs, viewing details and building photos alr
    default 15), stuck, failed and held. Messages older than `delivery_max_age_hours` (default 48) are held instead
    of sent automatically, so enabling a provider never replays an old backlog; an admin sends or cancels each one.
    Both settings are rows in `app_settings`.
-4. **Backups**: Supabase database backups don't include Storage files. Schedule a separate copy of the
+4. **Health check**: `GET /api/health` returns 200 `{"status":"ok"}` when the app can reach the database and 503
+   otherwise. Point an uptime monitor or load balancer at it.
+5. **Backups**: Supabase database backups don't include Storage files. Schedule a separate copy of the
    `private-docs` and `listing-media` buckets (S3 is a good fit) and test a restore.
 
 Operating cost at launch: Supabase Pro (from USD 25/month) plus app hosting (USD 0–20/month), with email in Resend's free tier. No other paid services are required.

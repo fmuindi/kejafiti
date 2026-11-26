@@ -11,7 +11,7 @@ import { AI } from "./config";
 export type Feature = "search_intent" | "transcribe" | "listing_draft" | "report_commentary" | "help_answer";
 
 const VISITOR_COOKIE = "nyu_vid";
-const hash = (v: string) => createHash("sha256").update(`${process.env.AI_CLIENT_SALT ?? process.env.CRON_SECRET ?? "nyumbani-local"}:${v}`).digest("hex").slice(0, 40);
+const hash = (v: string) => createHash("sha256").update(`${process.env.AI_CLIENT_SALT || process.env.CRON_SECRET || "kejafiti-local"}:${v}`).digest("hex").slice(0, 40);
 
 /**
  * Who a cap applies to: the signed-in person, else this browser (a random first-party cookie),

@@ -1591,6 +1591,9 @@ isOneToOne: false
 "get_listing":
 { Args: { "p_ref": string }; Returns: Json
                            },
+"health_check":
+{ Args: Record<PropertyKey, never>; Returns: boolean
+                           },
 "import_units":
 { Args: { "p_commit"?: boolean,"p_property": string,"p_rows": Json }; Returns: Json
                            },
