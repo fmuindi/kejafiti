@@ -59,7 +59,19 @@ function factChips(row: SearchRow): Array<{ label: string; unknown?: boolean }> 
   else if (row.floor_level && row.floor_level > 0) {
     chips.push({ label: `Floor ${row.floor_level}${row.facts?.lift === "yes" ? ", lift" : ", stairs"}` });
   }
+  // Shown first so it is never the chip hidden for lack of room.
+  if (row.unconfirmed_match) chips.unshift({ label: "Must-have not answered yet", unknown: true });
   return chips.slice(0, 4);
+}
+
+/**
+ * Always exactly three lines under the headline (empty ones keep their space): the price
+ * breakdown, the move-in total, then the "total incomplete" warning or any remaining notes.
+ */
+function priceRows(price: ReturnType<typeof cardPrice>): Array<{ text: string; warning?: boolean }> {
+  const [first = "", second = "", ...rest] = price.lines;
+  const third = price.warning ? { text: price.warning, warning: true } : { text: rest.join(" · ") };
+  return [{ text: first }, { text: second }, third];
 }
 
 // Positions are approximate (about 1 km), so whole kilometres past 3 km.
@@ -93,7 +105,7 @@ export function ListingCard({
   const chips = factChips(row);
   const price = cardPrice(row);
   return (
-    <article id={`home-${row.ref}`} className="relative flex scroll-mt-28 flex-col overflow-hidden rounded-panel border border-line bg-surface">
+    <article id={`home-${row.ref}`} className="relative flex h-full w-full min-w-0 scroll-mt-28 flex-col overflow-hidden rounded-panel border border-line bg-surface">
       {/* overflow-hidden keeps the 16:10 box: without it a portrait photo stretches the card. */}
       <div className="relative aspect-[16/10] overflow-hidden bg-cool">
         {photoUrl ? (
@@ -114,9 +126,11 @@ export function ListingCard({
           <SaveButton refId={row.ref} saved={saved} signedIn={signedIn} returnTo={returnTo} />
         </div>
       </div>
+      {/* Every slot below has a fixed height, so all cards in a grid line up whatever their content.
+          Long lines are cut with an ellipsis (full text on hover); the listing page has everything. */}
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div>
-          <p>
+          <p className="truncate" title={`${price.headline} ${price.headlineUnit}${basis ? ` ${basis}` : ""}`}>
             <span className="font-display text-title font-extrabold tracking-[-0.4px]">{price.headline}</span>
             <span className="text-label text-muted">
               {" "}
@@ -124,10 +138,19 @@ export function ListingCard({
               {basis ? ` ${basis}` : ""}
             </span>
           </p>
-          {price.lines.map((l) => <p key={l} className="text-caption text-muted">{l}</p>)}
-          {price.warning ? <p className="text-caption font-semibold text-waiting-strong">{price.warning}</p> : null}
+          {priceRows(price).map((l, i) =>
+            l.text ? (
+              <p key={i} title={l.text} className={cx("truncate text-caption", l.warning ? "font-semibold text-waiting-strong" : "text-muted")}>
+                {l.text}
+              </p>
+            ) : (
+              <p key={i} aria-hidden="true" className="text-caption">
+                {"\u00a0"}
+              </p>
+            ),
+          )}
         </div>
-        <h3 className="text-body leading-snug font-semibold">
+        <h3 className="line-clamp-2 min-h-[2.75em] text-body leading-snug font-semibold">
           <Link href={listingHref(row.ref, back)} className="after:absolute after:inset-0 hover:underline">
             {title}
           </Link>
@@ -137,32 +160,30 @@ export function ListingCard({
             {row.distance_km != null ? ` · about ${row.distance_km < 1 ? "1" : formatDistance(row.distance_km)} km away` : ""}
           </span>
         </h3>
-        {chips.length ? (
-          <ul className="flex flex-wrap gap-1.5">
-            {chips.map((c) => (
-              <li
-                key={c.label}
-                className={cx(
-                  "rounded-chip px-2 py-1 text-caption",
-                  c.unknown ? "bg-waiting-tint text-waiting-strong" : "bg-cool text-ink",
-                )}
-              >
-                {c.label}
-              </li>
-            ))}
-          </ul>
-        ) : null}
-        {row.unconfirmed_match ? (
-          <p className="text-caption font-semibold text-waiting">A must-have isn&apos;t answered yet</p>
-        ) : null}
+        {/* One row of chips: any that would wrap onto a second row are hidden whole, not cut. */}
+        <ul className="flex h-7 flex-wrap gap-x-1.5 gap-y-2 overflow-hidden">
+          {chips.map((c) => (
+            <li
+              key={c.label}
+              className={cx(
+                "rounded-chip px-2 py-1 text-caption leading-5 whitespace-nowrap",
+                c.unknown ? "bg-waiting-tint text-waiting-strong" : "bg-cool text-ink",
+              )}
+            >
+              {c.label}
+            </li>
+          ))}
+        </ul>
         <div className="mt-auto flex items-end justify-between gap-3 pt-2 text-caption">
-          <span className={cx("inline-flex items-center gap-1 font-semibold", stale ? "text-waiting" : "text-success")}>
-            <Icon name={stale ? "clock" : "check"} size={16} strokeWidth={2.2} />
-            {row.availability_confirmed_at
-              ? `${stale ? "Last confirmed" : "Available, confirmed"} ${formatDate(row.availability_confirmed_at, { year: false })}`
-              : "Availability not confirmed"}
+          <span className={cx("inline-flex min-w-0 items-center gap-1 font-semibold", stale ? "text-waiting" : "text-success")}>
+            <Icon name={stale ? "clock" : "check"} size={16} strokeWidth={2.2} className="shrink-0" />
+            <span className="truncate">
+              {row.availability_confirmed_at
+                ? `${stale ? "Last confirmed" : "Available, confirmed"} ${formatDate(row.availability_confirmed_at, { year: false })}`
+                : "Availability not confirmed"}
+            </span>
           </span>
-          <span className="text-right text-muted">{ADVERTISER_ROLE_LABEL[row.advertiser_role] ?? "Advertiser"}</span>
+          <span className="shrink-0 text-right text-muted">{ADVERTISER_ROLE_LABEL[row.advertiser_role] ?? "Advertiser"}</span>
         </div>
       </div>
     </article>
