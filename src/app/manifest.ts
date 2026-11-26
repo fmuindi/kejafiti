@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "nyumbani · Kenyan rentals with full costs up front",
-    short_name: "nyumbani",
+    name: "KejaFiti · Kenyan rentals with full costs up front",
+    short_name: "KejaFiti",
     description: "Search Kenyan rentals with rent, charges and move-in totals shown up front.",
     start_url: "/",
     scope: "/",

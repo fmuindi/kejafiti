@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Design tokens from the nyumbani UI/UX handoff (2026-10-16). Light theme first; dark mode
+/* Design tokens from the KejaFiti UI/UX handoff (2026-10-16). Light theme first; dark mode
    is deliberately deferred per the UI specification. */
 @theme {
   --color-primary: #dd0031;

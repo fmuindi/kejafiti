@@ -31,7 +31,7 @@ export default async function InvitePage({ params }: PageProps<"/invite/[token]"
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh max-w-narrow flex-col gap-5 px-4 pt-5 pb-10">
-      <Link href="/" aria-label="nyumbani home" className="self-start">
+      <Link href="/" aria-label="KejaFiti home" className="self-start">
         <Logo />
       </Link>
       {p.state === "pending" ? (
@@ -68,7 +68,7 @@ export default async function InvitePage({ params }: PageProps<"/invite/[token]"
                 Sign in with {p.email_hint} to accept
               </ButtonLink>
               <p className="text-caption text-muted">
-                New to nyumbani? Signing in with that email creates your account. You set your own sign-in; the person who invited you
+                New to KejaFiti? Signing in with that email creates your account. You set your own sign-in; the person who invited you
                 never sees it.
               </p>
             </>

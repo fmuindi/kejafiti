@@ -8,7 +8,7 @@ import { getProfile, requirePlatformAdmin, requireUser } from "@/lib/auth";
 import { getUnreadCount } from "@/lib/updates";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata: Metadata = { title: { default: "Admin centre", template: "%s · Admin · nyumbani" }, robots: { index: false } };
+export const metadata: Metadata = { title: { default: "Admin centre", template: "%s · Admin · KejaFiti" }, robots: { index: false } };
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   await requirePlatformAdmin("/admin");
@@ -20,7 +20,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
       <aside className="flex flex-col gap-4 bg-ink px-4 py-5 text-white md:sticky md:top-0 md:h-dvh">
         <Link href="/admin" className="flex items-center gap-2">
           <span className="rounded-chip bg-white px-1.5 py-1"><Logo withWord={false} /></span>
-          <span className="font-display text-lead font-bold">nyumbani</span>
+          <span className="font-display text-lead font-bold">KejaFiti</span>
           <span className="font-mono text-micro text-primary-on-dark">ADMIN</span>
         </Link>
         <AdminNav counts={c} />

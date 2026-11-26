@@ -63,7 +63,7 @@ export default async function EnquiryPage({ params }: PageProps<"/w/[orgId]/enqu
           <ViewingResponse viewingId={viewing.id} state={viewing.state} />
         </div>
       ) : null}
-      <p className="text-caption text-muted">You&apos;re replying as {ws.org_name}. Calls or WhatsApp chats outside nyumbani won&apos;t appear here.</p>
+      <p className="text-caption text-muted">You&apos;re replying as {ws.org_name}. Calls or WhatsApp chats outside KejaFiti won&apos;t appear here.</p>
       <Thread userId={user?.id ?? ""} conversationId={conversationId} messages={messages} quickReplies={QUICK} peerName={tenant?.full_name || "The tenant"} />
     </div>
     </LiveConversation>

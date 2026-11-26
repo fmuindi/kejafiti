@@ -39,7 +39,7 @@ export default async function TenantLayout({ children }: LayoutProps<"/">) {
     <div className="flex min-h-dvh flex-col pb-[76px] md:pb-0">
       <header className="no-print sticky top-0 z-30 hidden border-b border-line bg-cream/95 backdrop-blur md:block">
         <div className="mx-auto flex h-[68px] max-w-shell items-center gap-4 px-6">
-          <Link href="/" aria-label="nyumbani home">
+          <Link href="/" aria-label="KejaFiti home">
             <Logo />
           </Link>
           <nav aria-label="Main" className="ml-auto flex items-center gap-1">
@@ -62,7 +62,7 @@ export default async function TenantLayout({ children }: LayoutProps<"/">) {
         </div>
       </header>
       <div className="no-print flex items-center justify-between px-4 pt-3 md:hidden">
-        <Link href="/" aria-label="nyumbani home"><Logo /></Link>
+        <Link href="/" aria-label="KejaFiti home"><Logo /></Link>
         {user ? <UpdatesBell count={unread} /> : <Link href="/sign-in" className={buttonClass("secondary", "sm")}>Sign in</Link>}
       </div>
       <main id="main" className="flex-1">{children}</main>

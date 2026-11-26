@@ -9,7 +9,7 @@ import { createPublicClient } from "@/lib/supabase/public";
 // The preview card WhatsApp, Facebook and X show when a listing link is shared: cover photo,
 // rent and move-in total. Built from the signed-out view, so it only ever shows what the
 // public page shows; a home that is no longer available gets the plain brand card.
-export const alt = "Rental listing on nyumbani";
+export const alt = "Rental listing on KejaFiti";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const revalidate = 3600;
@@ -39,7 +39,7 @@ export default async function ListingImage({ params }: { params: Promise<{ ref: 
       (
         <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 24, background: BRAND.cream, color: BRAND.ink }}>
           <BrandMark size={120} padding={0.1} />
-          <span style={{ fontSize: 72, fontWeight: 700 }}>nyumbani</span>
+          <span style={{ fontSize: 72, fontWeight: 700 }}>KejaFiti</span>
         </div>
       ),
       size,
@@ -75,7 +75,7 @@ export default async function ListingImage({ params }: { params: Promise<{ ref: 
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <BrandMark size={44} padding={0.08} />
-            <span style={{ fontSize: 28, fontWeight: 700 }}>nyumbani</span>
+            <span style={{ fontSize: 28, fontWeight: 700 }}>KejaFiti</span>
           </div>
         </div>
       </div>

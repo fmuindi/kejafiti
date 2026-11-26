@@ -22,7 +22,7 @@ export default async function LegalPage({ params }: PageProps<"/legal/[doc]">) {
       <PageTitle>{title}</PageTitle>
       <p className="text-body">The full {title.toLowerCase()} will be published on this page.</p>
       <p className="text-body text-muted">
-        If you have a question about how nyumbani handles your account or information in the meantime,{" "}
+        If you have a question about how KejaFiti handles your account or information in the meantime,{" "}
         <Link href="/help" className="link-action">contact support</Link>.
       </p>
       <p className="text-caption text-muted">
