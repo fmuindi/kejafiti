@@ -246,7 +246,11 @@ export async function confirmStillAvailable(orgId: string, listingIds: string[])
 
 export async function addPhoto(orgId: string, listingId: string, input: { path: string; thumbPath: string | null; width: number; height: number; size: number; label: "actual_unit" | "building" | "sample" }): Promise<ActionResult<{ id: string }>> {
   const user = await requireUser(`/w/${orgId}/listings/${listingId}`);
-  if (!input.path.startsWith(`${orgId}/${listingId}/`)) return { ok: false, message: "Upload the photo to this listing." };
+  // The database enforces the same rule (listing_photos_paths_guard); checking here gives a clear message.
+  const inFolder = (p: string) => p.startsWith(`${orgId}/${listingId}/`) && !p.slice(`${orgId}/${listingId}/`.length).includes("/");
+  if (!inFolder(input.path) || (input.thumbPath !== null && !inFolder(input.thumbPath))) {
+    return { ok: false, message: "Upload the photo to this listing." };
+  }
   const supabase = await createClient();
   const { count } = await supabase.from("listing_photos").select("id", { count: "exact", head: true }).eq("listing_id", listingId);
   if ((count ?? 0) >= 24) return { ok: false, message: "A listing can have up to 24 photos." };

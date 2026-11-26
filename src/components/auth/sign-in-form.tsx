@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Field, TextInput, describedBy } from "@/components/ui/form";
 import { Button, Notice } from "@/components/ui/primitives";
+import { safeInternalPath } from "@/lib/safe-path";
 import { getBrowserClient } from "@/lib/supabase/browser";
 
 // Email one-time code sign-in. Supabase Auth sends the code (configure production SMTP
@@ -96,7 +97,7 @@ export function SignInForm({ next, phoneEnabled }: { next: string; phoneEnabled:
       setError("That code doesn't match or has expired. Check the latest message, or resend a new code. Anything you were doing is still held.");
       return;
     }
-    router.replace(next);
+    router.replace(safeInternalPath(next) ?? "/auth/continue");
     router.refresh();
   }
 

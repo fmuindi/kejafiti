@@ -28,5 +28,6 @@ describe("updates (IMP-08)", () => {
     expect(safeInternalLink("//evil.example")).toBeNull();
     expect(safeInternalLink(String.raw`/\evil.example`)).toBeNull();
     expect(safeInternalLink(null)).toBeNull();
+    expect(safeInternalLink("/\t/evil.example")).toBeNull();
   });
 });

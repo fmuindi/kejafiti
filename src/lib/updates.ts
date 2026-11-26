@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { getSessionUser, getWorkspaces } from "@/lib/auth";
+import { safeInternalPath } from "@/lib/safe-path";
 import { createClient } from "@/lib/supabase/server";
 
 // In-app updates (IMP-08). Each notification row is one event for one recipient; delivery
@@ -65,6 +66,5 @@ export const getUnreadCount = cache(async (orgId?: string): Promise<number> => {
 
 /** Internal paths only; anything else is dropped rather than followed. */
 export function safeInternalLink(link: string | null): string | null {
-  if (!link || !link.startsWith("/") || link.startsWith("//") || link.startsWith("/\\")) return null;
-  return link;
+  return safeInternalPath(link);
 }
